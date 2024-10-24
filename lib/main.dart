@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:new_design/generated/assets.dart';
 
 void main() {
@@ -23,9 +26,20 @@ class MyApp extends StatelessWidget {
 
 class AttendancePage extends StatelessWidget {
   const AttendancePage({super.key});
+  Future<void> listAssets(BuildContext context) async {
+    final manifestContent =
+        await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+    print('Available SVG assets:');
+    print(
+        manifestMap.keys.where((String key) => key.contains('.svg')).toList());
+  }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      listAssets(context);
+    });
     return Scaffold(
       body: Stack(
         children: [
@@ -39,12 +53,12 @@ class AttendancePage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Color.fromARGB(32, 255, 255, 255)
-                            .withOpacity(0.1), // White with 14% opacity
-                        Color(0x230176FF).withOpacity(0.14),
+                        Color(0xFFFFFFFF)
+                            .withOpacity(0.5), // White with 14% opacity
+                        Color(0xFFb8d3fb).withOpacity(.8),
                       ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomCenter,
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topCenter,
                     ),
                   ),
                 ),
@@ -62,7 +76,7 @@ class AttendancePage extends StatelessWidget {
           // Decorative element
           Positioned(
             top: 100,
-            left: 100,
+            //left: 100,
             child: Opacity(
               opacity: 0.8,
               child: Container(
@@ -73,9 +87,18 @@ class AttendancePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(0),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFFFBA09).withOpacity(0.2),
+                      color: const Color(0xFFFFBA09).withOpacity(.3),
                       blurRadius: 200,
-                      spreadRadius: 150,
+                      offset: Offset(0, -50),
+                      spreadRadius: 200,
+                      //  blurStyle: BlurStyle.inner,
+                    ),
+                    // Vertical spread - bigger values
+                    BoxShadow(
+                      color: const Color(0xFFFFBA09).withOpacity(.2),
+                      blurRadius: 200, // Increased blur for vertical
+                      offset: Offset(-100, 50),
+                      spreadRadius: 150, // Increased spread for vertical
                     ),
                   ],
                 ),
@@ -86,9 +109,11 @@ class AttendancePage extends StatelessWidget {
           // Main content
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.only(
+                  left: 20.0, right: 20.0, top: 40, bottom: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -100,11 +125,9 @@ class AttendancePage extends StatelessWidget {
                       Container(
                         // Removed Expanded to prevent full width
                         margin: const EdgeInsets.only(
-                            left: 30), // Add some space after menu
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 60,
-                          vertical: 8,
-                        ),
+                            left: 20), // Add some space after menu
+                        padding: const EdgeInsets.only(
+                            left: 30, right: 50, top: 10, bottom: 10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
@@ -170,7 +193,7 @@ class AttendancePage extends StatelessWidget {
                         Text(
                           'Where are you working from today?',
                           style: TextStyle(
-                            color: Colors.grey[600],
+                            color: Colors.black,
                             fontSize: 16,
                           ),
                         ),
@@ -189,25 +212,29 @@ class AttendancePage extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Location options
-                  LocationOption(
-                    icon: Assets.pngOfficeFigma,
-                    title: 'Office',
-                    subtitle: 'At your office premises',
-                    onTap: () {},
-                  ),
-                  const SizedBox(height: 16),
-                  LocationOption(
-                    icon: Assets.pngHome,
-                    title: 'Home',
-                    subtitle: 'At your home',
-                    onTap: () {},
-                  ),
-                  const SizedBox(height: 16),
-                  LocationOption(
-                    icon: Assets.pngOutside,
-                    title: 'Outside',
-                    subtitle: 'Out for office work',
-                    onTap: () {},
+                  Column(
+                    children: [
+                      LocationOption(
+                        icon: Assets.pngOfficeFigma,
+                        title: 'Office',
+                        subtitle: 'At your office premises',
+                        onTap: () {},
+                      ),
+                      const Gap(16),
+                      LocationOption(
+                        icon: Assets.pngHome,
+                        title: 'Home',
+                        subtitle: 'At your home',
+                        onTap: () {},
+                      ),
+                      const Gap(16),
+                      LocationOption(
+                        icon: Assets.pngOutside,
+                        title: 'Outside',
+                        subtitle: 'Out for office work',
+                        onTap: () {},
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 32),
@@ -228,8 +255,9 @@ class AttendancePage extends StatelessWidget {
                             const Text(
                               'Last working day',
                               style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14,
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -245,13 +273,32 @@ class AttendancePage extends StatelessWidget {
                         const Spacer(),
                         TextButton(
                           onPressed: () {},
-                          child: const Text('Edit'),
+                          child: Row(
+                            //mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(Assets
+                                      .svgsEdit // Make sure to add your SVG file path
+                                  ),
+                              const Gap(
+                                  8), // Add some spacing between icon and text
+                              const Text(
+                                'Edit',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  height: 24 /
+                                      14, // This creates a line height of 24
+                                  color: Color.fromRGBO(0, 62, 156, 1),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
 
-                  const Spacer(),
+                  //const Spacer(),
 
                   // Bottom navigation
                   const Row(
