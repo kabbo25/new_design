@@ -4,6 +4,7 @@ class Assets {
 
   static const String assetsSvgsOffice = 'assets/svgs/office.svg';
   static const String pngAttendence = 'assets/png/attendence.png';
+  static const String pngEditIcon = 'assets/png/edit_icon.png';
   static const String pngHome = 'assets/png/Home.png';
   static const String pngOfficeFigma = 'assets/png/office_figma.png';
   static const String pngOutside = 'assets/png/Outside.png';
@@ -14,11 +15,11 @@ class Assets {
   static const String svgsCheckContained = 'assets/svgs/check-contained.svg';
   static const String svgsConvert = 'assets/svgs/convert.svg';
   static const String svgsCrossSign = 'assets/svgs/cross_sign.svg';
+  static const String svgsEdit = 'assets/svgs/edit.svg';
   static const String svgsHome = 'assets/svgs/Home.svg';
   static const String svgsMarker04 = 'assets/svgs/marker-04.svg';
   static const String svgsOffice = 'assets/svgs/office.svg';
   static const String svgsOfficeIcon = 'assets/svgs/office-icon.svg';
   static const String svgsSetting = 'assets/svgs/setting.svg';
   static const String svgsStartPage = 'assets/svgs/start_page.svg';
-
 }
