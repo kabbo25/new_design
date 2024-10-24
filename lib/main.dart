@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/generated/assets.dart';
+import 'package:new_design/last_working_modal.dart';
 
 void main() {
   runApp(const MyApp());
@@ -272,7 +273,23 @@ class AttendancePage extends StatelessWidget {
                         ),
                         const Spacer(),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => LastWorkingDayModal(
+                                initialTime: TimeOfDay
+                                    .now(), // You can pass your current time here
+                                onSave: (TimeOfDay selectedTime) {
+                                  // Handle the selected time here
+                                  print(
+                                      'Selected time: ${selectedTime.format(context)}');
+                                  // You can update your state or perform any other action with the selected time
+                                },
+                              ),
+                            );
+                          },
                           child: Row(
                             //mainAxisSize: MainAxisSize.min,
                             children: [
