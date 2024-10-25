@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:new_design/features/attendance/view/widgets/background_widget.dart';
 import 'package:new_design/features/attendance/view/widgets/bottom_navigation_section.dart';
 import 'package:new_design/features/attendance/view/widgets/last_working_day_card.dart';
 import 'package:new_design/features/attendance/view/widgets/location_options_section.dart';
 import 'package:new_design/features/attendance/view/widgets/network_status_bar.dart';
 import 'package:new_design/features/attendance/view/widgets/user_profile_section.dart';
-import 'package:new_design/last_working_modal.dart';
+import 'package:new_design/features/edit_working_hour/view/pages/last_working_day_modal.dart';
 import 'package:provider/provider.dart';
 
 import '../../viewmodel/attendance_view_model.dart';
@@ -31,7 +32,7 @@ class AttendanceView extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          viewModel.buildBackground(),
+          BackgroundWidget(config: viewModel.backgroundConfig),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 40, 20, 10),
