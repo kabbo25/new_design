@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:new_design/features/attendance/model/background_config.dart';
+import 'package:new_design/features/start_page/model/background_config.dart';
 import 'package:new_design/generated/assets.dart';
 import 'package:new_design/theme/app_palette.dart';
 

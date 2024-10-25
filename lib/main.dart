@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:new_design/theme/app_palette.dart';
 
-import 'features/attendance/view/pages/attendance_page.dart';
+import 'features/start_page/view/pages/attendance_page.dart';
 
 void main() {
   runApp(const MyApp());

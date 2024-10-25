@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:new_design/features/attendance/view/widgets/background_widget.dart';
-import 'package:new_design/features/attendance/view/widgets/bottom_navigation_section.dart';
-import 'package:new_design/features/attendance/view/widgets/last_working_day_card.dart';
-import 'package:new_design/features/attendance/view/widgets/location_options_section.dart';
-import 'package:new_design/features/attendance/view/widgets/network_status_bar.dart';
-import 'package:new_design/features/attendance/view/widgets/user_profile_section.dart';
+import 'package:new_design/features/start_page/view/widgets/background_widget.dart';
+import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
+import 'package:new_design/features/start_page/view/widgets/last_working_day_card.dart';
+import 'package:new_design/features/start_page/view/widgets/location_options_section.dart';
+import 'package:new_design/features/start_page/view/widgets/network_status_bar.dart';
+import 'package:new_design/features/start_page/view/widgets/user_profile_section.dart';
 import 'package:new_design/features/edit_working_hour/view/pages/last_working_day_modal.dart';
 import 'package:provider/provider.dart';
 
