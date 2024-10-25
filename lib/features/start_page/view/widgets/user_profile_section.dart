@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_design/generated/assets.dart';
 
 import '../../../../theme/app_text_styles.dart';
 
@@ -13,7 +14,7 @@ class UserProfileSection extends StatelessWidget {
           CircleAvatar(
             radius: 40,
             backgroundColor: Colors.grey,
-            backgroundImage: NetworkImage('https://via.placeholder.com/80'),
+            backgroundImage: AssetImage(Assets.jpgProfilePic),
           ),
           SizedBox(height: 16),
           Row(

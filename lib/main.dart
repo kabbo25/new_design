@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:new_design/config/router/app_router.dart';
 import 'package:new_design/theme/app_palette.dart';
-
-import 'features/start_page/view/pages/attendance_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,13 +11,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: AppPalette.background,
       ),
-      home: const AttendancePage(),
+      routerConfig: goRouter,
     );
   }
 }
