@@ -55,7 +55,7 @@ class _NetworkConfirmationModalState extends State<NetworkConfirmationModal> {
 
   Future<void> _startAutoConfirmation() async {
     developer.log('Starting auto confirmation timer');
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2000));
     if (mounted && context.mounted) {
       developer.log('Auto confirmation timer completed, dismissing modal');
       Navigator.pop(context);
@@ -86,34 +86,28 @@ class _NetworkConfirmationModalState extends State<NetworkConfirmationModal> {
           ),
           //const Gap(16),
           SizedBox(
-            width: 100,
-            // height: 50,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Text(
-                widget.wifiName.toString(),
-                textAlign: TextAlign.center,
-                style: AppTextStyles.customStyle(
-                  AppTextStyles.subtitle1,
-                  weight: FontWeight.w600,
-                  color: AppPalette.textPrimary,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+            width: 150,
+            //height: 50,
+            child: Text(
+              widget.wifiName,
+              textAlign: TextAlign.left,
+              style: AppTextStyles.customStyle(
+                AppTextStyles.subtitle1,
+                weight: FontWeight.w600,
+                color: AppPalette.textPrimary,
               ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
             ),
           ),
           // const Gap(24),
-          Container(
-            margin: const EdgeInsets.only(left: 0),
-            child: Text(
-              'Network Confirmed',
-              style: AppTextStyles.customStyle(
-                AppTextStyles.subtitle1,
-                color: AppPalette.textPrimary,
-              ),
-              textAlign: TextAlign.center,
+          Text(
+            'Network Confirmed',
+            style: AppTextStyles.customStyle(
+              AppTextStyles.subtitle1,
+              color: AppPalette.textPrimary,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

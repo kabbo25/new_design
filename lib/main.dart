@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:new_design/config/router/app_router.dart';
 import 'package:new_design/theme/app_palette.dart';
-
+class LocationService {
+  static final navigatorKey = GlobalKey<NavigatorState>();
+}
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  MyApp({super.key});
+  final locationService = LocationService();
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(

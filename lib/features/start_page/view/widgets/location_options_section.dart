@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/features/office_page/view/widgets/network_verification_modal.dart';
+import 'package:new_design/features/office_page/viewmodel/location_verification_viewmodel.dart';
 import 'package:new_design/features/office_page/viewmodel/network_verification_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,9 @@ class LocationOptionsSection extends StatelessWidget {
   });
 
   void _showNetworkVerificationModal(
-      BuildContext context, AttendanceLocation location) {
+    BuildContext context,
+    AttendanceLocation location,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -26,21 +29,21 @@ class LocationOptionsSection extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: ChangeNotifierProvider(
-            create: (_) => NetworkVerificationViewModel(),
-            child: Consumer<NetworkVerificationViewModel>(
-              builder: (context, viewModel, _) {
-                return ChangeNotifierProvider(
-                  create: (_) => NetworkVerificationViewModel(),
-                  child: Consumer<NetworkVerificationViewModel>(
-                    builder: (context, viewModel, _) {
-                      return NetworkVerificationModal(
-                        isLoading: viewModel.state.isLoading,
-                        onVerifyNetwork: () => viewModel.verifyNetwork(context),
-                        onUseGPS: () => viewModel.verifyGPS(context),
-                      );
-                    },
-                  ),
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                  create: (_) => NetworkVerificationViewModel()),
+              ChangeNotifierProvider(
+                  create: (_) => LocationVerificationViewModel()),
+            ],
+            child: Consumer2<NetworkVerificationViewModel,
+                LocationVerificationViewModel>(
+              builder: (context, networkViewModel, locationViewModel, _) {
+                return NetworkVerificationModal(
+                  isLoading: networkViewModel.state.isLoading,
+                  onVerifyNetwork: () =>
+                      networkViewModel.verifyNetwork(context),
+                  onUseGPS: () => locationViewModel.verifyLocation(context),
                 );
               },
             ),

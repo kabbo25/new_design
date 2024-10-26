@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:new_design/common/network_utils.dart';
 import 'package:new_design/features/office_page/model/network_verification_state.dart';
-import 'package:new_design/features/office_page/view/pages/location_modal.dart';
 import 'package:new_design/features/office_page/view/pages/wifi_connected.dart';
 
 class NetworkVerificationViewModel extends ChangeNotifier {
@@ -158,25 +157,6 @@ class NetworkVerificationViewModel extends ChangeNotifier {
     if (context.mounted) {
       context.pushNamed('attendance_error',
           queryParameters: {'type': 'generic_error'});
-    }
-  }
-
-  Future<void> verifyGPS(BuildContext context) async {
-    if (_disposed) return;
-
-    _updateState(_state.copyWith(isLoading: true));
-
-    if (context.mounted) {
-      Navigator.pop(context);
-      await showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        isDismissible: false,
-        builder: (context) => LocationModal(
-          isLoading: _state.isLoading,
-          onFindLocation: () async {},
-        ),
-      );
     }
   }
 }
