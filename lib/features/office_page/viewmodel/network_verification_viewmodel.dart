@@ -164,7 +164,7 @@ class NetworkVerificationViewModel extends ChangeNotifier {
   Future<void> verifyGPS(BuildContext context) async {
     if (_disposed) return;
 
-    _updateState(_state.copyWith(isLoading: false));
+    _updateState(_state.copyWith(isLoading: true));
 
     if (context.mounted) {
       Navigator.pop(context);

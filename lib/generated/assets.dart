@@ -3,6 +3,7 @@ class Assets {
   Assets._();
 
   static const String assetsSvgsOffice = 'assets/svgs/office.svg';
+  static const String gifLocationLoading = 'assets/gif/location_loading.gif';
   static const String gifWifiConnected = 'assets/gif/wifi_connected.gif';
   static const String jpgProfilePic = 'assets/jpg/profile_pic.jpg';
   static const String pngAttendence = 'assets/png/attendence.png';
@@ -24,4 +25,5 @@ class Assets {
   static const String svgsOfficeIcon = 'assets/svgs/office-icon.svg';
   static const String svgsSetting = 'assets/svgs/setting.svg';
   static const String svgsStartPage = 'assets/svgs/start_page.svg';
+
 }
