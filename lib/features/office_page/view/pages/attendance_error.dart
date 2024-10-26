@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class AttendanceErrorPage extends StatelessWidget {
   final String errorType;
@@ -72,7 +72,7 @@ class AttendanceErrorPage extends StatelessWidget {
                     size: 60,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const Gap(32),
                 // Error Title
                 Text(
                   _getErrorTitle(),
@@ -82,7 +82,7 @@ class AttendanceErrorPage extends StatelessWidget {
                     color: Colors.red,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const Gap(16),
                 // Error Message
                 Text(
                   _getErrorMessage(),
@@ -92,7 +92,7 @@ class AttendanceErrorPage extends StatelessWidget {
                     color: Colors.grey[600],
                   ),
                 ),
-                const SizedBox(height: 48),
+                const Gap(48),
                 // Try Again Button
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),

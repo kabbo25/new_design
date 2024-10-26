@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:new_design/theme/app_palette.dart';
 import 'package:new_design/theme/app_text_styles.dart';
 
@@ -23,7 +24,7 @@ class TimeTypeSelector extends StatelessWidget {
           isSelected: isStartTime,
           onTap: onStartTimeSelected,
         ),
-        const SizedBox(width: 12),
+        const Gap(12),
         _buildTypeButton(
           title: 'Finished at',
           isSelected: !isStartTime,

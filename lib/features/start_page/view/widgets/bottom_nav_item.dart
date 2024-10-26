@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 
 class BottomNavItem extends StatelessWidget {
   final String svgPath;
@@ -28,7 +29,7 @@ class BottomNavItem extends StatelessWidget {
             height: 20,
             // You can change the color based on selection
           ),
-          const SizedBox(height: 4),
+          const Gap(4),
           Text(
             label,
             style: TextStyle(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class AttendanceSuccessPage extends StatelessWidget {
   final String wifiName;
@@ -32,7 +33,7 @@ class AttendanceSuccessPage extends StatelessWidget {
                     size: 60,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const Gap( 32),
                 // Success Message
                 const Text(
                   'Attendance Recorded!',
@@ -41,7 +42,7 @@ class AttendanceSuccessPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const Gap(16),
                 Text(
                   'Successfully connected to\n$wifiName',
                   textAlign: TextAlign.center,
@@ -50,7 +51,7 @@ class AttendanceSuccessPage extends StatelessWidget {
                     color: Colors.grey[600],
                   ),
                 ),
-                const SizedBox(height: 48),
+                const Gap(48),
                 // Back to Home Button
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),

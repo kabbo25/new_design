@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:new_design/generated/assets.dart';
 
 import '../../../../theme/app_text_styles.dart';
@@ -16,7 +17,7 @@ class UserProfileSection extends StatelessWidget {
             backgroundColor: Colors.grey,
             backgroundImage: AssetImage(Assets.jpgProfilePic),
           ),
-          SizedBox(height: 16),
+          Gap(16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -25,12 +26,12 @@ class UserProfileSection extends StatelessWidget {
             ],
           ),
           Text('Muntasha', style: AppTextStyles.heading1),
-          SizedBox(height: 8),
+          Gap(8),
           Text(
             'Where are you working from today?',
             style: AppTextStyles.subtitle1,
           ),
-          SizedBox(height: 4),
+          Gap(4),
           Text(
             'Wed, 29 May',
             style: AppTextStyles.subtitle2,

@@ -2,7 +2,6 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:gif_view/gif_view.dart';
 import 'package:new_design/features/office_page/viewmodel/network_verification_viewmodel.dart';
 import 'package:new_design/generated/assets.dart';
@@ -80,26 +79,39 @@ class _NetworkConfirmationModalState extends State<NetworkConfirmationModal> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Center(
-            child: SizedBox(
+            child: GifView.asset(
+              Assets.gifWifiConnected,
               height: 100,
-              width: 100,
-              child: GifView.asset(
-                Assets.gifWifiConnected,
+            ),
+          ),
+          //const Gap(16),
+          SizedBox(
+            width: 100,
+            // height: 50,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                widget.wifiName.toString(),
+                textAlign: TextAlign.center,
+                style: AppTextStyles.customStyle(
+                  AppTextStyles.subtitle1,
+                  weight: FontWeight.w600,
+                  color: AppPalette.textPrimary,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
             ),
           ),
-          //const Gap(24),
-          const Text(
-            'DSI-185',
-            style: AppTextStyles.heading2,
-            textAlign: TextAlign.center,
-          ),
-          const Gap(24),
+          // const Gap(24),
           Container(
-            margin: const EdgeInsets.only(left: 30),
-            child: const Text(
+            margin: const EdgeInsets.only(left: 0),
+            child: Text(
               'Network Confirmed',
-              style: AppTextStyles.heading2,
+              style: AppTextStyles.customStyle(
+                AppTextStyles.subtitle1,
+                color: AppPalette.textPrimary,
+              ),
               textAlign: TextAlign.center,
             ),
           ),

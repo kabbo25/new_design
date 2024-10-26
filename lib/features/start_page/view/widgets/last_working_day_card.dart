@@ -27,8 +27,8 @@ class LastWorkingDayCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Last working day', style: AppTextStyles.heading2),
-              const SizedBox(height: 4),
+              const Text('Last working day', style: AppTextStyles.heading2),
+              const Gap(4),
               Text(
                 '${lastWorkingDay.location} • ${_formatDate(lastWorkingDay.date)} • ${_formatTime(lastWorkingDay.time)}',
                 style: AppTextStyles.subtitle2,
@@ -42,7 +42,7 @@ class LastWorkingDayCard extends StatelessWidget {
               children: [
                 SvgPicture.asset(Assets.svgsEdit),
                 const Gap(8),
-                Text('Edit', style: AppTextStyles.buttonText),
+                const Text('Edit', style: AppTextStyles.buttonText),
               ],
             ),
           ),

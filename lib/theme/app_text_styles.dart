@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_palette.dart';  
+import 'app_palette.dart';
 
 class AppTextStyles {
   static const TextStyle heading1 = TextStyle(
@@ -31,4 +31,20 @@ class AppTextStyles {
     height: 24 / 14,
     color: AppPalette.primary,
   );
+
+  // Single method to customize any text style
+  static TextStyle customStyle(
+    TextStyle baseStyle, {
+    Color? color,
+    FontWeight? weight,
+    double? fontSize,
+    double? height,
+  }) {
+    return baseStyle.copyWith(
+      color: color,
+      fontWeight: weight,
+      fontSize: fontSize,
+      height: height,
+    );
+  }
 }

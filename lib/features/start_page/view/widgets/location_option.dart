@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 import '../../../../theme/app_decorations.dart';
 import '../../../../theme/app_text_styles.dart';
@@ -28,7 +29,7 @@ class LocationOption extends StatelessWidget {
               width: 48,
               height: 48,
             ),
-            const SizedBox(width: 16),
+            const Gap(16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

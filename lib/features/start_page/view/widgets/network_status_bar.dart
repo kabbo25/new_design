@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 import '../../../../theme/app_palette.dart';
 import '../../../../theme/app_text_styles.dart';
@@ -25,7 +26,7 @@ class NetworkStatusBar extends StatelessWidget {
           child: const Row(
             children: [
               Icon(Icons.wifi, size: 16, color: AppPalette.success),
-              SizedBox(width: 8),
+              Gap( 8),
               Text(
                 'Connected to DSi network',
                 style: AppTextStyles.subtitle2,

@@ -60,9 +60,9 @@ class _LastWorkingDayModalContent extends StatelessWidget {
             style: AppTextStyles.subtitle1,
           ),
           _buildTimeWheels(context, viewModel),
-          const SizedBox(height: 32),
+          const Gap(32),
           _buildSaveButton(context, viewModel),
-          const SizedBox(height: 16),
+          const Gap(16),
         ],
       ),
     );

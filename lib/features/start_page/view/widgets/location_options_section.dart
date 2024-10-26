@@ -37,7 +37,7 @@ class LocationOptionsSection extends StatelessWidget {
                       return NetworkVerificationModal(
                         isLoading: viewModel.state.isLoading,
                         onVerifyNetwork: () => viewModel.verifyNetwork(context),
-                        onUseGPS: () => viewModel.verifyGPS(),
+                        onUseGPS: () => viewModel.verifyGPS(context),
                       );
                     },
                   ),
