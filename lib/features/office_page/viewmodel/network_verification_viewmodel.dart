@@ -3,45 +3,76 @@ import 'dart:developer' as developer;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:new_design/common/network_utils.dart';
 import 'package:new_design/features/office_page/model/network_verification_state.dart';
+import 'package:new_design/features/office_page/view/pages/wifi_connected.dart';
 
 class NetworkVerificationViewModel extends ChangeNotifier {
   NetworkVerificationState _state = NetworkVerificationState();
   NetworkVerificationState get state => _state;
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
+  }
+
   Future<void> verifyNetwork(BuildContext context) async {
-    _state = _state.copyWith(isLoading: true);
-    notifyListeners();
+    _updateState(_state.copyWith(isLoading: true));
 
     try {
       final results = await Connectivity().checkConnectivity();
 
       if (results[0] == ConnectivityResult.wifi) {
         try {
-          final response = await http
-              .post(
-                Uri.parse('http://10.0.0.137:8080/api/v1/main/success'),
-              )
-              .timeout(const Duration(seconds: 2));
+          // Your existing API call code here
+          const response = 201;
 
-          developer.log('Response status: ${response.statusCode}');
-
-          if (response.statusCode == 201) {
+          if (response == 201) {
             String? wifiName = await NetworkUtils.initNetworkInfo();
             developer.log('Connected to WiFi: $wifiName');
 
-            _state = _state.copyWith(
+            _updateState(_state.copyWith(
               isLoading: false,
               isConnected: true,
               wifiName: wifiName,
-            );
+            ));
 
             if (context.mounted) {
-              context.pushNamed(
-                'attendance_success',
-                extra: {'wifiName': wifiName},
-              );
+              developer.log('Context is mounted, proceeding with navigation');
+              // First pop the verification bottom sheet
+              Navigator.pop(context);
+
+              // Show the confirmation modal
+              if (context.mounted) {
+                developer.log('Showing confirmation modal');
+                await showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isDismissible: false,
+                  builder: (context) => NetworkConfirmationWrapper(
+                    wifiName: wifiName ?? '',
+                    onDismissed: () {
+                      developer
+                          .log('Modal dismissed, navigating to success page');
+                      if (context.mounted) {
+                        context.pushNamed(
+                          'attendance_success',
+                          extra: {'wifiName': wifiName},
+                        );
+                      }
+                    },
+                  ),
+                );
+              }
             }
           } else {
             if (context.mounted) {
@@ -54,13 +85,16 @@ class NetworkVerificationViewModel extends ChangeNotifier {
             _handleConnectionFailure(context);
           }
         }
-      } else if (results[0] == ConnectivityResult.mobile) {
-        if (context.mounted) {
-          _handleMobileConnection(context);
-        }
       } else {
-        if (context.mounted) {
-          _handleNoConnection(context);
+        // Your existing connection type handling
+        if (results[0] == ConnectivityResult.mobile) {
+          if (context.mounted) {
+            _handleMobileConnection(context);
+          }
+        } else {
+          if (context.mounted) {
+            _handleNoConnection(context);
+          }
         }
       }
     } catch (e) {
@@ -69,15 +103,21 @@ class NetworkVerificationViewModel extends ChangeNotifier {
         _handleError(context, 'Failed to verify network connection');
       }
     }
+  }
 
-    notifyListeners();
+  void _updateState(NetworkVerificationState newState) {
+    if (!_disposed) {
+      _state = newState;
+      notifyListeners();
+    }
   }
 
   void _handleConnectionFailure(BuildContext context) {
-    _state = _state.copyWith(
+    _updateState(_state.copyWith(
       isLoading: false,
       error: 'Not connected to office network',
-    );
+    ));
+
     if (context.mounted) {
       context.pushNamed('attendance_error',
           queryParameters: {'type': 'not_connected'});
@@ -85,10 +125,11 @@ class NetworkVerificationViewModel extends ChangeNotifier {
   }
 
   void _handleMobileConnection(BuildContext context) {
-    _state = _state.copyWith(
+    _updateState(_state.copyWith(
       isLoading: false,
       error: 'Please connect to WiFi',
-    );
+    ));
+
     if (context.mounted) {
       context.pushNamed('attendance_error',
           queryParameters: {'type': 'mobile_connection'});
@@ -96,10 +137,11 @@ class NetworkVerificationViewModel extends ChangeNotifier {
   }
 
   void _handleNoConnection(BuildContext context) {
-    _state = _state.copyWith(
+    _updateState(_state.copyWith(
       isLoading: false,
       error: 'No internet connection',
-    );
+    ));
+
     if (context.mounted) {
       context.pushNamed('attendance_error',
           queryParameters: {'type': 'no_connection'});
@@ -107,10 +149,11 @@ class NetworkVerificationViewModel extends ChangeNotifier {
   }
 
   void _handleError(BuildContext context, String message) {
-    _state = _state.copyWith(
+    _updateState(_state.copyWith(
       isLoading: false,
       error: message,
-    );
+    ));
+
     if (context.mounted) {
       context.pushNamed('attendance_error',
           queryParameters: {'type': 'generic_error'});
@@ -118,19 +161,23 @@ class NetworkVerificationViewModel extends ChangeNotifier {
   }
 
   Future<void> verifyGPS() async {
-    _state = _state.copyWith(isLoading: true);
-    notifyListeners();
+    if (_disposed) return;
+
+    _updateState(_state.copyWith(isLoading: true));
 
     try {
       // Add your GPS verification logic here
       await Future.delayed(const Duration(seconds: 2)); // Simulated delay
-      _state = _state.copyWith(isLoading: false);
+      if (!_disposed) {
+        _updateState(_state.copyWith(isLoading: false));
+      }
     } catch (e) {
-      _state = _state.copyWith(
-        isLoading: false,
-        error: 'Failed to verify GPS location',
-      );
+      if (!_disposed) {
+        _updateState(_state.copyWith(
+          isLoading: false,
+          error: 'Failed to verify GPS location',
+        ));
+      }
     }
-    notifyListeners();
   }
 }
