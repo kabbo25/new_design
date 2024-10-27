@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:new_design/common/location_fetching.dart';
+import 'package:new_design/core/common_feature/location_fetching.dart';
 import 'package:new_design/features/office_page/model/location_verification_state.dart';
 import 'package:new_design/features/office_page/view/pages/location_found_modal.dart';
 import 'package:new_design/features/office_page/view/pages/location_modal.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:new_design/theme/app_palette.dart';
-import 'package:new_design/theme/app_text_styles.dart';
+import 'package:new_design/core/theme/app_palette.dart';
+import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../viewmodel/working_hour_viewmodel.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:new_design/config/router/app_router.dart';
-import 'package:new_design/theme/app_palette.dart';
+import 'package:new_design/core/config/router/app_router.dart';
+import 'package:new_design/core/theme/app_palette.dart';
 class LocationService {
   static final navigatorKey = GlobalKey<NavigatorState>();
 }

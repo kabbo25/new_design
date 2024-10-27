@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:new_design/common/network_utils.dart';
+import 'package:new_design/core/common_feature/network_utils.dart';
 import 'package:new_design/features/office_page/model/network_verification_state.dart';
 import 'package:new_design/features/office_page/view/pages/wifi_connected.dart';
 
@@ -33,12 +33,13 @@ class NetworkVerificationViewModel extends ChangeNotifier {
 
       if (results[0] == ConnectivityResult.wifi) {
         try {
-          // Your existing API call code here
           const response = 201;
 
           if (response == 201) {
-            String? wifiName = await NetworkUtils.initNetworkInfo();
+            String wifiName = await NetworkUtils.initNetworkInfo() ?? 'No wifi';
             developer.log('Connected to WiFi: $wifiName');
+            final startedWorkingTime =
+                DateTime.now(); // Capture the current time
 
             _updateState(_state.copyWith(
               isLoading: false,
@@ -59,14 +60,17 @@ class NetworkVerificationViewModel extends ChangeNotifier {
                   backgroundColor: Colors.transparent,
                   isDismissible: false,
                   builder: (context) => NetworkConfirmationWrapper(
-                    wifiName: wifiName ?? '',
+                    wifiName: wifiName,
                     onDismissed: () {
                       developer
                           .log('Modal dismissed, navigating to success page');
                       if (context.mounted) {
                         context.pushNamed(
-                          'attendance_success',
-                          extra: {'wifiName': wifiName},
+                          'start_working',
+                          extra: {
+                            'wifiName': wifiName.toLowerCase(),
+                            'startedWorkingTime': startedWorkingTime,
+                          },
                         );
                       }
                     },

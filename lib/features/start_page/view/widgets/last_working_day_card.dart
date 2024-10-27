@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../generated/assets.dart';
-import '../../../../theme/app_decorations.dart';
-import '../../../../theme/app_text_styles.dart';
+import '../../../../core/generated/assets.dart';
+import '../../../../core/theme/app_decorations.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../model/last_working_day.dart';
 
 class LastWorkingDayCard extends StatelessWidget {

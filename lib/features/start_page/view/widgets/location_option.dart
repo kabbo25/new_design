@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../theme/app_decorations.dart';
-import '../../../../theme/app_text_styles.dart';
+import '../../../../core/theme/app_decorations.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../model/attendance_location.dart';
 
 class LocationOption extends StatelessWidget {

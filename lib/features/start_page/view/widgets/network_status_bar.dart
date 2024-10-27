@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../theme/app_palette.dart';
-import '../../../../theme/app_text_styles.dart';
+import '../../../../core/theme/app_palette.dart';
+import '../../../../core/theme/app_text_styles.dart';
 
 class NetworkStatusBar extends StatelessWidget {
   const NetworkStatusBar({super.key});
@@ -10,31 +10,46 @@ class NetworkStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      //mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {},
-        ),
-        Container(
-          margin: const EdgeInsets.only(left: 20),
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          decoration: BoxDecoration(
-            color: AppPalette.background,
-            borderRadius: BorderRadius.circular(20),
+        // First box (25%)
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.1,
+          child: IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {},
           ),
-          child: const Row(
-            children: [
-              Icon(Icons.wifi, size: 16, color: AppPalette.success),
-              Gap( 8),
-              Text(
-                'Connected to DSi network',
-                style: AppTextStyles.subtitle2,
+        ),
+
+        // Middle container (50%)
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.70,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppPalette.background,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.wifi, size: 16, color: AppPalette.success),
+                  Gap(8),
+                  Text(
+                    'Connected to DSi network',
+                    style: AppTextStyles.subtitle2,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-        const Spacer(),
+
+        // Last box (25%) - empty SizedBox
+        // SizedBox(
+        //   width: MediaQuery.of(context).size.width * 0.2,
+        // ),
       ],
     );
   }

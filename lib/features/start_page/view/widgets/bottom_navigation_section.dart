@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../generated/assets.dart';
+import '../../../../core/generated/assets.dart';
 import 'bottom_nav_item.dart';
 
 class BottomNavigationSection extends StatelessWidget {

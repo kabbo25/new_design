@@ -3,10 +3,10 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:gif_view/gif_view.dart';
+import 'package:new_design/core/generated/assets.dart';
+import 'package:new_design/core/theme/app_palette.dart';
+import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/office_page/viewmodel/network_verification_viewmodel.dart';
-import 'package:new_design/generated/assets.dart';
-import 'package:new_design/theme/app_palette.dart';
-import 'package:new_design/theme/app_text_styles.dart';
 import 'package:provider/provider.dart';
 
 class NetworkConfirmationWrapper extends StatelessWidget {
@@ -55,7 +55,7 @@ class _NetworkConfirmationModalState extends State<NetworkConfirmationModal> {
 
   Future<void> _startAutoConfirmation() async {
     developer.log('Starting auto confirmation timer');
-    await Future.delayed(const Duration(seconds: 2000));
+    await Future.delayed(const Duration(seconds: 2));
     if (mounted && context.mounted) {
       developer.log('Auto confirmation timer completed, dismissing modal');
       Navigator.pop(context);
@@ -86,7 +86,7 @@ class _NetworkConfirmationModalState extends State<NetworkConfirmationModal> {
           ),
           //const Gap(16),
           SizedBox(
-            width: 150,
+            width: 120,
             //height: 50,
             child: Text(
               widget.wifiName,
