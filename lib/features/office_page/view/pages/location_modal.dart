@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/theme/app_button_styles.dart';
@@ -13,22 +15,6 @@ class LocationModal extends StatelessWidget {
     required this.onFindLocation,
     this.isLoading = false,
   });
-
-  // void _handleFindLocation(BuildContext context) async {
-  //   // Close current modal
-  //   Navigator.pop(context);
-
-  //   // Show loading modal
-  //   await showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.transparent,
-  //     isDismissible: false,
-  //     builder: (context) => const LoadingModal(),
-  //   );
-
-  //   // Call the original onFindLocation callback
-  //   onFindLocation();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +45,13 @@ class LocationModal extends StatelessWidget {
               width: double.infinity,
               height: 2,
               color: AppPalette.textSecondary.withOpacity(0.5)),
+          const Gap(24),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Gap(24),
+                //const Gap(24),
                 Text(
                   'To record where the meeting is being held, location needs to be turned on\nPress on the button below to continue.',
                   style: AppTextStyles.customStyle(
@@ -73,13 +60,19 @@ class LocationModal extends StatelessWidget {
                   ),
                 ),
                 const Gap(24),
-                ElevatedButton(
-                  onPressed: () => onFindLocation(),
-                  style: AppButtonStyles.elevatedButton,
-                  child: Text(
-                    'Find Me',
-                    style: AppTextStyles.buttonText.copyWith(
-                      color: AppPalette.background,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      developer.log('find me button pressed');
+                      onFindLocation();
+                    },
+                    style: AppButtonStyles.elevatedButton,
+                    child: Text(
+                      'Find Me',
+                      style: AppTextStyles.buttonText.copyWith(
+                        color: AppPalette.background,
+                      ),
                     ),
                   ),
                 ),
