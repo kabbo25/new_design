@@ -1,5 +1,8 @@
 // lib/features/attendance/view/widgets/timer_section.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
+import 'package:new_design/generated/assets.dart';
 
 class TimerSection extends StatelessWidget {
   const TimerSection({super.key});
@@ -8,11 +11,22 @@ class TimerSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text(
-          'Elapsed time',
-          style: TextStyle(color: Colors.grey),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              Assets.svgsClock01,
+              height: 20,
+              width: 20,
+            ),
+            const Gap(4),
+            const Text(
+              'Elapsed time',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
         ),
-        const SizedBox(height: 16),
+        const Gap(12),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
