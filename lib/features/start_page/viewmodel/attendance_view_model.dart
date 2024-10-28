@@ -13,7 +13,7 @@ class AttendanceViewModel extends ChangeNotifier {
           Color(0xCCB8D3FB),
         ],
         gradientBegin: Alignment.bottomLeft,
-        gradientEnd: Alignment.topCenter,
+        gradientEnd: Alignment.topRight,
         bottomColor: AppPalette.background,
         glowColor: AppPalette.secondary,
         glowOpacity: 0.8,
