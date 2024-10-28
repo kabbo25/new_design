@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 
 class FinishWorkingViewModel extends ChangeNotifier {
-  WorkingStatus _workingStatus = const WorkingStatus(
-    location: 'Office',
-    workMode: WorkMode.starting,
-    time: TimeOfDay(hour: 8, minute: 13),
-  );
+  late WorkingStatus _workingStatus;
+
+  FinishWorkingViewModel({WorkMode workMode = WorkMode.starting}) {
+    _workingStatus = WorkingStatus(
+      location: 'Office',
+      workMode: workMode,
+      time: const TimeOfDay(hour: 8, minute: 13),
+    );
+  }
 
   WorkingStatus get workingStatus => _workingStatus;
 
