@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
+import 'package:new_design/features/start_page/model/background_config.dart';
 
 class FinishWorkingViewModel extends ChangeNotifier {
   String? _note;
@@ -12,7 +14,17 @@ class FinishWorkingViewModel extends ChangeNotifier {
     'Home',
     'Cafe'
   ]; // Add your default locations here
-
+  BackgroundConfig get backgroundConfig => BackgroundConfig(
+        gradientColors: [
+          const Color(0xFFFFFFFF).withOpacity(1), // White
+          const Color(0xFFB8D3FB).withOpacity(0.8), // Light blue
+        ],
+        gradientBegin: Alignment.topCenter,
+        gradientEnd: Alignment.bottomCenter,
+        bottomColor: AppPalette.background,
+        glowColor: AppPalette.secondary, // Yellow color
+        glowOpacity: 0.8,
+      );
   FinishWorkingViewModel({WorkMode workMode = WorkMode.starting}) {
     _workingStatus = WorkingStatus(
       location: 'Office',

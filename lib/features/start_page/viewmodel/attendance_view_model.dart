@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:new_design/features/start_page/model/background_config.dart';
 import 'package:new_design/core/generated/assets.dart';
 import 'package:new_design/core/theme/app_palette.dart';
+import 'package:new_design/features/start_page/model/background_config.dart';
 
 import '../model/attendance_location.dart';
 import '../model/last_working_day.dart';
@@ -13,7 +13,7 @@ class AttendanceViewModel extends ChangeNotifier {
           Color(0xCCB8D3FB),
         ],
         gradientBegin: Alignment.bottomLeft,
-        gradientEnd: Alignment.topCenter,
+        gradientEnd: Alignment.topRight,
         bottomColor: AppPalette.background,
         glowColor: AppPalette.secondary,
         glowOpacity: 0.8,

@@ -4,6 +4,7 @@ import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/view/widgets/add_note_modal.dart';
+import 'package:new_design/features/finish_working/view/widgets/bottom_gradient.dart';
 import 'package:new_design/features/finish_working/view/widgets/location_bottom_sheet.dart';
 import 'package:new_design/features/finish_working/view/widgets/network_profile_bar.dart';
 import 'package:new_design/features/finish_working/view/widgets/working_status_card.dart';
@@ -41,7 +42,7 @@ class FinishWorkingView extends StatelessWidget {
         children: [
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 40, 20, 10),
+              padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,70 +51,89 @@ class FinishWorkingView extends StatelessWidget {
                   const NetworkProfileBar(),
                   const SizedBox(height: 20),
 
-                  // start working card
+                  // Working status cards
                   WorkingStatusCard(
                     workingStatus: viewModel.workingStatus,
                     onEdit: () => (),
                   ),
                   const Gap(12),
-                  // finished working card
                   WorkingStatusCard(
                     workingStatus: viewModel.workingStatus,
                     onEdit: () => (),
                   ),
                   const Gap(12),
-                  // My locations card
                   MyLocationsCard(
                     locations: viewModel.locations,
                     onLocationSelected: (location) {
                       viewModel.updateLocation(location);
                     },
                   ),
-                  const Spacer(),
+                  // Timer section
+                  //const Spacer(),
+                  const Gap(24),
                   const TimerSection(),
 
-                  // Timer section
+                  // Bottom section with gradient
+                  //const Spacer(),
+                  const Gap(24),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        // Gradient background
+                        Positioned.fill(
+                          child: BottomGradient(
+                              config: viewModel.backgroundConfig),
+                        ),
 
-                  // if any note added, it will appear here
-
-                  // add a note elevated button
-                  TextButton(
-                    onPressed: () => _showAddNoteModal(context, viewModel),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      backgroundColor: Colors.transparent,
+                        //const Gap(30),
+                        Column(
+                          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () =>
+                                  _showAddNoteModal(context, viewModel),
+                              style: TextButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                backgroundColor: Colors.transparent,
+                              ),
+                              child: const Text(
+                                'Add a note',
+                                style: AppTextStyles.buttonText,
+                              ),
+                            ),
+                            const Spacer(),
+                            const Text(
+                              '👋 See you tomorrow!',
+                              style: AppTextStyles.heading2,
+                            ),
+                            const Spacer(),
+                            Column(
+                              children: [
+                                TextButton(
+                                  onPressed: () => {},
+                                  style: TextButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                                  child: Text(
+                                    'Work Again',
+                                    style: AppTextStyles.customStyle(
+                                      AppTextStyles.subtitle1,
+                                      color: AppPalette.primary,
+                                      weight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                //const Spacer(),
+                                const BottomNavigationSection(),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    child: const Text(
-                      'Add a note',
-                      style: AppTextStyles.buttonText,
-                    ),
-                  ),
-                  const Spacer(),
-                  const Text(
-                    '👋 See you tomorrow!',
-                    style: AppTextStyles.heading2,
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () => {},
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    child: Text(
-                      'Work Again',
-                      style: AppTextStyles.customStyle(
-                        AppTextStyles.subtitle1,
-                        color: AppPalette.primary,
-                        weight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-
-                  const Stack(
-                    children: [
-                      BottomNavigationSection(),
-                    ],
                   ),
                 ],
               ),
