@@ -5,7 +5,6 @@ import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/start_working/model/start_working_hour.dart';
 import 'package:new_design/generated/assets.dart';
 
-
 class WorkingStatusCard extends StatelessWidget {
   final StartWorkingHour startWorkingHour;
   final VoidCallback onEdit;
@@ -33,8 +32,10 @@ class WorkingStatusCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_formatTime(startWorkingHour.time),
-                    style: AppTextStyles.heading2),
+                Text(
+                  _formatTime(startWorkingHour.time),
+                  style: AppTextStyles.title,
+                ),
                 const Gap(4),
                 Text(
                   'Started working • ${startWorkingHour.location}',

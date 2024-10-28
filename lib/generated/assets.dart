@@ -26,6 +26,8 @@ class Assets {
   static const String svgsMarker04 = 'assets/svgs/marker-04.svg';
   static const String svgsOffice = 'assets/svgs/office.svg';
   static const String svgsOfficeIcon = 'assets/svgs/office-icon.svg';
+  static const String svgsRightArrowButton =
+      'assets/svgs/right_arrow_button.svg';
   static const String svgsSetting = 'assets/svgs/setting.svg';
   static const String svgsStartPage = 'assets/svgs/start_page.svg';
 }

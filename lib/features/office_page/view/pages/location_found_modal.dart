@@ -79,11 +79,7 @@ class LocationConfirmationModal extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Text(
               address,
-              style: AppTextStyles.customStyle(
-                AppTextStyles.subtitle1,
-                weight: FontWeight.w600,
-                color: AppPalette.textPrimary,
-              ),
+              style: AppTextStyles.title,
               textAlign: TextAlign.center,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
