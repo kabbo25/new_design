@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_design/features/start_page/model/background_config.dart';
-import 'package:new_design/features/start_page/model/last_working_day.dart';
+import 'package:new_design/features/start_working/model/start_working_hour.dart';
 import 'package:new_design/features/start_working/model/start_working_location.dart';
 
 class StartWorkingViewModel extends ChangeNotifier {
@@ -16,13 +16,13 @@ class StartWorkingViewModel extends ChangeNotifier {
         glowOpacity: 0.8,
       );
 
-  LastWorkingDay _lastWorkingDay = LastWorkingDay(
+  StartWorkingHour _startWorkingHour = StartWorkingHour(
     location: 'Home',
     date: DateTime.now(),
     time: const TimeOfDay(hour: 9, minute: 40),
   );
 
-  LastWorkingDay get lastWorkingDay => _lastWorkingDay;
+  StartWorkingHour get startWorkingHour => _startWorkingHour;
 
   List<StartWorkingLocation> get locationOptions => [
         const StartWorkingLocation(
@@ -36,9 +36,9 @@ class StartWorkingViewModel extends ChangeNotifier {
       ];
 
   void updateLastWorkingDay(TimeOfDay newTime) {
-    _lastWorkingDay = LastWorkingDay(
-      location: _lastWorkingDay.location,
-      date: _lastWorkingDay.date,
+    _startWorkingHour = StartWorkingHour(
+      location: _startWorkingHour.location,
+      date: _startWorkingHour.date,
       time: newTime,
     );
     notifyListeners();
