@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
+import 'package:new_design/features/finish_working/view/widgets/location_bottom_sheet.dart';
 import 'package:new_design/features/finish_working/view/widgets/network_profile_bar.dart';
 import 'package:new_design/features/finish_working/view/widgets/working_status_card.dart';
 import 'package:new_design/features/finish_working/viewmodel/finish_working_view_model.dart';
@@ -40,31 +42,38 @@ class FinishWorkingView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  //network status bar with circle avatar
+                  // network status bar with circle avatar
                   const NetworkProfileBar(),
                   const SizedBox(height: 20),
-                  //start working card
+
+                  // start working card
                   WorkingStatusCard(
                     workingStatus: viewModel.workingStatus,
                     onEdit: () => (),
                   ),
-                  //finished working card
+                  const Gap(12),
+                  // finished working card
                   WorkingStatusCard(
                     workingStatus: viewModel.workingStatus,
                     onEdit: () => (),
                   ),
-                  //My locations card that show all the location through bottom modal
-                  //Timer section
-                  //if any note added, it will appear here
-                  //add a note elevated button
+                  const Gap(12),
+                  // My locations card
+                  MyLocationsCard(
+                    locations: viewModel.locations,
+                    onLocationSelected: (location) {
+                      viewModel.updateLocation(location);
+                    },
+                  ),
+                  const Spacer(),
+                  // Timer section
+
+                  // if any note added, it will appear here
+
+                  // add a note elevated button
+
                   const Stack(
                     children: [
-                      // Positioned.fill(
-                      // child: BackgroundWidget(
-                      // config: viewModel.backgroundConfig),
-                      // ),
-                      //seet you tommorrow text
-                      //text button work again
                       BottomNavigationSection(),
                     ],
                   ),
