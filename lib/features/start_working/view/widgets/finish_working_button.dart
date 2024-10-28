@@ -14,8 +14,10 @@ class SlidableButton extends StatefulWidget {
 }
 
 class SlidableButtonState extends State<SlidableButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+    with TickerProviderStateMixin {
+  late final AnimationController _slideController;
+  late final AnimationController _textController;
+  late final Animation<Offset> _textSlideAnimation;
   double _dragValue = 0.0;
   bool _isDragging = false;
   bool _isCompleted = false;
@@ -23,15 +25,30 @@ class SlidableButtonState extends State<SlidableButton>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+
+    _slideController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
+
+    _textController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _textSlideAnimation = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _textController,
+      curve: Curves.easeOutCubic,
+    ));
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _slideController.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
@@ -40,19 +57,20 @@ class SlidableButtonState extends State<SlidableButton>
       _isDragging = true;
       _dragValue += details.delta.dx / constraints.maxWidth;
       _dragValue = _dragValue.clamp(0.0, 1.0);
-      _controller.value = _dragValue;
+      _slideController.value = _dragValue;
     });
   }
 
   void _onDragEnd(DragEndDetails details) {
     if (_dragValue > 0.7) {
-      _controller.forward();
+      _slideController.forward();
       setState(() {
         _isCompleted = true;
+        _textController.forward();
         widget.onSlideComplete();
       });
     } else {
-      _controller.animateTo(0.0);
+      _slideController.animateTo(0.0);
     }
     setState(() {
       _isDragging = false;
@@ -60,51 +78,70 @@ class SlidableButtonState extends State<SlidableButton>
     });
   }
 
-  Color _getBackgroundColor() {
-    if (_isCompleted) {
-      return AppPalette.primary;
-    } else if (_isDragging) {
-      return Color.lerp(
-        Colors.white,
-        AppPalette.primary.withOpacity(0.3),
-        _dragValue,
-      )!;
-    }
-    return Colors.white;
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final buttonWidth =
-            constraints.maxWidth - 56.0; // Accounting for button size
+        final buttonWidth = constraints.maxWidth - 56.0;
 
         return Container(
           height: 56,
           decoration: BoxDecoration(
-            color: _getBackgroundColor(),
+            color: _isCompleted ? AppPalette.primary : Colors.white,
             borderRadius: BorderRadius.circular(28),
+            border: _isCompleted
+                ? null
+                : Border.all(color: AppPalette.primary.withOpacity(0.1)),
           ),
           child: Stack(
             children: [
-              // Slide text
-              Center(
-                child: Text(
-                  _isCompleted ? 'Shift Ended' : 'Finish Working',
-                  style: TextStyle(
-                    color: _isCompleted ? Colors.white : AppPalette.primary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+              // Background animation for sliding
+              if (_isDragging && !_isCompleted)
+                Positioned(
+                  left: 3,
+                  top: 3,
+                  bottom: 3,
+                  width: (_slideController.value * buttonWidth) + 56,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppPalette.primary,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
                   ),
                 ),
+
+              // Animated text
+              Center(
+                child: _isCompleted
+                    ? SlideTransition(
+                        position: _textSlideAnimation,
+                        child: const Text(
+                          'Shift Ended',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        'Finish Working',
+                        style: TextStyle(
+                          color: _dragValue > 0.35
+                              ? Colors.white
+                              : AppPalette.primary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
               ),
+
               // Sliding button
               AnimatedBuilder(
-                animation: _controller,
+                animation: _slideController,
                 builder: (context, child) {
                   return Positioned(
-                    left: (_controller.value * buttonWidth),
+                    left: (_slideController.value * buttonWidth),
                     top: 0,
                     bottom: 0,
                     child: GestureDetector(
@@ -114,13 +151,20 @@ class SlidableButtonState extends State<SlidableButton>
                       child: Padding(
                         padding: const EdgeInsets.all(3.0),
                         child: Container(
-                          width: 56,
-                          height: 56,
+                          width: 50,
+                          height: 50,
                           decoration: BoxDecoration(
                             color: _isCompleted
                                 ? Colors.transparent
                                 : AppPalette.primary,
                             shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Center(
                             child: Icon(
