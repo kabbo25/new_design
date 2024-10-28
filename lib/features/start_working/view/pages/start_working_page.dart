@@ -1,12 +1,14 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/features/start_page/view/widgets/background_widget.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
 import 'package:new_design/features/start_page/view/widgets/network_status_bar.dart';
 import 'package:new_design/features/start_working/view/widgets/finish_working_button.dart';
-import 'package:new_design/features/start_working/view/widgets/working_location_change_button.dart';
 import 'package:new_design/features/start_working/view/widgets/start_working_hour_card.dart';
 import 'package:new_design/features/start_working/view/widgets/timer_section.dart';
+import 'package:new_design/features/start_working/view/widgets/working_location_change_button.dart';
 import 'package:new_design/features/start_working/viewmodel/start_working_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +60,9 @@ class StartWorkingView extends StatelessWidget {
                           LocationOptionsSection(
                             locations: viewModel.locationOptions,
                           ),
-                          const FinishWorkingButton(),
+                          SlidableButton(onSlideComplete: () {
+                            developer.log('slide complete');
+                          }),
                           const Gap(24),
                           const BottomNavigationSection(),
                         ],
