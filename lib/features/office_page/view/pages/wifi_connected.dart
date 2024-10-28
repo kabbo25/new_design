@@ -91,11 +91,7 @@ class _NetworkConfirmationModalState extends State<NetworkConfirmationModal> {
             child: Text(
               widget.wifiName,
               textAlign: TextAlign.left,
-              style: AppTextStyles.customStyle(
-                AppTextStyles.subtitle1,
-                weight: FontWeight.w600,
-                color: AppPalette.textPrimary,
-              ),
+              style: AppTextStyles.title,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
             ),

@@ -14,7 +14,11 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppPalette.textPrimary,
   );
-
+  static const TextStyle title = TextStyle(
+    fontSize: 16,
+    color: AppPalette.textPrimary,
+    fontWeight: FontWeight.bold,
+  );
   static const TextStyle subtitle1 = TextStyle(
     fontSize: 16,
     color: AppPalette.textSecondary,

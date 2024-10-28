@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:new_design/core/theme/app_palette.dart';
+import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/start_working/model/start_working_location.dart';
+import 'package:new_design/generated/assets.dart';
 
 class LocationOptionsSection extends StatelessWidget {
   final List<StartWorkingLocation> locations;
@@ -22,8 +26,8 @@ class LocationOptionsSection extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(60),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -31,17 +35,20 @@ class LocationOptionsSection extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                location.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-              ),
+              Text(location.title,
+                  style: AppTextStyles.customStyle(
+                    AppTextStyles.subtitle1,
+                    color: AppPalette.primary,
+                    weight: FontWeight.bold,
+                  )),
               const SizedBox(height: 4),
             ],
           ),
-          const Icon(Icons.arrow_forward_ios, size: 16),
+          SvgPicture.asset(
+            Assets.svgsRightArrowButton,
+            width: 16,
+            height: 16,
+          ),
         ],
       ),
     );
