@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:new_design/core/common_feature/network_utils.dart';
+import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/office_page/model/network_verification_state.dart';
 import 'package:new_design/features/office_page/view/pages/wifi_connected.dart';
 
@@ -66,10 +67,11 @@ class NetworkVerificationViewModel extends ChangeNotifier {
                           .log('Modal dismissed, navigating to success page');
                       if (context.mounted) {
                         context.pushNamed(
-                          'start_working',
+                          'finish_working',
                           extra: {
-                            'wifiName': wifiName.toLowerCase(),
-                            'startedWorkingTime': startedWorkingTime,
+                            // 'wifiName': wifiName.toLowerCase(),
+                            //'startedWorkingTime': startedWorkingTime,
+                            'workMode': WorkMode.starting
                           },
                         );
                       }

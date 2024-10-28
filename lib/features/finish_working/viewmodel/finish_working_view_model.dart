@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 
 class FinishWorkingViewModel extends ChangeNotifier {
+  String? _note;
+
+  String? get note => _note;
+
   late WorkingStatus _workingStatus;
   final List<String> _locations = [
     'Office',
@@ -35,6 +39,11 @@ class FinishWorkingViewModel extends ChangeNotifier {
       workMode: _workingStatus.workMode,
       time: _workingStatus.time,
     );
+    notifyListeners();
+  }
+
+  void updateNote(String newNote) {
+    _note = newNote;
     notifyListeners();
   }
 }
