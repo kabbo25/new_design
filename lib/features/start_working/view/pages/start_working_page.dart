@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:new_design/features/start_page/view/widgets/background_widget.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
 import 'package:new_design/features/start_page/view/widgets/network_status_bar.dart';
@@ -35,10 +36,9 @@ class StartWorkingView extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 40, 20, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const NetworkStatusBar(),
-                  const SizedBox(height: 20),
                   WorkingStatusCard(
                     startWorkingHour: viewModel.startWorkingHour,
                     onEdit: () => () {},
@@ -56,6 +56,7 @@ class StartWorkingView extends StatelessWidget {
                             locations: viewModel.locationOptions,
                           ),
                           const FinishWorkingButton(),
+                          const Gap(24),
                           const BottomNavigationSection(),
                         ],
                       ),

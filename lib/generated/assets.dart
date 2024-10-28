@@ -3,10 +3,12 @@ class Assets {
   Assets._();
 
   static const String assetsSvgsOffice = 'assets/svgs/office.svg';
+  static const String gifArcInstaller = 'assets/gif/ArcInstaller.exe';
   static const String gifLocationLoading = 'assets/gif/location_loading.gif';
   static const String gifWifiConnected = 'assets/gif/wifi_connected.gif';
   static const String jpgProfilePic = 'assets/jpg/profile_pic.jpg';
   static const String pngAttendence = 'assets/png/attendence.png';
+  static const String pngClock01 = 'assets/png/clock-01.png';
   static const String pngEditIcon = 'assets/png/edit_icon.png';
   static const String pngHome = 'assets/png/Home.png';
   static const String pngOfficeFigma = 'assets/png/office_figma.png';
@@ -16,6 +18,7 @@ class Assets {
   static const String svgsArrowRefresh06 = 'assets/svgs/arrow-refresh-06.svg';
   static const String svgsAttendence = 'assets/svgs/attendence.svg';
   static const String svgsCheckContained = 'assets/svgs/check-contained.svg';
+  static const String svgsClock01 = 'assets/svgs/clock-01.svg';
   static const String svgsConvert = 'assets/svgs/convert.svg';
   static const String svgsCrossSign = 'assets/svgs/cross_sign.svg';
   static const String svgsEdit = 'assets/svgs/edit.svg';
@@ -25,5 +28,4 @@ class Assets {
   static const String svgsOfficeIcon = 'assets/svgs/office-icon.svg';
   static const String svgsSetting = 'assets/svgs/setting.svg';
   static const String svgsStartPage = 'assets/svgs/start_page.svg';
-
 }

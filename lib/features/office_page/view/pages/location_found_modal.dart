@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:gif_view/gif_view.dart';
-import 'package:new_design/core/generated/assets.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
+import 'package:new_design/generated/assets.dart';
 
 class LocationConfirmationWrapper extends StatelessWidget {
   final String address;

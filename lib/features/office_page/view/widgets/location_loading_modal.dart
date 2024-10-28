@@ -3,9 +3,9 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:gif_view/gif_view.dart';
-import 'package:new_design/core/generated/assets.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
+import 'package:new_design/generated/assets.dart';
 
 class LoadingModal extends StatefulWidget {
   final VoidCallback? onDismissed;

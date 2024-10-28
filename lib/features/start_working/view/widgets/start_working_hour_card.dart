@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/start_working/model/start_working_hour.dart';
+import 'package:new_design/generated/assets.dart';
 
-import '../../../../core/generated/assets.dart';
 
 class WorkingStatusCard extends StatelessWidget {
   final StartWorkingHour startWorkingHour;
