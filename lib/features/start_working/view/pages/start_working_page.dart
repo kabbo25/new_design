@@ -4,6 +4,7 @@ import 'package:new_design/features/start_page/view/widgets/bottom_navigation_se
 import 'package:new_design/features/start_page/view/widgets/network_status_bar.dart';
 import 'package:new_design/features/start_working/view/widgets/finish_working_button.dart';
 import 'package:new_design/features/start_working/view/widgets/location_selector.dart';
+import 'package:new_design/features/start_working/view/widgets/start_working_hour_card.dart';
 import 'package:new_design/features/start_working/view/widgets/timer_section.dart';
 import 'package:new_design/features/start_working/viewmodel/start_working_view_model.dart';
 import 'package:provider/provider.dart';
@@ -34,10 +35,14 @@ class StartWorkingView extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 40, 20, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const NetworkStatusBar(),
                   const SizedBox(height: 20),
+                  WorkingStatusCard(
+                    startWorkingHour: viewModel.startWorkingHour,
+                    onEdit: () => () {},
+                  ),
                   const TimerSection(),
                   Stack(
                     children: [
