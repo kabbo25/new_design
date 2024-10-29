@@ -48,25 +48,33 @@ class FinishWorkingView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // network status bar with circle avatar
-                  const NetworkProfileBar(),
-                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
+                    child: Column(
+                      children: [
+                        const NetworkProfileBar(),
+                        const SizedBox(height: 20),
 
-                  // Working status cards
-                  WorkingStatusCard(
-                    workingStatus: viewModel.workingStatus,
-                    onEdit: () => (),
-                  ),
-                  const Gap(12),
-                  WorkingStatusCard(
-                    workingStatus: viewModel.workingStatus,
-                    onEdit: () => (),
-                  ),
-                  const Gap(12),
-                  MyLocationsCard(
-                    locations: viewModel.locations,
-                    onLocationSelected: (location) {
-                      viewModel.updateLocation(location);
-                    },
+                        // Working status cards
+                        WorkingStatusCard(
+                          workingStatus: viewModel.workingStatus,
+                          onEdit: () => (),
+                        ),
+                        const Gap(12),
+                        WorkingStatusCard(
+                          workingStatus: viewModel.workingStatus,
+                          onEdit: () => (),
+                        ),
+                        const Gap(12),
+                        MyLocationsCard(
+                          locations: viewModel.locations,
+                          onLocationSelected: (location) {
+                            viewModel.updateLocation(location);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   // Timer section
                   //const Spacer(),
@@ -126,7 +134,7 @@ class FinishWorkingView extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                //const Spacer(),
+                                const Gap(20),
                                 const BottomNavigationSection(),
                               ],
                             ),

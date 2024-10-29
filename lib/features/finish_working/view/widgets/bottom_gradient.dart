@@ -48,13 +48,13 @@ class BottomGradient extends StatelessWidget {
                 borderRadius: BorderRadius.circular(0),
                 boxShadow: [
                   BoxShadow(
-                    color: config.glowColor.withOpacity(0.1),
+                    color: config.glowColor.withOpacity(0.2),
                     blurRadius: 200,
                     offset: const Offset(0, -50),
                     spreadRadius: 200,
                   ),
                   BoxShadow(
-                    color: config.glowColor.withOpacity(0.2),
+                    color: config.glowColor.withOpacity(0.1),
                     blurRadius: 200,
                     offset: const Offset(-100, 50),
                     spreadRadius: 200,

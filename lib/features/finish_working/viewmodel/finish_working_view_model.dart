@@ -17,7 +17,7 @@ class FinishWorkingViewModel extends ChangeNotifier {
   BackgroundConfig get backgroundConfig => BackgroundConfig(
         gradientColors: [
           const Color(0xFFFFFFFF).withOpacity(1), // White
-          const Color(0xFFB8D3FB).withOpacity(0.8), // Light blue
+          const Color(0xFFB8D3FB).withOpacity(1), // Light blue
         ],
         gradientBegin: Alignment.topCenter,
         gradientEnd: Alignment.bottomCenter,
