@@ -28,7 +28,7 @@ class BackgroundWidget extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 6,
+              flex: 5,
               child: Container(
                 color: config.bottomColor,
               ),

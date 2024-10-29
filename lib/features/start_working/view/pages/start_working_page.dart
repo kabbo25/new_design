@@ -2,6 +2,8 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/start_page/view/widgets/background_widget.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
 import 'package:new_design/features/start_page/view/widgets/network_status_bar.dart';
@@ -60,8 +62,19 @@ class StartWorkingView extends StatelessWidget {
                           LocationOptionsSection(
                             locations: viewModel.locationOptions,
                           ),
-                          SlidableButton(onSlideComplete: () {
+                          SlidableButton(onSlideComplete: () async {
                             developer.log('slide complete');
+                            await Future.delayed(const Duration(seconds: 1));
+                            if (context.mounted) {
+                              context.pushNamed(
+                                'finish_working',
+                                extra: {
+                                  //'wifiName': wifiName.toLowerCase(),
+                                  //'startedWorkingTime': startedWorkingTime,
+                                  'workMode': WorkMode.ending,
+                                },
+                              );
+                            }
                           }),
                           const Gap(24),
                           const BottomNavigationSection(),
