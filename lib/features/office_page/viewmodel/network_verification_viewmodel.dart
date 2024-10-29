@@ -59,22 +59,27 @@ class NetworkVerificationViewModel extends ChangeNotifier {
                   context: context,
                   backgroundColor: Colors.transparent,
                   isDismissible: false,
-                  builder: (context) => NetworkConfirmationWrapper(
-                    wifiName: wifiName,
-                    onDismissed: () {
-                      developer
-                          .log('Modal dismissed, navigating to success page');
-                      if (context.mounted) {
-                        context.pushNamed(
-                          'start_working',
-                          extra: {
-                            'wifiName': wifiName.toLowerCase(),
-                            'startedWorkingTime': startedWorkingTime,
-                            //'workMode': WorkMode.starting
-                          },
-                        );
-                      }
-                    },
+                  builder: (context) => Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: NetworkConfirmationWrapper(
+                      wifiName: wifiName,
+                      onDismissed: () {
+                        developer
+                            .log('Modal dismissed, navigating to success page');
+                        if (context.mounted) {
+                          context.pushNamed(
+                            'start_working',
+                            extra: {
+                              'wifiName': wifiName.toLowerCase(),
+                              'startedWorkingTime': startedWorkingTime,
+                              //'workMode': WorkMode.starting
+                            },
+                          );
+                        }
+                      },
+                    ),
                   ),
                 );
               }

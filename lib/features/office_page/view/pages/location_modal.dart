@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
+import 'package:new_design/core/theme/app_decorations.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
 
@@ -34,17 +35,14 @@ class LocationModal extends StatelessWidget {
               children: [
                 Text(
                   'Tell us where',
-                  style: AppTextStyles.heading1,
+                  style: AppTextStyles.heading2,
                   textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
           const Gap(20),
-          Container(
-              width: double.infinity,
-              height: 2,
-              color: AppPalette.textSecondary.withOpacity(0.5)),
+          AppDecorations.modalDivider,
           const Gap(24),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),

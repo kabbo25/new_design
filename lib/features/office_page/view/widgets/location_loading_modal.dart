@@ -23,7 +23,7 @@ class _LoadingModalState extends State<LoadingModal> {
   void initState() {
     super.initState();
     // Set up timer to dismiss modal and trigger callback
-    _timer = Timer(const Duration(seconds: 2), () {
+    _timer = Timer(const Duration(seconds: 3, milliseconds: 500), () {
       if (mounted && context.mounted) {
         developer.log('Auto confirmation timer completed, dismissing modal');
         Navigator.pop(context);

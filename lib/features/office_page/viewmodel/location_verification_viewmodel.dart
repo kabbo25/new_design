@@ -125,8 +125,12 @@ class LocationVerificationViewModel extends ChangeNotifier {
                     Navigator.pop(context);
                     if (context.mounted) {
                       context.pushNamed(
-                        'attendance_success',
-                        extra: {'wifiName': fetchedAddress},
+                        'start_working',
+                        extra: {
+                          //'wifiName': wifiName.toLowerCase(),
+                          //'startedWorkingTime': startedWorkingTime,
+                          //'workMode': WorkMode.starting
+                        },
                       );
                     }
                   },

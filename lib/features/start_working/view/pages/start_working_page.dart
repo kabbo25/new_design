@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
-import 'package:new_design/features/start_page/view/widgets/background_widget.dart';
+import 'package:new_design/features/finish_working/view/widgets/bottom_gradient.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
 import 'package:new_design/features/start_page/view/widgets/network_status_bar.dart';
 import 'package:new_design/features/start_working/view/widgets/finish_working_button.dart';
@@ -37,16 +37,19 @@ class StartWorkingView extends StatelessWidget {
         children: [
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 40, 20, 10),
+              padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const NetworkStatusBar(),
                   const Gap(24),
-                  WorkingStatusCard(
-                    startWorkingHour: viewModel.startWorkingHour,
-                    onEdit: () => () {},
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: WorkingStatusCard(
+                      startWorkingHour: viewModel.startWorkingHour,
+                      onEdit: () => () {},
+                    ),
                   ),
                   const Spacer(),
                   const TimerSection(),
@@ -54,28 +57,36 @@ class StartWorkingView extends StatelessWidget {
                   Stack(
                     children: [
                       Positioned.fill(
-                        child: BackgroundWidget(
-                            config: viewModel.backgroundConfig),
+                        child:
+                            BottomGradient(config: viewModel.backgroundConfig),
                       ),
                       Column(
                         children: [
-                          LocationOptionsSection(
-                            locations: viewModel.locationOptions,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              children: [
+                                LocationOptionsSection(
+                                  locations: viewModel.locationOptions,
+                                ),
+                                SlidableButton(onSlideComplete: () async {
+                                  developer.log('slide complete');
+                                  await Future.delayed(
+                                      const Duration(seconds: 1));
+                                  if (context.mounted) {
+                                    context.pushNamed(
+                                      'finish_working',
+                                      extra: {
+                                        //'wifiName': wifiName.toLowerCase(),
+                                        //'startedWorkingTime': startedWorkingTime,
+                                        'workMode': WorkMode.ending,
+                                      },
+                                    );
+                                  }
+                                }),
+                              ],
+                            ),
                           ),
-                          SlidableButton(onSlideComplete: () async {
-                            developer.log('slide complete');
-                            await Future.delayed(const Duration(seconds: 1));
-                            if (context.mounted) {
-                              context.pushNamed(
-                                'finish_working',
-                                extra: {
-                                  //'wifiName': wifiName.toLowerCase(),
-                                  //'startedWorkingTime': startedWorkingTime,
-                                  'workMode': WorkMode.ending,
-                                },
-                              );
-                            }
-                          }),
                           const Gap(24),
                           const BottomNavigationSection(),
                         ],

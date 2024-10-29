@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:gif_view/gif_view.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
+import 'package:new_design/core/theme/app_decorations.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/generated/assets.dart';
@@ -63,10 +64,7 @@ class LocationConfirmationModal extends StatelessWidget {
             ),
           ),
           const Gap(20),
-          Container(
-              width: double.infinity,
-              height: 2,
-              color: AppPalette.textSecondary.withOpacity(0.5)),
+          AppDecorations.modalDivider,
           const Gap(20),
           Center(
             child: GifView.asset(
@@ -99,7 +97,7 @@ class LocationConfirmationModal extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.only(bottom: 24, left: 24, right: 24),
+            padding: const EdgeInsets.only(bottom: 10, left: 24, right: 24),
             child: ElevatedButton(
               onPressed: onNext,
               style: AppButtonStyles.elevatedButton,
