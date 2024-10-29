@@ -3,8 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
-
-import '../../../../core/generated/assets.dart';
+import 'package:new_design/generated/assets.dart';
 
 class WorkingStatusCard extends StatelessWidget {
   final WorkingStatus workingStatus;
