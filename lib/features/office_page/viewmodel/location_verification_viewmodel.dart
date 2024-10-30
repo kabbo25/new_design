@@ -4,10 +4,12 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:new_design/core/common_feature/location_fetching.dart';
+import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/office_page/model/location_verification_state.dart';
 import 'package:new_design/features/office_page/view/pages/location_found_modal.dart';
 import 'package:new_design/features/office_page/view/pages/location_modal.dart';
 import 'package:new_design/features/office_page/view/widgets/location_loading_modal.dart';
+import 'package:new_design/features/outside_office/view/widgets/outside_meeting_location_modal.dart';
 
 class LocationVerificationViewModel extends ChangeNotifier {
   LocationVerificationState _state = LocationVerificationState();
@@ -124,14 +126,31 @@ class LocationVerificationViewModel extends ChangeNotifier {
                     developer.log('Next pressed, navigating to success page');
                     Navigator.pop(context);
                     if (context.mounted) {
-                      context.pushNamed(
-                        'start_working',
-                        extra: {
-                          //'wifiName': wifiName.toLowerCase(),
-                          //'startedWorkingTime': startedWorkingTime,
-                          //'workMode': WorkMode.starting
-                        },
-                      );
+                      showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (context) => Padding(
+                                padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom,
+                                ),
+                                child: OutsideMeetingLocationModal(
+                                  location: "36 B, MJ road, Shershah Colony",
+                                  onSave: (meetingPlace, meetingPurpose) {
+                                    if (context.mounted) {
+                                      context.pushNamed(
+                                        'finish_working',
+                                        extra: {
+                                          //'wifiName': wifiName.toLowerCase(),
+                                          //'startedWorkingTime': startedWorkingTime,
+                                          'workMode': WorkMode.ending,
+                                        },
+                                      );
+                                    }
+                                  },
+                                ),
+                              ));
                     }
                   },
                 ),
