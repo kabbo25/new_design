@@ -36,7 +36,7 @@ class NetworkVerificationViewModel extends ChangeNotifier {
           const response = 201;
 
           if (response == 201) {
-            String wifiName = await NetworkUtils.initNetworkInfo() ?? 'No wifi';
+            String wifiName = await NetworkUtils.initNetworkInfo();
             developer.log('Connected to WiFi: $wifiName');
             final startedWorkingTime =
                 DateTime.now(); // Capture the current time
@@ -72,7 +72,7 @@ class NetworkVerificationViewModel extends ChangeNotifier {
                           context.pushNamed(
                             'start_working',
                             extra: {
-                              'wifiName': wifiName.toLowerCase(),
+                              'wifiName': wifiName,
                               'startedWorkingTime': startedWorkingTime,
                               //'workMode': WorkMode.starting
                             },

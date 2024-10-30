@@ -38,15 +38,6 @@ class _LastWorkingDayModalContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<WorkingHourViewModel>();
-    final now = TimeOfDay.now();
-    final selectedTime = viewModel.selectedTime;
-
-    final currentMinutes = now.hour * 60 + now.minute;
-    final selectedMinutes = selectedTime.hour * 60 + selectedTime.minute;
-    final diffMinutes = selectedMinutes - currentMinutes;
-    final hours = diffMinutes ~/ 60;
-    final minutes = diffMinutes % 60;
-
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
