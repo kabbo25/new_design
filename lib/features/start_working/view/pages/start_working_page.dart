@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:new_design/features/edit_working_hour/view/pages/last_working_day_modal.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/view/widgets/bottom_gradient.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
@@ -48,7 +49,7 @@ class StartWorkingView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: WorkingStatusCard(
                       startWorkingHour: viewModel.startWorkingHour,
-                      onEdit: () => () {},
+                      onEdit: () => _showStartWorking(context),
                     ),
                   ),
                   const Spacer(),
@@ -101,4 +102,23 @@ class StartWorkingView extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showStartWorking(BuildContext context) {
+  developer.log('calling modal');
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => TimePickerModal(
+      title: 'Edit  your entry time',
+      editTimeLabel: 'Edit your entry time here:',
+      initialTime: const TimeOfDay(hour: 15, minute: 0),
+      showWorkingHourSelector: false,
+      onSave: (newTime) {
+        developer.log('calling');
+        // Handle save
+      },
+    ),
+  );
 }
