@@ -101,13 +101,6 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
         Expanded(
           child: _buildHourWheel(),
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 0),
-          child: Text(
-            ':',
-            style: AppTextStyles.heading2,
-          ),
-        ),
         Expanded(
           child: _buildMinuteWheel(),
         ),
