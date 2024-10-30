@@ -59,7 +59,12 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
   Future<void> _provideFeedback() async {
     if (widget.enableSound) {
       try {
-        _audioPlayer.seek(Duration(milliseconds: 500));
+        await _audioPlayer.setVolume(0.03);
+        await _audioPlayer.seek(const Duration(milliseconds: 400));
+        await _audioPlayer.setClip(
+          start: const Duration(milliseconds: 700),
+          end: const Duration(milliseconds: 900),
+        );
         _audioPlayer.play();
       } catch (e) {
         debugPrint('Error playing sound: $e');
@@ -95,18 +100,41 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
       children: [
-        Expanded(
-          child: _buildHourWheel(),
+        // Selection box overlay
+        Positioned.fill(
+          child: Center(
+            child: Container(
+              height: widget.itemExtent,
+              decoration: BoxDecoration(
+                color: AppPalette.textSecondary.withOpacity(0.05),
+              ),
+            ),
+          ),
         ),
-        Expanded(
-          child: _buildMinuteWheel(),
-        ),
-        SizedBox(
-          width: 80,
-          child: _buildPeriodWheel(),
+        // Time selector wheels
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: _buildHourWheel(),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 0),
+              child: Text(
+                ':',
+                style: AppTextStyles.heading2,
+              ),
+            ),
+            Expanded(
+              child: _buildMinuteWheel(),
+            ),
+            SizedBox(
+              width: 80,
+              child: _buildPeriodWheel(),
+            ),
+          ],
         ),
       ],
     );
@@ -124,19 +152,12 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
       );
     }
 
-    // Calculate the relative position from the center
     final itemPosition = index / totalItems;
     final distanceFromCenter = (itemPosition - 0.5).abs() * 2;
-
-    // Calculate the transformation angle based on position
     final angle = (distanceFromCenter * math.pi / 4.5);
-
-    // Create perspective transform matrix
     final transform = Matrix4.identity()
-      ..setEntry(3, 2, 0.001) // perspective
+      ..setEntry(3, 2, 0.001)
       ..rotateX(angle);
-
-    // Calculate opacity based on distance from center
     final opacity = 1.0 - (distanceFromCenter * 0.6);
 
     return Transform(
@@ -155,19 +176,11 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
   }
 
   Widget _buildHourWheel() {
-    // Generate list with padding items for circular effect
     List<String> hours = [
       ...List.generate(
-          3,
-          (index) => (12 - (2 - index))
-              .toString()
-              .padLeft(2, '0')), // Add 10,11,12 before 1
-      ...List.generate(
-          12, (index) => (index + 1).toString().padLeft(2, '0')), // 1-12
-      ...List.generate(
-          3,
-          (index) =>
-              (index + 1).toString().padLeft(2, '0')), // Add 1,2,3 after 12
+          3, (index) => (12 - (2 - index)).toString().padLeft(2, '0')),
+      ...List.generate(12, (index) => (index + 1).toString().padLeft(2, '0')),
+      ...List.generate(3, (index) => (index + 1).toString().padLeft(2, '0')),
     ];
 
     final initialIndex = widget.initialTime.hourOfPeriod == 12
@@ -181,13 +194,14 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
       physics: const FixedExtentScrollPhysics(),
       controller: FixedExtentScrollController(initialItem: initialIndex),
       onSelectedItemChanged: (index) {
-        final adjustedIndex = index - 2; // Adjust for padding items
-        final hour = ((adjustedIndex - 1) % 12) + 1; // Convert to 1-12 range
+        final adjustedIndex = index - 2;
+        final hour = ((adjustedIndex - 1) % 12) + 1;
         final isPM = widget.initialTime.period == DayPeriod.pm;
         final actualHour =
             isPM ? (hour == 12 ? 12 : hour + 12) : (hour == 12 ? 0 : hour);
         widget.onSelectedTimeChanged(
             TimeOfDay(hour: actualHour, minute: widget.initialTime.minute));
+        _provideFeedback();
       },
       childDelegate: ListWheelChildLoopingListDelegate(
         children: hours.map((hour) {
@@ -221,8 +235,8 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
 
     return ListWheelScrollView.useDelegate(
       itemExtent: widget.itemExtent,
-      diameterRatio: 3.0,
-      perspective: 0.003,
+      diameterRatio: 2.0,
+      perspective: 0.005,
       physics: const FixedExtentScrollPhysics(),
       controller: FixedExtentScrollController(initialItem: initialIndex),
       onSelectedItemChanged: (index) {
@@ -240,13 +254,18 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
           final minute = minutes[index];
           final parsedMinute = int.parse(minute) % 60;
           final isSelected = parsedMinute == widget.initialTime.minute;
-          return _buildWheelItem(
-            parsedMinute.toString().padLeft(2, '0'),
-            isSelected,
-            index,
-            minutes.length,
+          return Container(
+            alignment: Alignment.center,
+            child: Text(
+              minute,
+              style: isSelected
+                  ? AppTextStyles.heading2
+                  : AppTextStyles.subtitle1.copyWith(
+                      color: AppPalette.textSecondary.withOpacity(0.5),
+                    ),
+            ),
           );
-        }),
+        }).toList(),
       ),
     );
   }
@@ -269,6 +288,7 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
           hour: newHour == 24 ? 0 : newHour,
           minute: widget.initialTime.minute,
         ));
+        _provideFeedback();
       },
       children: periods.map((period) {
         final isSelected =
