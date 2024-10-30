@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
-import 'package:new_design/features/edit_working_hour/view/widgets/time_type_selector.dart';
 import 'package:new_design/features/edit_working_hour/viewmodel/working_hour_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -48,25 +47,25 @@ class _LastWorkingDayModalContent extends StatelessWidget {
         children: [
           _buildHeader(),
           //const Gap(24),
-          TimeTypeSelector(
-            isStartTime: viewModel.isStartTime,
-            onStartTimeSelected: () => viewModel.toggleTimeType(),
-            onEndTimeSelected: () => viewModel.toggleTimeType(),
-          ),
-          const Gap(12),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                viewModel.isStartTime
-                    ? 'Edit your entry time here:'
-                    : 'Edit your exit time here:',
-                style:
-                    AppTextStyles.title.copyWith(fontWeight: FontWeight.w400),
-              ),
-            ),
-          ),
+          // TimeTypeSelector(
+          //   isStartTime: viewModel.isStartTime,
+          //   onStartTimeSelected: () => viewModel.toggleTimeType(),
+          //   onEndTimeSelected: () => viewModel.toggleTimeType(),
+          // ),
+          // const Gap(12),
+          // Align(
+          //   alignment: Alignment.centerLeft,
+          //   child: Padding(
+          //     padding: const EdgeInsets.symmetric(horizontal: 16),
+          //     child: Text(
+          //       viewModel.isStartTime
+          //           ? 'Edit your entry time here:'
+          //           : 'Edit your exit time here:',
+          //       style:
+          //           AppTextStyles.title.copyWith(fontWeight: FontWeight.w400),
+          //     ),
+          //   ),
+          // ),
           const Gap(8),
           _buildTimeWheel(context, viewModel),
           const Gap(32),
