@@ -55,7 +55,7 @@ class TimeTypeSelector extends StatelessWidget {
             style: isSelected
                 ? AppTextStyles.clock
                 : AppTextStyles.clock.copyWith(
-                    color: AppPalette.textSecondary.withOpacity(0.6),
+                    color: AppPalette.textSecondary.withOpacity(0.25),
                   ),
           ),
         ),

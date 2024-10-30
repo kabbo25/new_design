@@ -7,31 +7,54 @@ import 'package:new_design/features/edit_working_hour/viewmodel/working_hour_vie
 import 'package:provider/provider.dart';
 
 import '../widgets/time_selector_wheel.dart';
+import '../widgets/time_type_selector.dart';
 
-class LastWorkingDayModal extends StatelessWidget {
+class TimePickerModal extends StatelessWidget {
+  final String title;
+  final String editTimeLabel;
   final TimeOfDay? initialTime;
   final Function(TimeOfDay) onSave;
+  final bool showWorkingHourSelector;
+  final String saveButtonText;
 
-  const LastWorkingDayModal({
+  const TimePickerModal({
     super.key,
+    required this.title,
+    required this.editTimeLabel,
     this.initialTime,
     required this.onSave,
+    this.showWorkingHourSelector = false,
+    this.saveButtonText = 'Save',
   });
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => WorkingHourViewModel(initialTime: initialTime),
-      child: _LastWorkingDayModalContent(onSave: onSave),
+      child: _TimePickerModalContent(
+        title: title,
+        editTimeLabel: editTimeLabel,
+        onSave: onSave,
+        showWorkingHourSelector: showWorkingHourSelector,
+        saveButtonText: saveButtonText,
+      ),
     );
   }
 }
 
-class _LastWorkingDayModalContent extends StatelessWidget {
+class _TimePickerModalContent extends StatelessWidget {
+  final String title;
+  final String editTimeLabel;
   final Function(TimeOfDay) onSave;
+  final bool showWorkingHourSelector;
+  final String saveButtonText;
 
-  const _LastWorkingDayModalContent({
+  const _TimePickerModalContent({
+    required this.title,
+    required this.editTimeLabel,
     required this.onSave,
+    required this.showWorkingHourSelector,
+    required this.saveButtonText,
   });
 
   @override
@@ -46,31 +69,33 @@ class _LastWorkingDayModalContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildHeader(),
-          //const Gap(24),
-          // TimeTypeSelector(
-          //   isStartTime: viewModel.isStartTime,
-          //   onStartTimeSelected: () => viewModel.toggleTimeType(),
-          //   onEndTimeSelected: () => viewModel.toggleTimeType(),
-          // ),
-          // const Gap(12),
-          // Align(
-          //   alignment: Alignment.centerLeft,
-          //   child: Padding(
-          //     padding: const EdgeInsets.symmetric(horizontal: 16),
-          //     child: Text(
-          //       viewModel.isStartTime
-          //           ? 'Edit your entry time here:'
-          //           : 'Edit your exit time here:',
-          //       style:
-          //           AppTextStyles.title.copyWith(fontWeight: FontWeight.w400),
-          //     ),
-          //   ),
-          // ),
+          if (showWorkingHourSelector) ...[
+            //const Gap(24),
+            TimeTypeSelector(
+              isStartTime: viewModel.isStartTime,
+              onStartTimeSelected: () => viewModel.toggleTimeType(),
+              onEndTimeSelected: () => viewModel.toggleTimeType(),
+            ),
+          ],
+          const Gap(12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                viewModel.isStartTime
+                    ? editTimeLabel
+                    : 'Edit your exit time here:',
+                style:
+                    AppTextStyles.title.copyWith(fontWeight: FontWeight.w400),
+              ),
+            ),
+          ),
           const Gap(8),
           _buildTimeWheel(context, viewModel),
-          const Gap(32),
+          const Gap(12),
           _buildSaveButton(context, viewModel),
-          const Gap(16),
+          const Gap(20),
         ],
       ),
     );
@@ -88,9 +113,9 @@ class _LastWorkingDayModalContent extends StatelessWidget {
           ),
         ),
       ),
-      child: const Center(
+      child: Center(
         child: Text(
-          'Edit last working day',
+          title,
           style: AppTextStyles.heading2,
         ),
       ),
@@ -101,11 +126,6 @@ class _LastWorkingDayModalContent extends StatelessWidget {
     return Container(
       height: 160,
       margin: const EdgeInsets.symmetric(horizontal: 100),
-      // decoration: BoxDecoration(
-      //   color: AppPalette.textSecondary.withOpacity(0.1),
-      //   borderRadius: BorderRadius.circular(12),
-      // ),
-
       child: TimeSelectorWheel(
         initialTime: viewModel.selectedTime,
         enableSound: true,
@@ -134,7 +154,7 @@ class _LastWorkingDayModalContent extends StatelessWidget {
           },
           style: AppButtonStyles.elevatedButton,
           child: Text(
-            'Save',
+            saveButtonText,
             style:
                 AppTextStyles.buttonText.copyWith(color: AppPalette.background),
           ),

@@ -60,6 +60,7 @@ class _TimeSelectorWheelState extends State<TimeSelectorWheel> {
           height: widget.itemExtent,
           decoration: BoxDecoration(
             color: AppPalette.textSecondary.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),
