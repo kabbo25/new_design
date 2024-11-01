@@ -78,11 +78,13 @@ void _showEditTimeModal(BuildContext context) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) => LastWorkingDayModal(
-      initialTime: TimeOfDay.now(),
-      onSave: (TimeOfDay selectedTime) {
-        context.read<AttendanceViewModel>().updateLastWorkingDay(selectedTime);
-        Navigator.pop(context);
+    builder: (context) => TimePickerModal(
+      title: 'Edit Working Hours',
+      editTimeLabel: 'Edit your entry time here:',
+      initialTime: const TimeOfDay(hour: 15, minute: 0),
+      showWorkingHourSelector: true,
+      onSave: (newTime) {
+        // Handle save
       },
     ),
   );

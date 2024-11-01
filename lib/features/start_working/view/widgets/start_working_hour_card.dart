@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/start_working/model/start_working_hour.dart';
 import 'package:new_design/generated/assets.dart';
@@ -55,16 +56,12 @@ class WorkingStatusCard extends StatelessWidget {
               children: [
                 SvgPicture.asset(
                   Assets.svgsEdit,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.blue,
-                    BlendMode.srcIn,
-                  ),
                 ),
                 const Gap(8),
                 const Text(
                   'Edit',
                   style: TextStyle(
-                    color: Colors.blue,
+                    color: AppPalette.primary,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),

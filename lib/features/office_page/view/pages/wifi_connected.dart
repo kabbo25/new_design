@@ -85,16 +85,12 @@ class _NetworkConfirmationModalState extends State<NetworkConfirmationModal> {
             ),
           ),
           //const Gap(16),
-          SizedBox(
-            width: 120,
-            //height: 50,
-            child: Text(
-              widget.wifiName,
-              textAlign: TextAlign.left,
-              style: AppTextStyles.title,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
+          Text(
+            widget.wifiName,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.title,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
           ),
           // const Gap(24),
           Text(

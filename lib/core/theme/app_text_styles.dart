@@ -36,6 +36,13 @@ class AppTextStyles {
     color: AppPalette.primary,
   );
 
+  static const TextStyle clock = TextStyle(
+    fontSize: 17.5,
+    fontWeight: FontWeight.w600,
+    height: 24 / 14,
+    color: AppPalette.textPrimary,
+  );
+
   // Single method to customize any text style
   static TextStyle customStyle(
     TextStyle baseStyle, {

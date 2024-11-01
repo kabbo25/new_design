@@ -24,7 +24,7 @@ class TimeTypeSelector extends StatelessWidget {
           isSelected: isStartTime,
           onTap: onStartTimeSelected,
         ),
-        const SizedBox(width: 12),
+        //const SizedBox(width: 12),
         _buildTypeButton(
           title: 'Finished at',
           isSelected: !isStartTime,
@@ -48,20 +48,15 @@ class TimeTypeSelector extends StatelessWidget {
             color: isSelected
                 ? AppPalette.background
                 : AppPalette.textSecondary.withOpacity(0.1),
-            border: Border.all(
-              color: isSelected
-                  ? AppPalette.background
-                  : AppPalette.textSecondary.withOpacity(0.2),
-              width: 1,
-            ),
           ),
           child: Text(
             title,
             textAlign: TextAlign.center,
             style: isSelected
-                ? AppTextStyles.subtitle1.copyWith(fontWeight: FontWeight.bold)
-                : AppTextStyles.subtitle1
-                    .copyWith(color: AppPalette.textSecondary),
+                ? AppTextStyles.clock
+                : AppTextStyles.clock.copyWith(
+                    color: AppPalette.textSecondary.withOpacity(0.25),
+                  ),
           ),
         ),
       ),

@@ -2,8 +2,9 @@
 class Assets {
   Assets._();
 
+  static const String assetsAudioTick = 'assets/audio/tick.wav';
   static const String assetsSvgsOffice = 'assets/svgs/office.svg';
-  static const String audioTick = 'assets/audio/tick.wav';
+  static const String audioTick = 'assets/audio/tick.mp3';
   static const String gifArcInstaller = 'assets/gif/ArcInstaller.exe';
   static const String gifLocationLoading = 'assets/gif/location_loading.gif';
   static const String gifWifiConnected = 'assets/gif/wifi_connected.gif';

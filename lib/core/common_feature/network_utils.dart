@@ -10,8 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 class NetworkUtils {
   static final NetworkInfo _networkInfo = NetworkInfo();
 
-  static Future<String?> initNetworkInfo() async {
-    // ... (implementation of _initNetworkInfo method)
+  static Future<String> initNetworkInfo() async {
     String? wifiName;
 
     try {
@@ -30,8 +29,7 @@ class NetworkUtils {
       developer.log('Failed to get Wifi Name', error: e);
       wifiName = 'Failed to get Wifi Name';
     }
-    return '''
-      $wifiName
-    ''';
+
+    return wifiName ?? 'No wifi'; // Using null-coalescing operator
   }
 }
