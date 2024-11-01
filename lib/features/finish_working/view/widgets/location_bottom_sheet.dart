@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:new_design/core/theme/app_button_styles.dart';
 import 'package:new_design/core/theme/app_decorations.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
@@ -29,6 +28,8 @@ class LocationsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController scrollController = ScrollController();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 24),
       decoration: const BoxDecoration(
@@ -48,80 +49,112 @@ class LocationsBottomSheet extends StatelessWidget {
           const Gap(12),
           AppDecorations.modalDivider,
           const Gap(12),
-          ...meetings.map(
-            (meeting) => GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        meeting.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on_outlined,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                meeting.location,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            style: AppButtonStyles.textButton,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SvgPicture.asset(
-                                  Assets.svgsEdit,
-                                ),
-                                const Gap(8),
-                                Text(
-                                  'Edit',
-                                  style: AppTextStyles.customStyle(
-                                    AppTextStyles.subtitle2,
-                                    color: AppPalette.primary,
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.25,
+            ),
+            child: Scrollbar(
+              controller: scrollController,
+              thickness: 4,
+              radius: const Radius.circular(2),
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  children: meetings
+                      .map(
+                        (meeting) => GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    meeting.title,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Wrap the location row in Expanded
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Icon(
+                                              Icons.location_on_outlined,
+                                              size: 16,
+                                              color: Colors.grey,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            // Wrap the location text in Expanded
+                                            Expanded(
+                                              child: Text(
+                                                meeting.location,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.grey,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 3,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            SvgPicture.asset(
+                                              Assets.svgsEdit,
+                                            ),
+                                            const Gap(8),
+                                            Text(
+                                              'Edit',
+                                              style: AppTextStyles.customStyle(
+                                                AppTextStyles.subtitle2,
+                                                color: AppPalette.primary,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 22.0),
+                                    child: Text(
+                                      meeting.time,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                        child: Text(
-                          meeting.time,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      )
+                      .toList(),
                 ),
               ),
             ),
@@ -154,6 +187,16 @@ class MyLocationsCard extends StatelessWidget {
     this.onLocationSelected,
   });
   final meetings = [
+    MeetingLocation(
+      title: 'Requirement gathering IPEMIS',
+      location: '36 B, MJ road, Shershah Colony fgdgdg sgfggdfg gdfgdfg',
+      time: '11:00 am',
+    ),
+    MeetingLocation(
+      title: 'Requirement gathering IPEMIS',
+      location: '36 B, MJ road, Shershah Colony',
+      time: '11:00 am',
+    ),
     MeetingLocation(
       title: 'Requirement gathering IPEMIS',
       location: '36 B, MJ road, Shershah Colony',
