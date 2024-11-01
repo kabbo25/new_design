@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/features/start_page/model/background_config.dart';
 import 'package:new_design/features/start_working/model/start_working_hour.dart';
 import 'package:new_design/features/start_working/model/start_working_location.dart';
 
 class StartWorkingViewModel extends ChangeNotifier {
-  BackgroundConfig get backgroundConfig => const BackgroundConfig(
+  BackgroundConfig get backgroundConfig => BackgroundConfig(
         gradientColors: [
-          Color(0xCCB8D3FB),
-          Color(0x80FFFFFF),
+          const Color(0xFFFFFFFF).withOpacity(1), // White
+          const Color(0xFFB8D3FB).withOpacity(1), // Light blue
         ],
-        gradientBegin: Alignment.bottomLeft,
-        gradientEnd: Alignment.topCenter,
-        bottomColor: Color(0xFFEEF4FF),
-        glowColor: Color(0xFF2D68FE),
+        gradientBegin: Alignment.topCenter,
+        gradientEnd: Alignment.bottomCenter,
+        bottomColor: AppPalette.background,
+        glowColor: AppPalette.secondary, // Yellow color
         glowOpacity: 0.8,
       );
 

@@ -15,7 +15,11 @@ class AppDecorations {
       ),
     ],
   );
-
+  static Container modalDivider = Container(
+    width: double.infinity,
+    height: 2,
+    color: const Color(0XFFE8E8E8),
+  );
   static BoxDecoration borderDecoration = BoxDecoration(
     color: AppPalette.background,
     borderRadius: BorderRadius.circular(12),

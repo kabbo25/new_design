@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
+import 'package:new_design/features/edit_working_hour/viewmodel/working_hour_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-import '../../viewmodel/working_hour_viewmodel.dart';
 import '../widgets/time_selector_wheel.dart';
 import '../widgets/time_type_selector.dart';
 
@@ -37,6 +37,14 @@ class _LastWorkingDayModalContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<WorkingHourViewModel>();
+    final now = TimeOfDay.now();
+    final selectedTime = viewModel.selectedTime;
+
+    final currentMinutes = now.hour * 60 + now.minute;
+    final selectedMinutes = selectedTime.hour * 60 + selectedTime.minute;
+    final diffMinutes = selectedMinutes - currentMinutes;
+    final hours = diffMinutes ~/ 60;
+    final minutes = diffMinutes % 60;
 
     return Container(
       decoration: const BoxDecoration(
@@ -47,6 +55,14 @@ class _LastWorkingDayModalContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildHeader(),
+          const Gap(16),
+          Text(
+            'In ${hours}hrs ${minutes}min',
+            style: AppTextStyles.subtitle1.copyWith(
+              color: AppPalette.textSecondary,
+            ),
+          ),
+          const Gap(24),
           TimeTypeSelector(
             isStartTime: viewModel.isStartTime,
             onStartTimeSelected: () => viewModel.toggleTimeType(),
@@ -59,7 +75,8 @@ class _LastWorkingDayModalContent extends StatelessWidget {
                 : 'Edit your exit time here:',
             style: AppTextStyles.subtitle1,
           ),
-          _buildTimeWheels(context, viewModel),
+          const Gap(16),
+          _buildTimeWheel(context, viewModel),
           const Gap(32),
           _buildSaveButton(context, viewModel),
           const Gap(16),
@@ -89,41 +106,25 @@ class _LastWorkingDayModalContent extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeWheels(
-      BuildContext context, WorkingHourViewModel viewModel) {
-    return SizedBox(
-      height: 200,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TimeSelectorWheel(
-            items: List.generate(12, (i) => '${i + 1}'),
-            onSelectedItemChanged: (index) => viewModel.updateTime(
-              index + 1,
-              viewModel.selectedTime.minute,
-              viewModel.selectedTime.period == DayPeriod.pm,
-            ),
-            initialItem: viewModel.selectedTime.hourOfPeriod - 1,
-          ),
-          TimeSelectorWheel(
-            items: List.generate(12, (i) => (i * 5).toString().padLeft(2, '0')),
-            onSelectedItemChanged: (index) => viewModel.updateTime(
-              viewModel.selectedTime.hour,
-              index * 5,
-              viewModel.selectedTime.period == DayPeriod.pm,
-            ),
-            initialItem: viewModel.selectedTime.minute ~/ 5,
-          ),
-          TimeSelectorWheel(
-            items: const ['AM', 'PM'],
-            onSelectedItemChanged: (index) => viewModel.updateTime(
-              viewModel.selectedTime.hourOfPeriod,
-              viewModel.selectedTime.minute,
-              index == 1,
-            ),
-            initialItem: viewModel.selectedTime.period == DayPeriod.pm ? 1 : 0,
-          ),
-        ],
+  Widget _buildTimeWheel(BuildContext context, WorkingHourViewModel viewModel) {
+    return Container(
+      height: 160,
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppPalette.textSecondary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TimeSelectorWheel(
+        initialTime: viewModel.selectedTime,
+        enableSound: true,
+        enableVibration: true,
+        onSelectedTimeChanged: (TimeOfDay newTime) {
+          viewModel.updateTime(
+            newTime.hourOfPeriod,
+            newTime.minute,
+            newTime.period == DayPeriod.pm,
+          );
+        },
       ),
     );
   }
