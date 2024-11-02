@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_design/core/theme/app_palette.dart';
+import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/start_page/model/background_config.dart';
 
@@ -9,10 +10,27 @@ class FinishWorkingViewModel extends ChangeNotifier {
   String? get note => _note;
 
   late WorkingStatus _workingStatus;
-  final List<String> _locations = [
-    'Office',
-    'Home',
-    'Cafe'
+  final _locations = [
+    const OutsideMeeting(
+      title: 'Requirement gathering IPEMIS',
+      location: '36 B, MJ road, Shershah Colony fgdgdg sgfggdfg gdfgdfg',
+      time: '11:00 am',
+    ),
+    const OutsideMeeting(
+      title: 'Requirement gathering IPEMIS',
+      location: '36 B, MJ road, Shershah Colony',
+      time: '11:00 am',
+    ),
+    const OutsideMeeting(
+      title: 'Requirement gathering IPEMIS',
+      location: '36 B, MJ road, Shershah Colony',
+      time: '11:00 am',
+    ),
+    const OutsideMeeting(
+      title: 'Requirement gathering IPEMIS',
+      location: '36 B, MJ road, Shershah Colony',
+      time: '11:00 am',
+    ),
   ]; // Add your default locations here
   BackgroundConfig get backgroundConfig => BackgroundConfig(
         gradientColors: [
@@ -34,7 +52,7 @@ class FinishWorkingViewModel extends ChangeNotifier {
   }
 
   WorkingStatus get workingStatus => _workingStatus;
-  List<String> get locations => _locations;
+  List<OutsideMeeting> get locations => _locations;
 
   void updateLastWorkingDay(TimeOfDay newTime) {
     _workingStatus = WorkingStatus(
