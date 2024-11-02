@@ -82,13 +82,13 @@ class SlidableButtonState extends State<SlidableButton>
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final buttonWidth = constraints.maxWidth - 56.0;
+        final buttonWidth = constraints.maxWidth - 65.0;
 
         return Container(
-          height: 56,
+          height: 65,
           decoration: BoxDecoration(
             color: _isCompleted ? AppPalette.primary : Colors.white,
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(60),
             border: _isCompleted
                 ? null
                 : Border.all(color: AppPalette.primary.withOpacity(0.1)),

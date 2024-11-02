@@ -60,14 +60,15 @@ class LocationVerificationViewModel extends ChangeNotifier {
 
       if (shouldProceed == true && navigatorContext.mounted) {
         developer.log('Properly popped, proceeding with location check');
-        await _handleFindLocation(navigatorContext);
+        await handleFindLocation(navigatorContext);
       }
     } catch (e) {
       developer.log('Location verification error: $e');
     }
   }
 
-  Future<void> _handleFindLocation(BuildContext context) async {
+  Future<void> handleFindLocation(BuildContext context,
+      {bool shouldNavigate = true}) async {
     try {
       if (!context.mounted) {
         developer.log('Context not mounted in _handleFindLocation');
@@ -118,19 +119,34 @@ class LocationVerificationViewModel extends ChangeNotifier {
                     developer
                         .log('Try Again pressed, restarting location check');
                     Navigator.pop(context);
-                    await _handleFindLocation(context);
+                    await handleFindLocation(context);
                   },
                   onNext: () {
                     developer.log('Next pressed, navigating to success page');
                     Navigator.pop(context);
                     if (context.mounted) {
-                      context.pushNamed(
-                        'start_working',
-                        extra: {
-                          //'wifiName': wifiName.toLowerCase(),
-                          //'startedWorkingTime': startedWorkingTime,
-                          //'workMode': WorkMode.starting
-                        },
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        builder: (context) => Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: OutsideMeetingLocationModal(
+                            location: fetchedAddress ?? 'no address found',
+                            onSave: (meetingPlace, meetingPurpose) {
+                              if (shouldNavigate) {
+                                context.pushNamed(
+                                  'outside_working',
+                                );
+                              } else {
+                                // Just close the modal if we're already on the outside_working page
+                                Navigator.pop(context);
+                              }
+                            },
+                          ),
+                        ),
                       );
                     }
                   },
@@ -152,7 +168,7 @@ class LocationVerificationViewModel extends ChangeNotifier {
             onTryAgain: () async {
               developer.log('Try Again pressed after error');
               Navigator.pop(context);
-              await _handleFindLocation(context);
+              await handleFindLocation(context);
             },
             onNext: () {
               developer.log('Next pressed after error');

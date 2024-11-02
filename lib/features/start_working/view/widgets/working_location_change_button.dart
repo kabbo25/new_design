@@ -26,7 +26,7 @@ class LocationOptionsSection extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withOpacity(0.3),
         borderRadius: BorderRadius.circular(60),
       ),
       child: Row(
