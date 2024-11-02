@@ -6,7 +6,7 @@ import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/view/widgets/add_note_modal.dart';
 import 'package:new_design/features/finish_working/view/widgets/bottom_gradient.dart';
 import 'package:new_design/features/finish_working/view/widgets/network_profile_bar.dart';
-import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list_card.dart';
+import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list_dropdown.dart';
 import 'package:new_design/features/finish_working/view/widgets/working_status_card.dart';
 import 'package:new_design/features/finish_working/viewmodel/finish_working_view_model.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';

@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
@@ -28,7 +30,9 @@ class OutsideMeetingListItem extends StatelessWidget {
           children: [
             Text(
               meeting.title,
-              style: AppTextStyles.title,
+              style: AppTextStyles.title.copyWith(
+                fontWeight: FontWeight.w400,
+              ),
             ),
             const SizedBox(height: 7),
             Row(
@@ -36,7 +40,7 @@ class OutsideMeetingListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: _buildLocationInfo(),
+                  child: _buildLocationInfo(context),
                 ),
                 _buildEditButton(),
               ],
@@ -46,7 +50,7 @@ class OutsideMeetingListItem extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 meeting.time,
-                style: AppTextStyles.title.copyWith(
+                style: AppTextStyles.subtitle2.copyWith(
                   color: AppPalette.textSecondary,
                 ),
               ),
@@ -57,38 +61,70 @@ class OutsideMeetingListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildLocationInfo() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      //mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(
-          Icons.location_on_outlined,
-          size: 16,
-          color: Colors.grey,
-        ),
-        const SizedBox(width: 4),
-        Expanded(
-          child: Text(
-            meeting.location,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 3,
+  Widget _buildLocationInfo(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final textSpan = TextSpan(
+          text: meeting.location,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
           ),
-        ),
-      ],
+        );
+
+        final textPainter = TextPainter(
+          text: textSpan,
+          maxLines: 1,
+          textDirection: TextDirection.ltr,
+        );
+
+        // Account for the icon and spacing in available width
+        final availableWidth =
+            constraints.maxWidth - 20; // 16 for icon + 4 for spacing
+        textPainter.layout(maxWidth: availableWidth);
+
+        final hasOverflow = textPainter.didExceedMaxLines;
+        developer.log(hasOverflow.toString());
+
+        return Row(
+          crossAxisAlignment: hasOverflow
+              ? CrossAxisAlignment.start
+              : CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: hasOverflow ? 2.0 : 0.0),
+              child: const Icon(
+                Icons.location_on_outlined,
+                size: 16,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                meeting.location,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+                key: ValueKey(
+                    'location_${hasOverflow ? 'overflow' : 'normal'}'), // For testing
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildEditButton() {
     return TextButton(
       style: TextButton.styleFrom(
-        padding: EdgeInsets.zero, // Remove padding
-        minimumSize: Size.zero, // Remove minimum size constraint
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Minimize tap target
+        padding: EdgeInsets.zero,
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       onPressed: () {},
       child: Row(

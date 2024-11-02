@@ -18,7 +18,7 @@ class OutsideMeetingList extends StatelessWidget {
     final ScrollController scrollController = ScrollController();
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24),
+      padding: const EdgeInsets.fromLTRB(0, 24, 0, 30),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
@@ -29,7 +29,6 @@ class OutsideMeetingList extends StatelessWidget {
         children: [
           _buildHeader(),
           _buildMeetingsList(scrollController, context),
-          // _buildBottomIndicator(context),
         ],
       ),
     );
@@ -40,13 +39,13 @@ class OutsideMeetingList extends StatelessWidget {
       children: [
         const Center(
           child: Text(
-            'Outside Meetings',
+            'My locations',
             style: AppTextStyles.heading2,
           ),
         ),
         const Gap(12),
         AppDecorations.modalDivider,
-        const Gap(12),
+        const Gap(24),
       ],
     );
   }
@@ -55,7 +54,7 @@ class OutsideMeetingList extends StatelessWidget {
       ScrollController scrollController, BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.2,
+        maxHeight: MediaQuery.of(context).size.height * 0.22,
       ),
       child: Scrollbar(
         controller: scrollController,
@@ -65,14 +64,28 @@ class OutsideMeetingList extends StatelessWidget {
         child: SingleChildScrollView(
           controller: scrollController,
           child: Column(
-            children: meetings
-                .map(
-                  (meeting) => OutsideMeetingListItem(
+            children: List.generate(meetings.length, (index) {
+              final meeting = meetings[index];
+              final isLast = index == meetings.length - 1;
+
+              return Column(
+                children: [
+                  OutsideMeetingListItem(
                     meeting: meeting,
                     onTap: () => Navigator.pop(context),
                   ),
-                )
-                .toList(),
+                  if (!isLast)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                      child: Container(
+                        width: double.infinity,
+                        height: 1,
+                        color: const Color(0XFFE8E8E8).withOpacity(0.5),
+                      ),
+                    ),
+                ],
+              );
+            }),
           ),
         ),
       ),
