@@ -8,7 +8,7 @@ class AppPalette {
   static const Color textPrimary = Colors.black;
   static const Color textSecondary = Color(0xFF757575);
   static const Color success = Color(0xFF4CAF50);
-
+  static const Color bottomRight = Color.fromARGB(255, 150, 188, 245);
   // Gradients
   static const LinearGradient backgroundGradient = LinearGradient(
     colors: [

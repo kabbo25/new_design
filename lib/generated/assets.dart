@@ -5,7 +5,6 @@ class Assets {
   static const String assetsAudioTick = 'assets/audio/tick.wav';
   static const String assetsSvgsOffice = 'assets/svgs/office.svg';
   static const String audioTick = 'assets/audio/tick.mp3';
-  static const String gifArcInstaller = 'assets/gif/ArcInstaller.exe';
   static const String gifLocationLoading = 'assets/gif/location_loading.gif';
   static const String gifWifiConnected = 'assets/gif/wifi_connected.gif';
   static const String jpgProfilePic = 'assets/jpg/profile_pic.jpg';
@@ -24,6 +23,7 @@ class Assets {
   static const String svgsConvert = 'assets/svgs/convert.svg';
   static const String svgsCrossSign = 'assets/svgs/cross_sign.svg';
   static const String svgsEdit = 'assets/svgs/edit.svg';
+  static const String svgsFindMyLocation = 'assets/svgs/find_my_location.svg';
   static const String svgsHome = 'assets/svgs/Home.svg';
   static const String svgsMarker04 = 'assets/svgs/marker-04.svg';
   static const String svgsOffice = 'assets/svgs/office.svg';
