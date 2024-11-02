@@ -28,12 +28,9 @@ class OutsideMeetingListItem extends StatelessWidget {
           children: [
             Text(
               meeting.title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppTextStyles.title,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 7),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,13 +41,13 @@ class OutsideMeetingListItem extends StatelessWidget {
                 _buildEditButton(),
               ],
             ),
+            const Gap(5),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 meeting.time,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
+                style: AppTextStyles.title.copyWith(
+                  color: AppPalette.textSecondary,
                 ),
               ),
             ),
@@ -62,7 +59,8 @@ class OutsideMeetingListItem extends StatelessWidget {
 
   Widget _buildLocationInfo() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      //mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Icon(
           Icons.location_on_outlined,
@@ -87,6 +85,11 @@ class OutsideMeetingListItem extends StatelessWidget {
 
   Widget _buildEditButton() {
     return TextButton(
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero, // Remove padding
+        minimumSize: Size.zero, // Remove minimum size constraint
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Minimize tap target
+      ),
       onPressed: () {},
       child: Row(
         mainAxisSize: MainAxisSize.min,

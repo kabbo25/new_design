@@ -13,8 +13,6 @@ class OutsideMeetingsCard extends StatelessWidget {
   });
 
   void _showOutsideMeetingsList(BuildContext context) {
-   
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -44,7 +42,7 @@ class OutsideMeetingsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Outside Meetings',
+                'My Locations',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,

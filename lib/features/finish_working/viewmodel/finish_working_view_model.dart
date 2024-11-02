@@ -13,23 +13,23 @@ class FinishWorkingViewModel extends ChangeNotifier {
   final _locations = [
     const OutsideMeeting(
       title: 'Requirement gathering IPEMIS',
-      location: '36 B, MJ road, Shershah Colony fgdgdg sgfggdfg gdfgdfg',
+      location: '36 B, MJ road, Shershah Colony fjdsfkasfdsak;fjs;jf;sjf;j',
       time: '11:00 am',
     ),
     const OutsideMeeting(
       title: 'Requirement gathering IPEMIS',
       location: '36 B, MJ road, Shershah Colony',
-      time: '11:00 am',
+      time: '12:00 am',
     ),
     const OutsideMeeting(
       title: 'Requirement gathering IPEMIS',
       location: '36 B, MJ road, Shershah Colony',
-      time: '11:00 am',
+      time: '1:00 am',
     ),
     const OutsideMeeting(
       title: 'Requirement gathering IPEMIS',
       location: '36 B, MJ road, Shershah Colony',
-      time: '11:00 am',
+      time: '2:00 am',
     ),
   ]; // Add your default locations here
   BackgroundConfig get backgroundConfig => BackgroundConfig(

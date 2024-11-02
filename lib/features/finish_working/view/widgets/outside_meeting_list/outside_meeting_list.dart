@@ -29,7 +29,7 @@ class OutsideMeetingList extends StatelessWidget {
         children: [
           _buildHeader(),
           _buildMeetingsList(scrollController, context),
-          _buildBottomIndicator(context),
+          // _buildBottomIndicator(context),
         ],
       ),
     );
@@ -51,10 +51,11 @@ class OutsideMeetingList extends StatelessWidget {
     );
   }
 
-  Widget _buildMeetingsList(ScrollController scrollController, BuildContext context) {
+  Widget _buildMeetingsList(
+      ScrollController scrollController, BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.25,
+        maxHeight: MediaQuery.of(context).size.height * 0.2,
       ),
       child: Scrollbar(
         controller: scrollController,
@@ -75,25 +76,6 @@ class OutsideMeetingList extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildBottomIndicator(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 20),
-        Container(
-          height: 5,
-          width: 50,
-          margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.4,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(2.5),
-          ),
-        ),
-      ],
     );
   }
 }
