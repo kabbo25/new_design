@@ -1,15 +1,12 @@
-import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:new_design/core/common_feature/location_fetching.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/office_page/model/location_verification_state.dart';
-import 'package:new_design/features/office_page/view/pages/location_found_modal.dart';
-import 'package:new_design/features/office_page/view/pages/location_modal.dart';
-import 'package:new_design/features/office_page/view/widgets/location_loading_modal.dart';
-import 'package:new_design/features/outside_office/view/widgets/outside_meeting_location_modal.dart';
+import 'package:new_design/features/office_page/services/location_service.dart';
+import 'package:new_design/features/office_page/services/modal_manager.dart';
+
 
 class LocationVerificationViewModel extends ChangeNotifier {
   LocationVerificationState _state = LocationVerificationState();
@@ -44,47 +41,31 @@ class LocationVerificationViewModel extends ChangeNotifier {
       Navigator.pop(context);
 
       developer.log('Showing location modal');
-
-      bool? shouldProceed = await showModalBottomSheet<bool>(
-        context: navigatorContext,
-        backgroundColor: Colors.transparent,
-        isDismissible: false,
-        builder: (context) => LocationModal(
-          isLoading: false,
-          onFindLocation: () {
-            developer.log('Find location pressed');
-            Navigator.pop(context, true);
-          },
-        ),
-      );
-
-      developer.log('Should proceed value: $shouldProceed');
+      bool? shouldProceed =
+          await ModalManager.showLocationVerificationModal(navigatorContext);
 
       if (shouldProceed == true && navigatorContext.mounted) {
         developer.log('Properly popped, proceeding with location check');
-        await _handleFindLocation(navigatorContext);
+        await handleFindLocation(navigatorContext);
       }
     } catch (e) {
       developer.log('Location verification error: $e');
     }
   }
 
-  Future<void> _handleFindLocation(BuildContext context) async {
+  Future<void> handleFindLocation(BuildContext context,
+      {bool shouldNavigate = true}) async {
+    if (!context.mounted) {
+      developer.log('Context not mounted in handleFindLocation');
+      return;
+    }
+
     try {
-      if (!context.mounted) {
-        developer.log('Context not mounted in _handleFindLocation');
-        return;
-      }
-
       developer.log('showing loading location');
-
-      // Start fetching location immediately
-      final Future<String> locationFuture = Locationservices.checkLocation();
-
-      // Track if location has been fetched
       String? fetchedAddress;
 
-      // Listen to the location future without awaiting
+      final Future<String> locationFuture = Locationservices.checkLocation();
+
       locationFuture.then((address) {
         developer.log('Location fetched: $address');
         fetchedAddress = address;
@@ -93,91 +74,60 @@ class LocationVerificationViewModel extends ChangeNotifier {
           isLocationFound: true,
           address: address,
         ));
-      }).catchError((e) {
-        developer.log('Error fetching location: $e');
-        fetchedAddress = 'Location not found. Please try again.';
       });
 
-      // Show loading modal while location is being fetched
-      await showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        isDismissible: false,
-        builder: (context) => LoadingModal(
-          onDismissed: () async {
-            // Wait for location if not yet fetched
-            fetchedAddress ??= await locationFuture;
+      await ModalManager.showLoadingModal(
+        context,
+        onDismissed: () async {
+          fetchedAddress ??= await locationFuture;
 
-            if (context.mounted) {
-              developer.log('Showing location confirmation modal');
-              await showModalBottomSheet(
-                context: context,
-                backgroundColor: Colors.transparent,
-                isDismissible: false,
-                builder: (context) => LocationConfirmationWrapper(
-                  address: fetchedAddress!,
-                  onTryAgain: () async {
-                    developer
-                        .log('Try Again pressed, restarting location check');
-                    Navigator.pop(context);
-                    await _handleFindLocation(context);
-                  },
-                  onNext: () {
-                    developer.log('Next pressed, navigating to success page');
-                    Navigator.pop(context);
-                    if (context.mounted) {
-                      showModalBottomSheet(
-                          context: context,
-                          backgroundColor: Colors.transparent,
-                          isScrollControlled: true,
-                          builder: (context) => Padding(
-                                padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom,
-                                ),
-                                child: OutsideMeetingLocationModal(
-                                  location: "36 B, MJ road, Shershah Colony",
-                                  onSave: (meetingPlace, meetingPurpose) {
-                                    if (context.mounted) {
-                                      context.pushNamed(
-                                        'finish_working',
-                                        extra: {
-                                          //'wifiName': wifiName.toLowerCase(),
-                                          //'startedWorkingTime': startedWorkingTime,
-                                          'workMode': WorkMode.ending,
-                                        },
-                                      );
-                                    }
-                                  },
-                                ),
-                              ));
-                    }
-                  },
-                ),
-              );
-            }
-          },
-        ),
+          if (context.mounted) {
+            await ModalManager.showLocationConfirmationModal(
+              context,
+              address: fetchedAddress!,
+              onTryAgain: () async {
+                developer.log('Try Again pressed, restarting location check');
+                Navigator.pop(context);
+                await handleFindLocation(context);
+              },
+              onNext: () {
+                developer.log('Next pressed, navigating to success page');
+                Navigator.pop(context);
+                if (context.mounted) {
+                  ModalManager.showOutsideMeetingModal(
+                    context,
+                    location: fetchedAddress ?? 'no address found',
+                    onSave: (meetingPlace, meetingPurpose) {
+                      OutsideLocationService.handleOutsideMeetingSave(
+                        context,
+                        fetchedAddress!,
+                        meetingPlace,
+                        meetingPurpose,
+                        shouldNavigate,
+                      );
+                    },
+                  );
+                }
+              },
+            );
+          }
+        },
       );
     } catch (e) {
-      developer.log('Error in _handleFindLocation: $e');
+      developer.log('Error in handleFindLocation: $e');
       if (context.mounted) {
-        await showModalBottomSheet(
-          context: context,
-          backgroundColor: Colors.transparent,
-          isDismissible: false,
-          builder: (context) => LocationConfirmationWrapper(
-            address: 'Location not found. Please try again.',
-            onTryAgain: () async {
-              developer.log('Try Again pressed after error');
-              Navigator.pop(context);
-              await _handleFindLocation(context);
-            },
-            onNext: () {
-              developer.log('Next pressed after error');
-              Navigator.pop(context);
-            },
-          ),
+        await ModalManager.showLocationConfirmationModal(
+          context,
+          address: 'Location not found. Please try again.',
+          onTryAgain: () async {
+            developer.log('Try Again pressed after error');
+            Navigator.pop(context);
+            await handleFindLocation(context);
+          },
+          onNext: () {
+            developer.log('Next pressed after error');
+            Navigator.pop(context);
+          },
         );
       }
     }

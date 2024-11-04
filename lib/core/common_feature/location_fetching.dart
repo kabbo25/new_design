@@ -32,9 +32,8 @@ class Locationservices {
     }
 
     try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      ).timeout(const Duration(seconds: 3), onTimeout: () {
+      Position position = await Geolocator.getCurrentPosition()
+          .timeout(const Duration(seconds: 3), onTimeout: () {
         throw TimeoutException('Location retrieval timed out');
       });
 
