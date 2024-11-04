@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -70,11 +71,23 @@ class OutsideMeetingView extends StatelessWidget {
                   const Gap(12),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: OutsideMeetingsCard(
-                      meetings: viewModel.locations,
-                      onLocationSelected: (location) {
-                        viewModel.updateLocations(location);
-                      },
+                    child: Stack(
+                      children: [
+                        OutsideMeetingsCard(
+                          meetings: viewModel.locations,
+                          onLocationSelected: (location) {
+                            viewModel.updateLocation(location);
+                          },
+                        ),
+                        if (viewModel.isLoading)
+                          const Positioned.fill(
+                            child: Center(
+                              child: SpinKitWave(
+                                color: AppPalette.textSecondary,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   const Spacer(),

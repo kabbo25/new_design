@@ -1,0 +1,12 @@
+import 'package:new_design/core/storage/shared_preference/shared_preferences_provider.dart';
+import 'package:new_design/features/finish_working/model/outside_meeting.dart';
+
+class MeetingSharedPrefsRepository
+    extends SharedPreferencesProvider<OutsideMeeting> {
+  @override
+  String get storageKey => 'meetings';
+
+  @override
+  OutsideMeeting fromJson(Map<String, dynamic> json) =>
+      OutsideMeeting.fromJson(json);
+}

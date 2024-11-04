@@ -1,10 +1,12 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list.dart';
 
 class OutsideMeetingsCard extends StatelessWidget {
   final List<OutsideMeeting> meetings;
-  final Function(String)? onLocationSelected;
+  final Function(OutsideMeeting)? onLocationSelected;
 
   const OutsideMeetingsCard({
     super.key,
@@ -24,7 +26,7 @@ class OutsideMeetingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isEnabled = meetings.isNotEmpty;
-
+    developer.log(isEnabled.toString());
     return GestureDetector(
       onTap: isEnabled ? () => _showOutsideMeetingsList(context) : null,
       child: Opacity(

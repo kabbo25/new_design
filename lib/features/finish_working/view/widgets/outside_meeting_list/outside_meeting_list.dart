@@ -21,7 +21,7 @@ class OutsideMeetingList extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 24, 0, 30),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        //borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -54,7 +54,7 @@ class OutsideMeetingList extends StatelessWidget {
       ScrollController scrollController, BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.22,
+        maxHeight: MediaQuery.of(context).size.height * 0.25,
       ),
       child: Scrollbar(
         controller: scrollController,
@@ -76,7 +76,7 @@ class OutsideMeetingList extends StatelessWidget {
                   ),
                   if (!isLast)
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
                       child: Container(
                         width: double.infinity,
                         height: 1,

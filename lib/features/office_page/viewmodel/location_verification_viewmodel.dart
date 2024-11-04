@@ -1,12 +1,10 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
-import 'package:new_design/core/common_feature/location_fetching.dart';
-import 'package:new_design/features/finish_working/model/working_status.dart';
+import 'package:new_design/core/servies/location_fetching.dart';
 import 'package:new_design/features/office_page/model/location_verification_state.dart';
 import 'package:new_design/features/office_page/services/location_service.dart';
 import 'package:new_design/features/office_page/services/modal_manager.dart';
-
 
 class LocationVerificationViewModel extends ChangeNotifier {
   LocationVerificationState _state = LocationVerificationState();

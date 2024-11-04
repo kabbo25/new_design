@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:new_design/core/common_feature/location_fetching.dart';
+import 'package:new_design/core/servies/location_fetching.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 import 'package:new_design/features/outside_office/view_model/outside_meeting_view_model.dart';
 import 'package:provider/provider.dart';
@@ -31,11 +31,11 @@ class OutsideLocationService {
         final now = TimeOfDay.now();
         final newMeeting = OutsideMeeting(
           title: meetingPurpose,
-          location: meetingPlace,
+          location: location,
           time:
               '${now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.period == DayPeriod.am ? 'am' : 'pm'}',
         );
-
+        print(newMeeting);
         // Get the ViewModel instance from a valid context
         final viewModel =
             Provider.of<OutsideMeetingViewModel>(context, listen: false);

@@ -23,15 +23,17 @@ class OutsideMeetingListItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              meeting.title,
-              style: AppTextStyles.title.copyWith(
-                fontWeight: FontWeight.w400,
+            Padding(
+              padding: const EdgeInsets.only(left: 4),
+              child: Text(
+                meeting.title,
+                style: AppTextStyles.title.copyWith(
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
             const SizedBox(height: 7),
