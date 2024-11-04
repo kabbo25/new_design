@@ -64,6 +64,16 @@ class OutsideMeetingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addLocation(OutsideMeeting meeting) {
+    try {
+      _locations.add(meeting);
+      notifyListeners();
+    } catch (e) {
+      print('Error adding location: $e');
+      // Handle error appropriately
+    }
+  }
+
   void updateLastWorkingDay(TimeOfDay newTime) {
     _startWorkingHour = StartWorkingHour(
       location: _startWorkingHour.location,
