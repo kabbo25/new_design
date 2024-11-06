@@ -24,7 +24,7 @@ class SQLiteProvider implements StorageProvider {
             title TEXT NOT NULL,
             location TEXT NOT NULL,
             time TEXT NOT NULL,
-            purpose TEXT
+            purpose TEXT NOT NULL,
           )
         ''');
       },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:new_design/core/common_feature/widgets/toastify.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
 import 'package:new_design/core/theme/app_decorations.dart';
 import 'package:new_design/core/theme/app_palette.dart';
@@ -140,6 +141,11 @@ class _OutsideMeetingLocationModal extends State<OutsideMeetingLocationModal> {
                             _meetingPurposeController.text,
                           );
                           Navigator.pop(context);
+                          ToastOverlay.show(
+                            context,
+                            message: "New Meeting Added Successfully",
+                            duration: const Duration(seconds: 3),
+                          );
                         },
                   style: AppButtonStyles.elevatedButton,
                   child: Text(

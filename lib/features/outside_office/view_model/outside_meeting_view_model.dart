@@ -94,7 +94,7 @@ class OutsideMeetingViewModel extends ChangeNotifier {
       _locations.addAll(meetings);
 
       // Clear the database after loading
-      await _repository.clear();
+      // await _repository.clear();
     } catch (e) {
       developer.log('Error loading meetings: $e');
     } finally {
@@ -121,8 +121,11 @@ class OutsideMeetingViewModel extends ChangeNotifier {
     try {
       await _repository.update(meeting);
       final index = _locations.indexWhere((m) => m.id == meeting.id);
+      developer.log('index is $index');
+      developer.log(meeting.toJson().toString());
       if (index != -1) {
         _locations[index] = meeting;
+
         notifyListeners();
       }
     } catch (e) {
