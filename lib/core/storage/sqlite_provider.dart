@@ -16,16 +16,22 @@ class SQLiteProvider implements StorageProvider {
     String path = join(await getDatabasesPath(), 'meetings.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (Database db, int version) async {
         await db.execute('''
           CREATE TABLE meetings(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT PRIMARY KEY,
             title TEXT NOT NULL,
             location TEXT NOT NULL,
-            time TEXT NOT NULL
+            time TEXT NOT NULL,
+            purpose TEXT
           )
         ''');
+      },
+      onUpgrade: (Database db, int oldVersion, int newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('ALTER TABLE meetings ADD COLUMN purpose TEXT');
+        }
       },
     );
   }
@@ -36,9 +42,11 @@ class SQLiteProvider implements StorageProvider {
     await db.insert(
       'meetings',
       {
+        'id': meeting.id,
         'title': meeting.title,
         'location': meeting.location,
         'time': meeting.time,
+        'purpose': meeting.purpose,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -48,12 +56,14 @@ class SQLiteProvider implements StorageProvider {
   Future<List<OutsideMeeting>> getMeetings() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('meetings');
-    
+
     return List.generate(maps.length, (i) {
       return OutsideMeeting(
+        id: maps[i]['id'],
         title: maps[i]['title'],
         location: maps[i]['location'],
         time: maps[i]['time'],
+        purpose: maps[i]['purpose'] ?? '',
       );
     });
   }
@@ -63,8 +73,8 @@ class SQLiteProvider implements StorageProvider {
     final db = await database;
     await db.delete(
       'meetings',
-      where: 'title = ? AND location = ? AND time = ?',
-      whereArgs: [meeting.title, meeting.location, meeting.time],
+      where: 'id = ?',
+      whereArgs: [meeting.id],
     );
   }
 
@@ -77,9 +87,16 @@ class SQLiteProvider implements StorageProvider {
         'title': meeting.title,
         'location': meeting.location,
         'time': meeting.time,
+        'purpose': meeting.purpose,
       },
-      where: 'title = ? AND location = ? AND time = ?',
-      whereArgs: [meeting.title, meeting.location, meeting.time],
+      where: 'id = ?',
+      whereArgs: [meeting.id],
     );
+  }
+
+  @override
+  Future<void> clearMeetings() async {
+    final db = await database;
+    await db.delete('meetings');
   }
 }

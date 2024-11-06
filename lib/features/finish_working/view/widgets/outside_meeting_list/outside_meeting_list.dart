@@ -4,6 +4,8 @@ import 'package:new_design/core/theme/app_decorations.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list_item.dart';
+import 'package:new_design/features/outside_office/view_model/outside_meeting_view_model.dart';
+import 'package:provider/provider.dart';
 
 class OutsideMeetingList extends StatelessWidget {
   final List<OutsideMeeting> meetings;
@@ -17,19 +19,27 @@ class OutsideMeetingList extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(0, 24, 0, 30),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        //borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
-          _buildMeetingsList(scrollController, context),
-        ],
+    return ChangeNotifierProvider(
+      create: (_) => OutsideMeetingViewModel(),
+      child: Builder(
+        builder: (context) {
+          final viewModel = context.watch<OutsideMeetingViewModel>();
+
+          return Container(
+            padding: const EdgeInsets.fromLTRB(0, 24, 0, 30),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(),
+                _buildMeetingsList(scrollController, context, viewModel),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -51,7 +61,10 @@ class OutsideMeetingList extends StatelessWidget {
   }
 
   Widget _buildMeetingsList(
-      ScrollController scrollController, BuildContext context) {
+    ScrollController scrollController,
+    BuildContext context,
+    OutsideMeetingViewModel viewModel,
+  ) {
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.25,
@@ -73,6 +86,12 @@ class OutsideMeetingList extends StatelessWidget {
                   OutsideMeetingListItem(
                     meeting: meeting,
                     onTap: () => Navigator.pop(context),
+                    onEdit: (updatedMeeting) async {
+                      await viewModel.updateLocation(updatedMeeting);
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
+                    },
                   ),
                   if (!isLast)
                     Padding(

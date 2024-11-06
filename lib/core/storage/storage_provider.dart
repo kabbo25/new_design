@@ -5,4 +5,5 @@ abstract class StorageProvider {
   Future<List<OutsideMeeting>> getMeetings();
   Future<void> deleteMeeting(OutsideMeeting meeting);
   Future<void> updateMeeting(OutsideMeeting meeting);
+  Future<void> clearMeetings();
 }

@@ -9,12 +9,16 @@ class OutsideMeetingLocationModal extends StatefulWidget {
   final String location;
   final Function(String, String) onSave;
   final bool isLoading;
+  final String? initialPlace;
+  final String? initialPurpose;
 
   const OutsideMeetingLocationModal({
     super.key,
     required this.location,
     required this.onSave,
     this.isLoading = false,
+    this.initialPlace,
+    this.initialPurpose,
   });
 
   @override
@@ -23,9 +27,17 @@ class OutsideMeetingLocationModal extends StatefulWidget {
 }
 
 class _OutsideMeetingLocationModal extends State<OutsideMeetingLocationModal> {
-  final TextEditingController _meetingPlaceController = TextEditingController();
-  final TextEditingController _meetingPurposeController =
-      TextEditingController();
+  late final TextEditingController _meetingPlaceController;
+  late final TextEditingController _meetingPurposeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _meetingPlaceController =
+        TextEditingController(text: widget.initialPlace ?? '');
+    _meetingPurposeController =
+        TextEditingController(text: widget.initialPurpose ?? '');
+  }
 
   @override
   void dispose() {

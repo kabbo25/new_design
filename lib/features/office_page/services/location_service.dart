@@ -34,6 +34,7 @@ class OutsideLocationService {
           location: location,
           time:
               '${now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.period == DayPeriod.am ? 'am' : 'pm'}',
+          purpose: meetingPurpose,
         );
         print(newMeeting);
         // Get the ViewModel instance from a valid context

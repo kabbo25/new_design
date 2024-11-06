@@ -92,6 +92,9 @@ class OutsideMeetingViewModel extends ChangeNotifier {
       final meetings = await _repository.getAll();
       _locations.clear();
       _locations.addAll(meetings);
+
+      // Clear the database after loading
+      await _repository.clear();
     } catch (e) {
       developer.log('Error loading meetings: $e');
     } finally {

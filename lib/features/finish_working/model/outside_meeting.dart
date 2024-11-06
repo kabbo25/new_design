@@ -7,12 +7,14 @@ class OutsideMeeting implements Storable {
   final String title;
   final String location;
   final String time;
+  final String purpose;
 
   OutsideMeeting({
     String? id,
     required this.title,
     required this.location,
     required this.time,
+    required this.purpose,
   }) : id = id ?? const Uuid().v4();
 
   @override
@@ -22,6 +24,7 @@ class OutsideMeeting implements Storable {
       'title': title,
       'location': location,
       'time': time,
+      'purpose': purpose,
     };
   }
 
@@ -31,6 +34,7 @@ class OutsideMeeting implements Storable {
       title: json['title'],
       location: json['location'],
       time: json['time'],
+      purpose: json['purpose'] ?? '',
     );
   }
 }

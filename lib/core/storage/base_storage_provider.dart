@@ -6,4 +6,5 @@ abstract class BaseStorageProvider<T extends Storable> {
   Future<void> delete(T item);
   Future<void> update(T item);
   Future<T?> getById(String id);
+  Future<void> clear();
 }

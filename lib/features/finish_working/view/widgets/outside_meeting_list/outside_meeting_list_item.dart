@@ -6,17 +6,44 @@ import 'package:gap/gap.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
+import 'package:new_design/features/outside_office/view/widgets/outside_meeting_location_modal.dart';
 import 'package:new_design/generated/assets.dart';
 
 class OutsideMeetingListItem extends StatelessWidget {
   final OutsideMeeting meeting;
   final VoidCallback onTap;
+  final Function(OutsideMeeting) onEdit;
 
   const OutsideMeetingListItem({
     super.key,
     required this.meeting,
     required this.onTap,
+    required this.onEdit,
   });
+
+  void _handleEdit(BuildContext context) {
+    developer.log('meeting purpose ${meeting.purpose} and ${meeting.title}');
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => OutsideMeetingLocationModal(
+        location: meeting.location,
+        initialPlace: meeting.title,
+        initialPurpose: meeting.purpose,
+        onSave: (place, purpose) {
+          final updatedMeeting = OutsideMeeting(
+            id: meeting.id,
+            title: place,
+            location: meeting.location,
+            purpose: purpose,
+            time: meeting.time,
+          );
+          onEdit(updatedMeeting);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +71,7 @@ class OutsideMeetingListItem extends StatelessWidget {
                 Expanded(
                   child: _buildLocationInfo(context),
                 ),
-                _buildEditButton(),
+                _buildEditButton(context),
               ],
             ),
             const Gap(5),
@@ -80,13 +107,10 @@ class OutsideMeetingListItem extends StatelessWidget {
           textDirection: TextDirection.ltr,
         );
 
-        // Account for the icon and spacing in available width
-        final availableWidth =
-            constraints.maxWidth - 20; // 16 for icon + 4 for spacing
+        final availableWidth = constraints.maxWidth - 20;
         textPainter.layout(maxWidth: availableWidth);
 
         final hasOverflow = textPainter.didExceedMaxLines;
-        developer.log(hasOverflow.toString());
 
         return Row(
           crossAxisAlignment: hasOverflow
@@ -111,8 +135,8 @@ class OutsideMeetingListItem extends StatelessWidget {
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 3,
-                key: ValueKey(
-                    'location_${hasOverflow ? 'overflow' : 'normal'}'), // For testing
+                key:
+                    ValueKey('location_${hasOverflow ? 'overflow' : 'normal'}'),
               ),
             ),
           ],
@@ -121,14 +145,14 @@ class OutsideMeetingListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildEditButton() {
+  Widget _buildEditButton(BuildContext context) {
     return TextButton(
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      onPressed: () {},
+      onPressed: () => _handleEdit(context),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
