@@ -104,7 +104,7 @@ class _ToastWidgetState extends State<ToastWidget>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Align(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.topCenter,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SlideTransition(
@@ -113,7 +113,7 @@ class _ToastWidgetState extends State<ToastWidget>
               opacity: _fadeAnimation,
               child: Material(
                 elevation: 4,
-                borderRadius: BorderRadius.circular(60),
+                borderRadius: BorderRadius.circular(8),
                 color: Colors.white, // Always white background
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 400),
