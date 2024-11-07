@@ -1,4 +1,3 @@
-// Toast implementation (previous code)
 import 'package:flutter/material.dart';
 
 class ToastOverlay {
@@ -9,7 +8,7 @@ class ToastOverlay {
     BuildContext context, {
     required String message,
     Duration duration = const Duration(seconds: 3),
-    bool isError = false,
+    bool isUpdate = false, // Changed from isError to isUpdate
   }) {
     if (_isVisible) {
       _overlayEntry?.remove();
@@ -19,7 +18,7 @@ class ToastOverlay {
       builder: (context) => ToastWidget(
         message: message,
         duration: duration,
-        isError: isError,
+        isUpdate: isUpdate, // Changed from isError to isUpdate
         onComplete: () {
           hide();
         },
@@ -40,14 +39,14 @@ class ToastOverlay {
 class ToastWidget extends StatefulWidget {
   final String message;
   final Duration duration;
-  final bool isError;
+  final bool isUpdate; // Changed from isError to isUpdate
   final VoidCallback onComplete;
 
   const ToastWidget({
     super.key,
     required this.message,
     required this.duration,
-    required this.isError,
+    required this.isUpdate, // Changed from isError to isUpdate
     required this.onComplete,
   });
 
@@ -115,7 +114,7 @@ class _ToastWidgetState extends State<ToastWidget>
               child: Material(
                 elevation: 4,
                 borderRadius: BorderRadius.circular(8),
-                color: widget.isError ? Colors.red.shade800 : Colors.white,
+                color: Colors.white, // Always white background
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 400),
                   child: Column(
@@ -127,17 +126,19 @@ class _ToastWidgetState extends State<ToastWidget>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              widget.isError
-                                  ? Icons.error_outline
+                              widget.isUpdate
+                                  ? Icons.update // Update icon
                                   : Icons.check_circle_outline,
-                              color: Colors.green,
+                              color: widget.isUpdate
+                                  ? Colors.amber // Yellow color for update icon
+                                  : Colors.green,
                             ),
                             const SizedBox(width: 12),
                             Flexible(
                               child: Text(
                                 widget.message,
                                 style: const TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.black, // Always black text
                                   fontSize: 16,
                                 ),
                               ),
@@ -150,13 +151,10 @@ class _ToastWidgetState extends State<ToastWidget>
                         builder: (context, child) {
                           return LinearProgressIndicator(
                             value: 1 - _controller.value,
-                            backgroundColor: widget.isError
-                                ? Colors.red.shade900
-                                : Colors.green,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              widget.isError
-                                  ? Colors.red.shade100
-                                  : Colors.white,
+                            backgroundColor: Colors
+                                .amber.shade100, // Light yellow background
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              Colors.amber, // Yellow progress color
                             ),
                           );
                         },

@@ -12,6 +12,7 @@ class OutsideMeetingLocationModal extends StatefulWidget {
   final bool isLoading;
   final String? initialPlace;
   final String? initialPurpose;
+  final bool isEditing;
 
   const OutsideMeetingLocationModal({
     super.key,
@@ -20,6 +21,7 @@ class OutsideMeetingLocationModal extends StatefulWidget {
     this.isLoading = false,
     this.initialPlace,
     this.initialPurpose,
+    this.isEditing = false,
   });
 
   @override
@@ -30,6 +32,7 @@ class OutsideMeetingLocationModal extends StatefulWidget {
 class _OutsideMeetingLocationModal extends State<OutsideMeetingLocationModal> {
   late final TextEditingController _meetingPlaceController;
   late final TextEditingController _meetingPurposeController;
+  bool _hasChanges = false;
 
   @override
   void initState() {
@@ -38,13 +41,58 @@ class _OutsideMeetingLocationModal extends State<OutsideMeetingLocationModal> {
         TextEditingController(text: widget.initialPlace ?? '');
     _meetingPurposeController =
         TextEditingController(text: widget.initialPurpose ?? '');
+
+    // Listen for changes in the text fields
+    _meetingPlaceController.addListener(_onFieldChanged);
+    _meetingPurposeController.addListener(_onFieldChanged);
+  }
+
+  void _onFieldChanged() {
+    final hasChanges =
+        _meetingPlaceController.text != (widget.initialPlace ?? '') ||
+            _meetingPurposeController.text != (widget.initialPurpose ?? '');
+
+    if (hasChanges != _hasChanges) {
+      setState(() {
+        _hasChanges = hasChanges;
+      });
+    }
   }
 
   @override
   void dispose() {
+    _meetingPlaceController.removeListener(_onFieldChanged);
+    _meetingPurposeController.removeListener(_onFieldChanged);
     _meetingPlaceController.dispose();
     _meetingPurposeController.dispose();
     super.dispose();
+  }
+
+  void _handleSave(BuildContext context) {
+    if (_meetingPlaceController.text.isEmpty) {
+      ToastOverlay.show(
+        context,
+        message: "Meeting place cannot be empty",
+        duration: const Duration(seconds: 2),
+      );
+      return;
+    }
+
+    widget.onSave(
+      _meetingPlaceController.text,
+      _meetingPurposeController.text,
+    );
+
+    Navigator.pop(context);
+
+    ToastOverlay.show(
+      context,
+      message: widget.isEditing
+          ? "Meeting Updated Successfully"
+          : "New Meeting Added Successfully",
+      duration: const Duration(seconds: 3),
+      isUpdate: widget.isEditing,
+    );
   }
 
   @override
@@ -62,10 +110,10 @@ class _OutsideMeetingLocationModal extends State<OutsideMeetingLocationModal> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 0),
             child: Text(
-              'Save Location',
+              widget.isEditing ? 'Edit Location' : 'Save Location',
               style: AppTextStyles.heading2,
               textAlign: TextAlign.center,
             ),
@@ -133,20 +181,10 @@ class _OutsideMeetingLocationModal extends State<OutsideMeetingLocationModal> {
                 ),
                 const Gap(24),
                 ElevatedButton(
-                  onPressed: widget.isLoading
-                      ? null
-                      : () {
-                          widget.onSave(
-                            _meetingPlaceController.text,
-                            _meetingPurposeController.text,
-                          );
-                          Navigator.pop(context);
-                          ToastOverlay.show(
-                            context,
-                            message: "New Meeting Added Successfully",
-                            duration: const Duration(seconds: 3),
-                          );
-                        },
+                  onPressed:
+                      widget.isLoading || (!_hasChanges && widget.isEditing)
+                          ? null
+                          : () => _handleSave(context),
                   style: AppButtonStyles.elevatedButton,
                   child: Text(
                     'Save',

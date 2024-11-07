@@ -31,6 +31,7 @@ class OutsideMeetingListItem extends StatelessWidget {
         location: meeting.location,
         initialPlace: meeting.title,
         initialPurpose: meeting.purpose,
+        isEditing: true,
         onSave: (place, purpose) {
           final updatedMeeting = OutsideMeeting(
             id: meeting.id,

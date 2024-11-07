@@ -6,12 +6,12 @@ import 'package:new_design/features/finish_working/view/widgets/outside_meeting_
 
 class OutsideMeetingsCard extends StatelessWidget {
   final List<OutsideMeeting> meetings;
-  final Function(OutsideMeeting)? onLocationSelected;
+  final Function(OutsideMeeting) onLocationSelected;
 
   const OutsideMeetingsCard({
     super.key,
     required this.meetings,
-    this.onLocationSelected,
+    required this.onLocationSelected,
   });
 
   void _showOutsideMeetingsList(BuildContext context) {
@@ -19,7 +19,8 @@ class OutsideMeetingsCard extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => OutsideMeetingList(meetings: meetings),
+      builder: (context) => OutsideMeetingList(
+          meetings: meetings, onMeetingUpdated: onLocationSelected),
     );
   }
 

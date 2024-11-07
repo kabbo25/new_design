@@ -19,10 +19,9 @@ class OutsideMeetingViewModel extends ChangeNotifier {
 
   OutsideMeetingViewModel({String storageType = 'sqlite'}) {
     _repository = _createRepository(storageType);
-    // Initialize the data when the ViewModel is created
     init();
   }
-  // Initialize the ViewModel
+
   Future<void> init() async {
     if (!_isInitialized) {
       await loadMeetings();
@@ -30,14 +29,11 @@ class OutsideMeetingViewModel extends ChangeNotifier {
     }
   }
 
-  // Override dispose to clean up resources
   @override
   void dispose() {
     _locations.clear();
-    // If your repository needs to close any connections (e.g., database),
-    // you can add that here
     if (_repository is MeetingSQLiteRepository) {
-      (_repository).close();
+      (_repository as MeetingSQLiteRepository).close();
     }
     super.dispose();
   }
@@ -56,7 +52,7 @@ class OutsideMeetingViewModel extends ChangeNotifier {
   BackgroundConfig get backgroundConfig => BackgroundConfig(
         gradientColors: [
           const Color(0xFFFFFFFF).withOpacity(1),
-          Color.fromARGB(255, 150, 188, 245).withOpacity(0.8),
+          const Color.fromARGB(255, 150, 188, 245).withOpacity(0.8),
         ],
         gradientBegin: Alignment.topCenter,
         gradientEnd: Alignment.bottomCenter,
@@ -72,7 +68,7 @@ class OutsideMeetingViewModel extends ChangeNotifier {
   );
 
   StartWorkingHour get startWorkingHour => _startWorkingHour;
-  List<OutsideMeeting> get locations => _locations;
+  List<OutsideMeeting> get locations => List.unmodifiable(_locations);
   List<StartWorkingLocation> get locationOptions => [
         const StartWorkingLocation(
           icon: 'assets/icons/meeting_outside.png',
@@ -92,13 +88,9 @@ class OutsideMeetingViewModel extends ChangeNotifier {
       final meetings = await _repository.getAll();
       _locations.clear();
       _locations.addAll(meetings);
-
-      // Clear the database after loading
-      // await _repository.clear();
     } catch (e) {
       developer.log('Error loading meetings: $e');
     } finally {
-      await Future.delayed(const Duration(milliseconds: 500));
       _isLoading = false;
       notifyListeners();
     }
@@ -108,12 +100,9 @@ class OutsideMeetingViewModel extends ChangeNotifier {
     try {
       await _repository.save(meeting);
       _locations.add(meeting);
-
-      developer.log('inside adding');
-      //loadMeetings();
       notifyListeners();
     } catch (e) {
-      print('Error adding location: $e');
+      developer.log('Error adding location: $e');
     }
   }
 
@@ -121,15 +110,20 @@ class OutsideMeetingViewModel extends ChangeNotifier {
     try {
       await _repository.update(meeting);
       final index = _locations.indexWhere((m) => m.id == meeting.id);
-      developer.log('index is $index');
-      developer.log(meeting.toJson().toString());
+
       if (index != -1) {
         _locations[index] = meeting;
-
+        // Force a rebuild of the UI
         notifyListeners();
+      } else {
+        developer.log('Meeting not found in locations list');
+        // If the meeting wasn't found, reload all meetings
+        await loadMeetings();
       }
     } catch (e) {
-      print('Error updating location: $e');
+      developer.log('Error updating location: $e');
+      // On error, reload meetings to ensure UI is in sync with storage
+      await loadMeetings();
     }
   }
 
@@ -139,7 +133,7 @@ class OutsideMeetingViewModel extends ChangeNotifier {
       _locations.removeWhere((m) => m.id == meeting.id);
       notifyListeners();
     } catch (e) {
-      print('Error deleting location: $e');
+      developer.log('Error deleting location: $e');
     }
   }
 
