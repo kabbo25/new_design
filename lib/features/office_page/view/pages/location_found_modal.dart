@@ -97,7 +97,7 @@ class LocationConfirmationModal extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10, left: 24, right: 24),
+            padding: const EdgeInsets.only(bottom: 30, left: 24, right: 24),
             child: ElevatedButton(
               onPressed: onNext,
               style: AppButtonStyles.elevatedButton,

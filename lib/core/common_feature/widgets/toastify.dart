@@ -104,7 +104,7 @@ class _ToastWidgetState extends State<ToastWidget>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Align(
-        alignment: Alignment.topCenter,
+        alignment: Alignment.bottomCenter,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SlideTransition(
@@ -113,7 +113,7 @@ class _ToastWidgetState extends State<ToastWidget>
               opacity: _fadeAnimation,
               child: Material(
                 elevation: 4,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(60),
                 color: Colors.white, // Always white background
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 400),
@@ -151,10 +151,14 @@ class _ToastWidgetState extends State<ToastWidget>
                         builder: (context, child) {
                           return LinearProgressIndicator(
                             value: 1 - _controller.value,
-                            backgroundColor: Colors
-                                .amber.shade100, // Light yellow background
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              Colors.amber, // Yellow progress color
+                            backgroundColor: widget.isUpdate
+                                ? Colors.amber.shade100
+                                : Colors
+                                    .green.shade100, // Light yellow background
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              widget.isUpdate
+                                  ? Colors.amber
+                                  : Colors.green, // Yellow progress color
                             ),
                           );
                         },

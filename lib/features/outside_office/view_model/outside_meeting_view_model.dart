@@ -17,7 +17,7 @@ class OutsideMeetingViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool _isInitialized = false;
 
-  OutsideMeetingViewModel({String storageType = 'sqlite'}) {
+  OutsideMeetingViewModel({String storageType = 'shared_preferences'}) {
     _repository = _createRepository(storageType);
     init();
   }
@@ -33,7 +33,7 @@ class OutsideMeetingViewModel extends ChangeNotifier {
   void dispose() {
     _locations.clear();
     if (_repository is MeetingSQLiteRepository) {
-      (_repository as MeetingSQLiteRepository).close();
+      (_repository).close();
     }
     super.dispose();
   }
