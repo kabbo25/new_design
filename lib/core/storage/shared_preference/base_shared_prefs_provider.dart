@@ -4,7 +4,7 @@ import 'package:new_design/core/storage/base_storage_provider.dart';
 import 'package:new_design/core/storage/models/storable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class SharedPreferencesProvider<T extends Storable>
+abstract class BaseSharedPrefsProvider<T extends Storable>
     implements BaseStorageProvider<T> {
   String get storageKey;
   T fromJson(Map<String, dynamic> json);
@@ -48,14 +48,14 @@ abstract class SharedPreferencesProvider<T extends Storable>
     }
   }
 
-  @override
-  Future<T?> getById(String id) async {
-    final items = await getAll();
-    return items.cast<T?>().firstWhere(
-          (item) => item?.id == id,
-          orElse: () => null,
-        );
-  }
+  // @override
+  // Future<T?> getById(String id) async {
+  //   final items = await getAll();
+  //   return items.cast<T?>().firstWhere(
+  //         (item) => item?.id == id,
+  //         orElse: () => null,
+  //       );
+  // }
 
   Future<void> _saveAll(List<T> items) async {
     final prefs = await _prefs;

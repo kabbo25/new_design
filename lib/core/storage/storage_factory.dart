@@ -1,23 +1,34 @@
-import 'package:new_design/core/storage/sqlite_provider.dart';
-import 'package:new_design/core/storage/storage_provider.dart';
+import 'package:new_design/core/storage/base_storage_provider.dart';
+import 'package:new_design/core/storage/models/storable.dart';
+import 'package:new_design/features/finish_working/model/outside_meeting.dart';
+import 'package:new_design/features/outside_office/repository/outside_meeting_list/meeting_shared_prefs_repository.dart';
+import 'package:new_design/features/outside_office/repository/outside_meeting_list/meeting_sqlite_repository.dart';
 
-class StorageFactory {
-  static final StorageFactory _instance = StorageFactory._internal();
+enum StorageType { sqlite, sharedPreferences }
 
-  factory StorageFactory() {
-    return _instance;
-  }
+class StorageProviderFactory {
+  static BaseStorageProvider<T> create<T extends Storable>(
+      StorageType storageType) {
+    switch (storageType) {
+      case StorageType.sqlite:
+        if (T == OutsideMeeting) {
+          return MeetingStorageProvider() as BaseStorageProvider<T>;
+        }
+        // if (T == WorkingStatus) {
+        //   return WorkingStatusProvider() as BaseStorageProvider<T>;
+        // }
+        throw UnsupportedError(
+            'SQLite repository for ${T.toString()} is not supported.');
 
-  StorageFactory._internal();
+      case StorageType.sharedPreferences:
+        if (T == OutsideMeeting) {
+          return MeetingSharedPrefsRepository() as BaseStorageProvider<T>;
+        }
+        throw UnsupportedError(
+            'SharedPreferences repository for ${T.toString()} is not supported.');
 
-  StorageProvider via(String type) {
-    switch (type.toLowerCase()) {
-      case 'sqlite':
-        return SQLiteProvider();
-      case 'shared_preferences':
-      // return SharedPreferencesProvider();
       default:
-        throw Exception('Unknown storage type: $type');
+        throw UnsupportedError('Unsupported storage type: $storageType');
     }
   }
 }

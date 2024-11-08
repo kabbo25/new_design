@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:new_design/core/storage/storage_factory.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
@@ -32,7 +33,9 @@ class OutsideMeetingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => OutsideMeetingViewModel()),
+        ChangeNotifierProvider(
+            create: (_) =>
+                OutsideMeetingViewModel(storageType: StorageType.sqlite)),
         ChangeNotifierProvider(create: (_) => LocationVerificationViewModel()),
       ],
       child: const OutsideMeetingView(),

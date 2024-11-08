@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:new_design/core/storage/base_storage_provider.dart';
 import 'package:new_design/core/storage/models/storable.dart';
 
-abstract class BaseLocationViewModel<T extends Storable> extends ChangeNotifier {
+abstract class BaseLocationViewModel<T extends Storable>
+    extends ChangeNotifier {
   late final BaseStorageProvider<T> _repository;
   final List<T> _locations = [];
   bool _isLoading = false;

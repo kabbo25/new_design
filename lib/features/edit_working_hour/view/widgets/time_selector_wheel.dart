@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:new_design/core/servies/wheeler_feedback_service.dart';
+import 'package:new_design/core/services/wheeler_feedback_service.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/features/edit_working_hour/view/widgets/hour_wheel.dart';
 import 'package:new_design/features/edit_working_hour/view/widgets/minute_wheel.dart';

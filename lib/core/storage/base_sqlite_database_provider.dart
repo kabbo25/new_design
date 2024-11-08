@@ -1,14 +1,26 @@
+import 'dart:developer' as developer;
+
 import 'package:new_design/core/storage/base_storage_provider.dart';
 import 'package:new_design/core/storage/models/storable.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-abstract class SQLiteProvider<T extends Storable> implements BaseStorageProvider<T> {
-  static Database? _database;
-  
+abstract class BaseDatabaseProvider<T extends Storable>
+    implements BaseStorageProvider<T> {
+  Database? _database;
+
+  // Abstract properties that must be implemented by child classes
   String get tableName;
+  String get databaseName;
+  int get version;
+  String get createTableQuery;
+
+  // Function to convert JSON to entity
   T fromJson(Map<String, dynamic> json);
-  
+
+  // Optional upgrade function
+  Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {}
+
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
@@ -16,24 +28,25 @@ abstract class SQLiteProvider<T extends Storable> implements BaseStorageProvider
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'app_database.db');
+    String path = join(await getDatabasesPath(), databaseName);
+    developer.log('Database path: $path');
+
     return await openDatabase(
       path,
-      version: 1,
+      version: version,
       onCreate: (Database db, int version) async {
-        await createTable(db);
+        await db.execute(createTableQuery);
       },
+      onUpgrade: onUpgrade,
     );
   }
 
-  Future<void> createTable(Database db);
-
   @override
-  Future<void> save(T item) async {
+  Future<void> save(T entity) async {
     final db = await database;
     await db.insert(
       tableName,
-      item.toJson(),
+      entity.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -56,27 +69,26 @@ abstract class SQLiteProvider<T extends Storable> implements BaseStorageProvider
   }
 
   @override
-  Future<void> update(T item) async {
+  Future<void> update(T entity) async {
     final db = await database;
     await db.update(
       tableName,
-      item.toJson(),
+      entity.toJson(),
       where: 'id = ?',
-      whereArgs: [item.id],
+      whereArgs: [entity.id],
     );
   }
 
   @override
-  Future<T?> getById(String id) async {
+  Future<void> clear() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
-    
-    if (maps.isEmpty) return null;
-    return fromJson(maps.first);
+    await db.delete(tableName);
+  }
+
+  Future<void> close() async {
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+    }
   }
 }

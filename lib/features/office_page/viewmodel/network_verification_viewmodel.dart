@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:new_design/core/servies/network_utils.dart';
+import 'package:new_design/core/services/network_utils.dart';
 import 'package:new_design/features/office_page/model/network_verification_state.dart';
 import 'package:new_design/features/office_page/view/pages/wifi_connected.dart';
 
