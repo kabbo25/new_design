@@ -1,18 +1,16 @@
 import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:new_design/core/storage/base_storage_provider.dart';
-import 'package:new_design/core/storage/models/storable.dart';
+import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 
-abstract class BaseLocationViewModel<T extends Storable>
-    extends ChangeNotifier {
-  late final BaseStorageProvider<T> _repository;
-  final List<T> _locations = [];
+mixin BaseLocationViewModel on ChangeNotifier {
+  late final BaseStorageProvider<OutsideMeeting> _repository;
+  final List<OutsideMeeting> _locations = [];
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   bool _isInitialized = false;
 
-  BaseLocationViewModel(BaseStorageProvider<T> repository) {
+ void initializeLocationProvider(BaseStorageProvider<OutsideMeeting> repository) {
     _repository = repository;
     init();
   }
@@ -24,7 +22,7 @@ abstract class BaseLocationViewModel<T extends Storable>
     }
   }
 
-  List<T> get locations => List.unmodifiable(_locations);
+  List<OutsideMeeting> get locations => List.unmodifiable(_locations);
 
   Future<void> loadLocations() async {
     try {
@@ -41,7 +39,7 @@ abstract class BaseLocationViewModel<T extends Storable>
     }
   }
 
-  Future<void> addLocation(T location) async {
+  Future<void> addLocation(OutsideMeeting location) async {
     try {
       await _repository.save(location);
       _locations.add(location);
@@ -51,9 +49,7 @@ abstract class BaseLocationViewModel<T extends Storable>
     }
   }
 
-  Future<void> updateLocation(
-    T location,
-  ) async {
+  Future<void> updateLocation(OutsideMeeting location) async {
     try {
       await _repository.update(location);
       final index = _locations.indexWhere((m) => m.id == location.id);
@@ -70,7 +66,7 @@ abstract class BaseLocationViewModel<T extends Storable>
     }
   }
 
-  Future<void> deleteLocation(T location, bool Function(T) match) async {
+  Future<void> deleteLocation(OutsideMeeting location, bool Function(OutsideMeeting) match) async {
     try {
       await _repository.delete(location);
       _locations.removeWhere(match);

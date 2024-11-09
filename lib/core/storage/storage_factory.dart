@@ -1,8 +1,10 @@
 import 'package:new_design/core/storage/base_storage_provider.dart';
 import 'package:new_design/core/storage/models/storable.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
+import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/outside_office/repository/outside_meeting_list/meeting_shared_prefs_repository.dart';
 import 'package:new_design/features/outside_office/repository/outside_meeting_list/meeting_sqlite_repository.dart';
+import 'package:new_design/features/outside_office/repository/working_status_card_repository.dart';
 
 enum StorageType { sqlite, sharedPreferences }
 
@@ -14,9 +16,9 @@ class StorageProviderFactory {
         if (T == OutsideMeeting) {
           return MeetingStorageProvider() as BaseStorageProvider<T>;
         }
-        // if (T == WorkingStatus) {
-        //   return WorkingStatusProvider() as BaseStorageProvider<T>;
-        // }
+        if (T == WorkingStatus) {
+          return WorkingStatuscaSQLiteRepository() as BaseStorageProvider<T>;
+        }
         throw UnsupportedError(
             'SQLite repository for ${T.toString()} is not supported.');
 
