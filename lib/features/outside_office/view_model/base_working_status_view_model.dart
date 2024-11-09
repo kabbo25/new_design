@@ -1,7 +1,9 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:new_design/core/storage/base_storage_provider.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
-import 'package:new_design/features/outside_office/repository/working_status_card_repository.dart';
+import 'package:new_design/features/outside_office/repository/working_status/working_status_card_repository.dart';
 
 mixin BaseWorkingStatusViewModel on ChangeNotifier {
   late final BaseStorageProvider<WorkingStatus> _repository;
@@ -13,11 +15,12 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
   void initializeWorkingStatusProvider(
       BaseStorageProvider<WorkingStatus> repository) {
     _repository = repository;
-    init();
+    initworking();
   }
 
-  Future<void> init() async {
+  Future<void> initworking() async {
     if (!_isInitialized) {
+      developer.log('inside');
       await loadWorkingStatuses();
       _isInitialized = true;
     }
@@ -34,9 +37,12 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
       _workingStatuses
         ..clear()
         ..addAll(loadedStatuses);
+      developer.log('inside and ${loadedStatuses.length}');
+      //await _repository.clear();
     } catch (e) {
       debugPrint('Error loading working statuses: $e');
     } finally {
+      Future.delayed(const Duration(milliseconds: 500));
       _isLoading = false;
       notifyListeners();
     }
@@ -44,16 +50,18 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
 
   Future<void> saveWorkingStatus(WorkingStatus status) async {
     try {
+      developer.log(status.toJson().toString());
       await _repository.save(status);
       final index = _workingStatuses.indexWhere((s) => s.id == status.id);
+      developer.log('index is $index');
       if (index != -1) {
-        _workingStatuses[index] = status;
+        _workingStatuses[0] = status;
       } else {
         _workingStatuses.add(status);
       }
       notifyListeners();
     } catch (e) {
-      debugPrint('Error saving working status: $e');
+      developer.log('Error saving working status: $e');
     }
   }
 

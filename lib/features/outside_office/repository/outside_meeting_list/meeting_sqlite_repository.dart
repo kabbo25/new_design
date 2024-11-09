@@ -13,14 +13,14 @@ class MeetingStorageProvider extends BaseDatabaseProvider<OutsideMeeting> {
 
   @override
   String get createTableQuery => '''
-    CREATE TABLE $tableName(
+    CREATE TABLE IF NOT EXISTS $tableName(
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
       location TEXT NOT NULL,
       time TEXT NOT NULL,
       purpose TEXT NOT NULL
     )
-  ''';
+''';
 
   @override
   OutsideMeeting fromJson(Map<String, dynamic> json) =>

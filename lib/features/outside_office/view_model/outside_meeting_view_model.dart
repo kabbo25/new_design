@@ -6,7 +6,6 @@ import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/outside_office/view_model/base_location_view_model.dart';
 import 'package:new_design/features/outside_office/view_model/base_working_status_view_model.dart';
 import 'package:new_design/features/start_page/model/background_config.dart';
-import 'package:new_design/features/start_working/model/start_working_hour.dart';
 import 'package:new_design/features/start_working/model/start_working_location.dart';
 
 class OutsideMeetingViewModel extends ChangeNotifier
@@ -19,6 +18,8 @@ class OutsideMeetingViewModel extends ChangeNotifier
         StorageProviderFactory.create<OutsideMeeting>(locationStorageType));
     initializeWorkingStatusProvider(
         StorageProviderFactory.create<WorkingStatus>(workingStatusStorageType));
+    initlocation();
+    initworking();
   }
 
   BackgroundConfig get backgroundConfig => BackgroundConfig(
@@ -33,13 +34,12 @@ class OutsideMeetingViewModel extends ChangeNotifier
         glowOpacity: 0.8,
       );
 
-  StartWorkingHour _startWorkingHour = StartWorkingHour(
-    location: 'Home',
-    date: DateTime.now(),
-    time: const TimeOfDay(hour: 9, minute: 40),
+  final WorkingStatus _workingStatus = WorkingStatus(
+    location: 'outside',
+    workMode: WorkMode.starting,
+    time: TimeOfDay.now(),
   );
-
-  StartWorkingHour get startWorkingHour => _startWorkingHour;
+  WorkingStatus get workingStatus => _workingStatus;
 
   List<StartWorkingLocation> get locationOptions => [
         const StartWorkingLocation(
@@ -51,13 +51,4 @@ class OutsideMeetingViewModel extends ChangeNotifier
           title: 'Working from office now?',
         ),
       ];
-
-  void updateLastWorkingDay(TimeOfDay newTime) {
-    _startWorkingHour = StartWorkingHour(
-      location: _startWorkingHour.location,
-      date: _startWorkingHour.date,
-      time: newTime,
-    );
-    notifyListeners();
-  }
 }

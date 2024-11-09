@@ -12,13 +12,13 @@ import 'package:new_design/features/edit_working_hour/view/pages/last_working_da
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/view/widgets/bottom_gradient.dart';
 import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list_dropdown.dart';
+import 'package:new_design/features/finish_working/view/widgets/working_status_card.dart';
 import 'package:new_design/features/office_page/viewmodel/location_verification_viewmodel.dart';
 import 'package:new_design/features/outside_office/view/widgets/semi_circle.dart';
 import 'package:new_design/features/outside_office/view_model/outside_meeting_view_model.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
 import 'package:new_design/features/start_page/view/widgets/network_status_bar.dart';
 import 'package:new_design/features/start_working/view/widgets/finish_working_button.dart';
-import 'package:new_design/features/start_working/view/widgets/start_working_hour_card.dart';
 import 'package:new_design/features/start_working/view/widgets/timer_section.dart';
 import 'package:new_design/features/start_working/view/widgets/working_location_change_button.dart';
 import 'package:new_design/generated/assets.dart';
@@ -63,9 +63,24 @@ class OutsideMeetingView extends StatelessWidget {
                   const Gap(24),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: WorkingStatusCard(
-                      startWorkingHour: viewModel.startWorkingHour,
-                      onEdit: () => _showStartWorking(context),
+                    child: Stack(
+                      children: [
+                        WorkingStatusCard(
+                          workingStatus: viewModel.workingStatuses.isEmpty
+                              ? viewModel.workingStatus
+                              : viewModel.workingStatuses[0],
+                          onEdit: () => _showStartWorking(context),
+                        ),
+                        if (viewModel.isLoading)
+                          Positioned.fill(
+                            child: Container(
+                              color: Colors.white.withOpacity(0.5),
+                              child: const SpinKitThreeInOut(
+                                color: AppPalette.textSecondary,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   const Gap(12),
@@ -79,7 +94,7 @@ class OutsideMeetingView extends StatelessWidget {
                             viewModel.updateLocation(location);
                           },
                         ),
-                        if (viewModel.isLoading)
+                        if (viewModel.ismeetingLoading)
                           const Positioned.fill(
                             child: Center(
                               child: SpinKitWave(
@@ -175,18 +190,55 @@ class OutsideMeetingView extends StatelessWidget {
 
 void _showStartWorking(BuildContext context) {
   developer.log('calling modal');
+  final viewModel =
+      Provider.of<OutsideMeetingViewModel>(context, listen: false);
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) => TimePickerModal(
-      title: 'Edit  your entry time',
+      title: 'Edit your entry time',
       editTimeLabel: 'Edit your entry time here:',
       initialTime: const TimeOfDay(hour: 15, minute: 0),
       showWorkingHourSelector: false,
-      onSave: (newTime) {
-        developer.log('calling');
-        // Handle save
+      onSave: (newTime) async {
+        developer.log(
+            'Saving initial working status with time: ${newTime.format(context)}');
+        try {
+          final currentStatus = viewModel.workingStatuses.isEmpty
+              ? viewModel.workingStatus
+              : viewModel.workingStatuses[0];
+          developer.log(currentStatus.toJson().toString());
+          final updatedStatus = WorkingStatus(
+            id: currentStatus.id, // Preserve the existing ID if any
+            location: currentStatus.location,
+            workMode: currentStatus.workMode,
+            time: newTime, // Update with new time
+          );
+
+          // Save the new status using the mixin method
+          await viewModel.saveWorkingStatus(updatedStatus);
+
+          if (context.mounted) {
+            // Close the modal after saving
+            //Navigator.pop(context);
+            // Show a success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Working time saved successfully')),
+            );
+          }
+        } catch (e) {
+          developer.log('Error saving working status: $e');
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Failed to save working time'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
       },
     ),
   );

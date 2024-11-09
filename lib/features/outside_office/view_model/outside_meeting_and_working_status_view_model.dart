@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:new_design/core/storage/base_storage_provider.dart';
 import 'package:new_design/core/storage/models/storable.dart';
-import 'package:new_design/features/outside_office/repository/working_status_card_repository.dart';
+import 'package:new_design/features/outside_office/repository/working_status/working_status_card_repository.dart';
 
 abstract class BaseCombinedViewModel<T extends Storable> extends ChangeNotifier {
   final BaseStorageProvider<T> _locationRepository;

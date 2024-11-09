@@ -21,13 +21,16 @@ class WorkingStatus implements Storable {
     required this.workMode,
   }) : id = id ?? const Uuid().v4();
 
+  String get timeString => 
+      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+
   @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'location': location,
-      'time': '${time.hour}:${time.minute}',
-      'work_mode': workMode.toString(),
+      'time': timeString,
+      'work_mode': workMode.toString().split('.').last,
     };
   }
 
@@ -43,7 +46,8 @@ class WorkingStatus implements Storable {
         minute: int.parse(timeParts[1]),
       ),
       workMode: WorkMode.values.firstWhere(
-        (e) => e.toString() == json['work_mode'],
+        (e) => e.toString().split('.').last == json['work_mode'],
+        orElse: () => WorkMode.starting,
       ),
     );
   }

@@ -1,0 +1,24 @@
+flutter_native_splash:
+  background_image: "assets/png/background.png"
+  image: "assets/png/android_logo.png" # Replace with your image path
+  branding: "assets/png/android_branding.png"
+  #fill: true
+  # Splash screen will be shown until initialization is complete
+  android_12:
+    image: "assets/png/android_logo.png"
+    branding: "assets/png/android_branding.png"
+    color: "#FFFFFF"
+    icon_background_color: "#FFFFFF"
+
+  # Optional parameters:
+  android: true
+  ios: true
+  web: false
+
+  android_gravity: fill # Makes image fill the screen on Android
+  ios_content_mode: scaleToFill # Makes image fill the screen on iOS
+  fullscreen: true # Enables full screen mode
+
+
+  # For full screen background image:
+  #background_image: "assets/background.png"

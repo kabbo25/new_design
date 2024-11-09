@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:new_design/core/storage/base_storage_provider.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
@@ -6,17 +7,19 @@ import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 mixin BaseLocationViewModel on ChangeNotifier {
   late final BaseStorageProvider<OutsideMeeting> _repository;
   final List<OutsideMeeting> _locations = [];
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  bool _ismeetingLoading = false;
+  bool get ismeetingLoading => _ismeetingLoading;
   bool _isInitialized = false;
 
- void initializeLocationProvider(BaseStorageProvider<OutsideMeeting> repository) {
+  void initializeLocationProvider(
+      BaseStorageProvider<OutsideMeeting> repository) {
     _repository = repository;
-    init();
+    initlocation();
   }
 
-  Future<void> init() async {
+  Future<void> initlocation() async {
     if (!_isInitialized) {
+      developer.log('inside inti');
       await loadLocations();
       _isInitialized = true;
     }
@@ -26,15 +29,18 @@ mixin BaseLocationViewModel on ChangeNotifier {
 
   Future<void> loadLocations() async {
     try {
-      _isLoading = true;
+      _ismeetingLoading = true;
       notifyListeners();
+      await Future.delayed(const Duration(seconds: 1));
       final loadedLocations = await _repository.getAll();
       _locations.clear();
       _locations.addAll(loadedLocations);
+      // developer.log('inside');
     } catch (e) {
       developer.log('Error loading locations: $e');
     } finally {
-      _isLoading = false;
+      Future.delayed(const Duration(milliseconds: 500));
+      _ismeetingLoading = false;
       notifyListeners();
     }
   }
@@ -66,7 +72,8 @@ mixin BaseLocationViewModel on ChangeNotifier {
     }
   }
 
-  Future<void> deleteLocation(OutsideMeeting location, bool Function(OutsideMeeting) match) async {
+  Future<void> deleteLocation(
+      OutsideMeeting location, bool Function(OutsideMeeting) match) async {
     try {
       await _repository.delete(location);
       _locations.removeWhere(match);
