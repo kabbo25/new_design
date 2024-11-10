@@ -5,10 +5,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:new_design/core/common_feature/widgets/edit_working_hour.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
-import 'package:new_design/features/edit_working_hour/view/pages/last_working_day_modal.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/view/widgets/bottom_gradient.dart';
 import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list_dropdown.dart';
@@ -66,10 +66,10 @@ class OutsideMeetingView extends StatelessWidget {
                     child: Stack(
                       children: [
                         WorkingStatusCard(
-                          workingStatus: viewModel.workingStatuses.isEmpty
-                              ? viewModel.workingStatus
-                              : viewModel.workingStatuses[0],
-                          onEdit: () => _showStartWorking(context),
+                          workingStatus: viewModel.startingStatus ??
+                              viewModel.workingStatus,
+                          onEdit: () => _showWorkingTimeDialog(
+                              context, WorkMode.starting),
                         ),
                         if (viewModel.isLoading)
                           Positioned.fill(
@@ -188,58 +188,30 @@ class OutsideMeetingView extends StatelessWidget {
   }
 }
 
-void _showStartWorking(BuildContext context) {
-  developer.log('calling modal');
+void _showWorkingTimeDialog(BuildContext context, WorkMode mode) {
   final viewModel =
       Provider.of<OutsideMeetingViewModel>(context, listen: false);
 
-  showModalBottomSheet(
+  // Configure dialog based on work mode
+  final config = switch (mode) {
+    WorkMode.starting => (
+        title: 'Edit your entry time',
+        label: 'Edit your entry time here:',
+        status: viewModel.startingStatus ?? viewModel.workingStatus,
+      ),
+    WorkMode.ending => (
+        title: 'Edit your exit time',
+        label: 'Edit your exit time here:',
+        status: viewModel.finishingStatus ?? viewModel.workingStatus,
+      ),
+  };
+
+  WorkingTimePickerDialog.show(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) => TimePickerModal(
-      title: 'Edit your entry time',
-      editTimeLabel: 'Edit your entry time here:',
-      initialTime: const TimeOfDay(hour: 15, minute: 0),
-      showWorkingHourSelector: false,
-      onSave: (newTime) async {
-        developer.log(
-            'Saving initial working status with time: ${newTime.format(context)}');
-        try {
-          final currentStatus = viewModel.workingStatuses.isEmpty
-              ? viewModel.workingStatus
-              : viewModel.workingStatuses[0];
-          developer.log(currentStatus.toJson().toString());
-          final updatedStatus = WorkingStatus(
-            id: currentStatus.id, // Preserve the existing ID if any
-            location: currentStatus.location,
-            workMode: currentStatus.workMode,
-            time: newTime, // Update with new time
-          );
-
-          // Save the new status using the mixin method
-          await viewModel.saveWorkingStatus(updatedStatus);
-
-          if (context.mounted) {
-            // Close the modal after saving
-            //Navigator.pop(context);
-            // Show a success message
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Working time saved successfully')),
-            );
-          }
-        } catch (e) {
-          developer.log('Error saving working status: $e');
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Failed to save working time'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        }
-      },
-    ),
+    title: config.title,
+    editTimeLabel: config.label,
+    currentStatus: config.status,
+    onStatusSaved: (updatedStatus) =>
+        viewModel.saveWorkingStatus(updatedStatus),
   );
 }

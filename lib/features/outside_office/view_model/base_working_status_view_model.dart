@@ -51,11 +51,15 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
   Future<void> saveWorkingStatus(WorkingStatus status) async {
     try {
       developer.log(status.toJson().toString());
+
+      // If a status with the same work mode exists, update it instead of adding new
+      final existingIndex =
+          _workingStatuses.indexWhere((s) => s.workMode == status.workMode);
+
       await _repository.save(status);
-      final index = _workingStatuses.indexWhere((s) => s.id == status.id);
-      developer.log('index is $index');
-      if (index != -1) {
-        _workingStatuses[0] = status;
+
+      if (existingIndex != -1) {
+        _workingStatuses[existingIndex] = status;
       } else {
         _workingStatuses.add(status);
       }
@@ -65,13 +69,25 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
     }
   }
 
-  Future<void> deleteWorkingStatus(WorkingStatus status) async {
+  
+
+  // Get finishing work status
+  WorkingStatus? get finishingStatus {
     try {
-      await _repository.delete(status);
-      _workingStatuses.removeWhere((s) => s.id == status.id);
-      notifyListeners();
+      return _workingStatuses
+          .firstWhere((status) => status.workMode == WorkMode.ending);
     } catch (e) {
-      debugPrint('Error deleting working status: $e');
+      return null;
+    }
+  }
+
+  // Get starting work status
+  WorkingStatus? get startingStatus {
+    try {
+      return _workingStatuses
+          .firstWhere((status) => status.workMode == WorkMode.starting);
+    } catch (e) {
+      return null;
     }
   }
 
@@ -88,7 +104,7 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
   @override
   void dispose() {
     if (_repository is WorkingStatuscaSQLiteRepository) {
-      (_repository as WorkingStatuscaSQLiteRepository).close();
+      (_repository).close();
     }
     _workingStatuses.clear();
     super.dispose();
