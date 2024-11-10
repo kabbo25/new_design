@@ -69,8 +69,6 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
     }
   }
 
-  
-
   // Get finishing work status
   WorkingStatus? get finishingStatus {
     try {

@@ -29,7 +29,7 @@ class FinishWorkingViewModel extends ChangeNotifier
     workMode: WorkMode.starting,
     time: TimeOfDay.now(),
   );
-  final WorkingStatus _finishWorkingStatus = WorkingStatus(
+  WorkingStatus _finishWorkingStatus = WorkingStatus(
     location: 'outside',
     workMode: WorkMode.ending,
     time: TimeOfDay.now(),
@@ -49,6 +49,15 @@ class FinishWorkingViewModel extends ChangeNotifier
 
   WorkingStatus get startingWorkingStatus => _startingWorkingStatus;
   WorkingStatus get finishWorkingStatus => _finishWorkingStatus;
+  void updateFinishWorkingStatusTime(DateTime exactTime) {
+    _finishWorkingStatus = WorkingStatus(
+      location: 'outside',
+      workMode: WorkMode.ending,
+      time: TimeOfDay(hour: exactTime.hour, minute: exactTime.minute),
+    );
+    saveWorkingStatus(_finishWorkingStatus);
+    notifyListeners();
+  }
 
   void updateNote(String newNote) {
     _note = newNote;

@@ -13,6 +13,7 @@ import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/view/widgets/bottom_gradient.dart';
 import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list_dropdown.dart';
 import 'package:new_design/features/finish_working/view/widgets/working_status_card.dart';
+import 'package:new_design/features/finish_working/viewmodel/finish_working_view_model.dart';
 import 'package:new_design/features/office_page/viewmodel/location_verification_viewmodel.dart';
 import 'package:new_design/features/outside_office/view/widgets/semi_circle.dart';
 import 'package:new_design/features/outside_office/view_model/outside_meeting_view_model.dart';
@@ -34,6 +35,7 @@ class OutsideMeetingPage extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => OutsideMeetingViewModel()),
         ChangeNotifierProvider(create: (_) => LocationVerificationViewModel()),
+        ChangeNotifierProvider(create: (_) => FinishWorkingViewModel()),
       ],
       child: const OutsideMeetingView(),
     );
@@ -49,6 +51,7 @@ class OutsideMeetingView extends StatelessWidget {
     // Add LocationVerificationViewModel
     final locationVerificationVM =
         Provider.of<LocationVerificationViewModel>(context, listen: false);
+    final finishWorkingViewModel = context.watch<FinishWorkingViewModel>();
     return Scaffold(
       body: Stack(
         children: [
@@ -154,21 +157,26 @@ class OutsideMeetingView extends StatelessWidget {
                                 LocationOptionsSection(
                                   locations: viewModel.locationOptions,
                                 ),
-                                SlidableButton(onSlideComplete: () async {
-                                  developer.log('slide complete');
-                                  await Future.delayed(
-                                      const Duration(seconds: 1));
-                                  if (context.mounted) {
-                                    context.pushNamed(
-                                      'finish_working',
-                                      extra: {
-                                        //'wifiName': wifiName.toLowerCase(),
-                                        //'startedWorkingTime': startedWorkingTime,
-                                        'workMode': WorkMode.ending,
-                                      },
-                                    );
-                                  }
-                                }),
+                                SlidableButton(
+                                  onSlideComplete: () async {
+                                    final DateTime exactTime = DateTime.now();
+                                    developer.log('slide complete');
+                                    await Future.delayed(
+                                        const Duration(seconds: 1));
+                                    if (context.mounted) {
+                                      finishWorkingViewModel
+                                          .updateFinishWorkingStatusTime(
+                                              exactTime);
+
+                                      context.pushNamed(
+                                        'finish_working',
+                                        extra: {
+                                          'workMode': WorkMode.ending,
+                                        },
+                                      );
+                                    }
+                                  },
+                                ),
                               ],
                             ),
                           ),
