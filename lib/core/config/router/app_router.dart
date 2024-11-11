@@ -12,7 +12,9 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const OutsideMeetingPage();
+        return const FinishWorkingPage(
+          workMode: WorkMode.ending,
+        );
       },
     ),
     GoRoute(

@@ -2,8 +2,10 @@ import 'dart:developer' as developer;
 
 import 'package:new_design/core/storage/base_storage_provider.dart';
 import 'package:new_design/core/storage/models/storable.dart';
+import 'package:new_design/features/finish_working/model/note.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
+import 'package:new_design/features/finish_working/repository/note_storage_repository.dart';
 import 'package:new_design/features/outside_office/repository/outside_meeting_list/meeting_shared_prefs_repository.dart';
 import 'package:new_design/features/outside_office/repository/outside_meeting_list/meeting_sqlite_repository.dart';
 import 'package:new_design/features/outside_office/repository/working_status/working_status_card_repository.dart';
@@ -21,6 +23,10 @@ class StorageProviderFactory {
         if (T == WorkingStatus) {
           developer.log('inside factory');
           return WorkingStatuscaSQLiteRepository() as BaseStorageProvider<T>;
+        }
+        if (T == Note) {
+          developer.log('inside factory');
+          return NoteStorageProvider() as BaseStorageProvider<T>;
         }
         throw UnsupportedError(
             'SQLite repository for ${T.toString()} is not supported.');

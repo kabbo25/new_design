@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/core/common_feature/widgets/edit_working_hour.dart';
 import 'package:new_design/core/theme/app_palette.dart';
@@ -7,12 +8,14 @@ import 'package:new_design/core/theme/app_text_styles.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/view/widgets/add_note_modal.dart';
 import 'package:new_design/features/finish_working/view/widgets/bottom_gradient.dart';
+import 'package:new_design/features/finish_working/view/widgets/edit_note_modal.dart';
 import 'package:new_design/features/finish_working/view/widgets/network_profile_bar.dart';
 import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list_dropdown.dart';
 import 'package:new_design/features/finish_working/view/widgets/working_status_card.dart';
 import 'package:new_design/features/finish_working/viewmodel/finish_working_view_model.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
 import 'package:new_design/features/start_working/view/widgets/timer_section.dart';
+import 'package:new_design/generated/assets.dart';
 import 'package:provider/provider.dart';
 
 class FinishWorkingPage extends StatelessWidget {
@@ -115,6 +118,8 @@ class FinishWorkingView extends StatelessWidget {
                         Column(
                           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            buildNoteCounter(context, viewModel),
+                            const Gap(10),
                             TextButton(
                               onPressed: () =>
                                   _showAddNoteModal(context, viewModel),
@@ -123,9 +128,12 @@ class FinishWorkingView extends StatelessWidget {
                                     const EdgeInsets.symmetric(vertical: 12),
                                 backgroundColor: Colors.transparent,
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Add a note',
-                                style: AppTextStyles.buttonText,
+                                style: AppTextStyles.customStyle(
+                                  AppTextStyles.heading2,
+                                  color: AppPalette.primary,
+                                ),
                               ),
                             ),
                             const Spacer(),
@@ -182,8 +190,8 @@ void _showAddNoteModal(BuildContext context, FinishWorkingViewModel viewModel) {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: AddNoteModal(
-        onSaveNote: (note) {
-          viewModel.updateNote(note);
+        onSaveNote: (note) async {
+          await viewModel.saveNote(note);
         },
       ),
     ),
@@ -214,5 +222,58 @@ void _showWorkingTimeDialog(BuildContext context, WorkMode mode) {
     currentStatus: config.status,
     onStatusSaved: (updatedStatus) =>
         viewModel.saveWorkingStatus(updatedStatus),
+  );
+}
+
+Widget buildNoteCounter(
+    BuildContext context, FinishWorkingViewModel viewModel) {
+  if (viewModel.noteList.isEmpty) {
+    return const SizedBox.shrink();
+  }
+
+  return Column(
+    children: [
+      TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled:
+                true, // This ensures the modal can expand to full height if needed
+            backgroundColor: Colors.transparent,
+            builder: (context) => Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: EditNoteModal(
+                onEdit: (note) async {
+                  viewModel.saveNote(note);
+                },
+                initialNote: viewModel.noteList[0],
+              ),
+            ),
+          );
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(Assets.svgsNote),
+            const Gap(8),
+            Text(
+              '${viewModel.noteList.length} ${viewModel.noteList.length == 1 ? 'Note' : 'Notes'} added',
+              style: AppTextStyles.customStyle(
+                AppTextStyles.buttonText,
+                color: AppPalette.primary,
+              ),
+            ),
+          ],
+        ),
+      ),
+      const Gap(10),
+    ],
   );
 }

@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:new_design/core/common_feature/widgets/toastify.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
+import 'package:new_design/features/finish_working/model/note.dart';
 
 class AddNoteModal extends StatefulWidget {
-  final Function(String) onSaveNote;
+  final Function(Note) onSaveNote;
   final bool isLoading;
+  final Note? initialNote;
 
   const AddNoteModal({
     super.key,
     required this.onSaveNote,
     this.isLoading = false,
+    this.initialNote,
   });
 
   @override
@@ -20,15 +24,50 @@ class AddNoteModal extends StatefulWidget {
 
 class _AddNoteModalState extends State<AddNoteModal> {
   final TextEditingController _noteController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialNote != null) {
+      _noteController.text = widget.initialNote!.content;
+    }
+    // Add this - will focus in both cases
+    Future.delayed(const Duration(milliseconds: 100), () {
+      _focusNode.requestFocus();
+    });
+  }
 
   @override
   void dispose() {
     _noteController.dispose();
+    _focusNode.dispose(); // Add this line
     super.dispose();
+  }
+
+  void _handleSave() {
+    if (_noteController.text.isEmpty) return;
+
+    final note = widget.initialNote?.copyWith(
+          content: _noteController.text,
+        ) ??
+        Note(content: _noteController.text);
+
+    widget.onSaveNote(note);
+    final isEditing = widget.initialNote != null;
+    ToastOverlay.show(
+      context,
+      message:
+          isEditing ? 'Note updated successfully' : 'Note saved successfully',
+      isUpdate: isEditing,
+    );
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.initialNote != null;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
       decoration: BoxDecoration(
@@ -39,12 +78,12 @@ class _AddNoteModalState extends State<AddNoteModal> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 Text(
-                  'Add a note',
+                  isEditing ? 'Edit note' : 'Add a note',
                   style: AppTextStyles.heading2,
                   textAlign: TextAlign.center,
                 ),
@@ -52,11 +91,7 @@ class _AddNoteModalState extends State<AddNoteModal> {
             ),
           ),
           const Gap(12),
-          Container(
-            width: double.infinity,
-            height: 2,
-            color: AppPalette.textSecondary.withOpacity(0.5),
-          ),
+          const Divider(),
           const Gap(12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -72,17 +107,21 @@ class _AddNoteModalState extends State<AddNoteModal> {
                 ),
                 const Gap(16),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 23),
                   decoration: BoxDecoration(
-                    color: AppPalette.textSecondary.withOpacity(0.1),
+                    color: AppPalette.textSecondary.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: TextField(
-                    controller: _noteController,
-                    maxLines: 3,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Write here',
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _noteController,
+                      focusNode: _focusNode, // Add the focus node here
+                      maxLines: 2,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Write here',
+                      ),
                     ),
                   ),
                 ),
@@ -90,16 +129,11 @@ class _AddNoteModalState extends State<AddNoteModal> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24),
                   child: ElevatedButton(
-                    onPressed: widget.isLoading
-                        ? null
-                        : () {
-                            widget.onSaveNote(_noteController.text);
-                            Navigator.pop(context);
-                          },
+                    onPressed: widget.isLoading ? null : _handleSave,
                     style: AppButtonStyles.elevatedButton,
                     child: Text(
-                      'Save',
-                      style: AppTextStyles.buttonText.copyWith(
+                      isEditing ? 'Update' : 'Save',
+                      style: AppTextStyles.subtitle2.copyWith(
                         color: AppPalette.background,
                       ),
                     ),
