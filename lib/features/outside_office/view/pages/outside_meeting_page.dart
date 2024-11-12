@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:new_design/core/common_feature/widgets/edit_working_hour.dart';
+import 'package:new_design/core/common_feature/widgets/flip_timer.dart';
 import 'package:new_design/core/theme/app_button_styles.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
@@ -111,6 +112,7 @@ class OutsideMeetingView extends StatelessWidget {
                   TimerSection(
                     controller: viewModel.timeTrackingViewModel.timerController,
                   ),
+                  const FlipTimer(),
                   TextButton(
                     style: AppButtonStyles.textButton,
                     onPressed: () async {
