@@ -112,7 +112,7 @@ class OutsideMeetingView extends StatelessWidget {
                   TimerSection(
                     controller: viewModel.timeTrackingViewModel.timerController,
                   ),
-                  const FlipTimer(),
+                 // const FlipTimer(),
                   TextButton(
                     style: AppButtonStyles.textButton,
                     onPressed: () async {

@@ -55,3 +55,6 @@ app.*.map.json
 
 # Monarch related
 .monarch/
+
+# Monarch related
+.monarch/

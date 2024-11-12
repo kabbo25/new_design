@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:new_design/features/finish_working/view/widgets/elapsed_time/elapsed_time_controller.dart';
+
 import 'package:new_design/generated/assets.dart';
+
+import '../../../office_page/view/widgets/flip_animation.dart';
 
 class TimerSection extends StatefulWidget {
   final TimeTrackerController controller;
@@ -18,6 +21,7 @@ class TimerSection extends StatefulWidget {
 
 class _TimerSectionState extends State<TimerSection> {
   late final TimeTrackerController _controller;
+  String? _previousTime;
 
   @override
   void initState() {
@@ -49,11 +53,41 @@ class _TimerSectionState extends State<TimerSection> {
     return '$hours:$minutes:$seconds';
   }
 
+  List<Widget> _buildTimeDigits(String currentTime) {
+    final List<Widget> digits = [];
+    final previousTimeSegments = _previousTime?.split('') ?? List.filled(8, '0');
+    final currentTimeSegments = currentTime.split('');
+
+    for (int i = 0; i < currentTimeSegments.length; i++) {
+      if (currentTimeSegments[i] == ':') {
+        digits.add(const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Text(
+            ':',
+            style: TextStyle(
+              fontSize: 50,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ));
+      } else {
+        digits.add(
+          NumberFlip(
+            newValue: currentTimeSegments[i],
+            previousValue: previousTimeSegments[i],
+          ),
+        );
+      }
+    }
+
+    _previousTime = currentTime;
+    return digits;
+  }
+
   @override
   Widget build(BuildContext context) {
     final elapsed = _controller.elapsed;
     final formattedTime = _formatDuration(elapsed);
-    final timeSegments = formattedTime.split(':');
 
     return Column(
       children: [
@@ -75,38 +109,10 @@ class _TimerSectionState extends State<TimerSection> {
         const Gap(12),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildTimeSegment(timeSegments[0]), // hours
-            _buildSeparator(),
-            _buildTimeSegment(timeSegments[1]), // minutes
-            _buildSeparator(),
-            _buildTimeSegment(timeSegments[2]), // seconds
-          ],
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          children: _buildTimeDigits(formattedTime),
         ),
       ],
-    );
-  }
-
-  Widget _buildTimeSegment(String value) {
-    return Text(
-      value,
-      style: const TextStyle(
-        fontSize: 48,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
-  Widget _buildSeparator() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Text(
-        ':',
-        style: TextStyle(
-          fontSize: 48,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
     );
   }
 }
