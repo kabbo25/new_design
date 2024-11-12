@@ -1,8 +1,11 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:new_design/core/storage/storage_factory.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
+import 'package:new_design/features/finish_working/viewmodel/timer_tracking_view_model.dart';
 import 'package:new_design/features/outside_office/view_model/base_location_view_model.dart';
 import 'package:new_design/features/outside_office/view_model/base_working_status_view_model.dart';
 import 'package:new_design/features/start_page/model/background_config.dart';
@@ -10,17 +13,32 @@ import 'package:new_design/features/start_working/model/start_working_location.d
 
 class OutsideMeetingViewModel extends ChangeNotifier
     with BaseLocationViewModel, BaseWorkingStatusViewModel {
+  final TimeTrackingViewModel _timeTrackingViewModel;
+
   OutsideMeetingViewModel({
     StorageType locationStorageType = StorageType.sqlite,
     StorageType workingStatusStorageType = StorageType.sqlite,
-  }) {
+    TimeTrackingViewModel? timeTrackingViewModel,
+  }) : _timeTrackingViewModel =
+            timeTrackingViewModel ?? TimeTrackingViewModel() {
     initializeLocationProvider(
         StorageProviderFactory.create<OutsideMeeting>(locationStorageType));
     initializeWorkingStatusProvider(
         StorageProviderFactory.create<WorkingStatus>(workingStatusStorageType));
     initlocation();
     initworking();
+    _initializeTimeTracking();
   }
+
+  void _initializeTimeTracking() async {
+    await Future.delayed(const Duration(seconds: 1));
+    final status = startingStatus ?? workingStatus;
+    developer.log(status.toJson().toString());
+    _timeTrackingViewModel.updateStartingStatus(status);
+    _timeTrackingViewModel.startTracking('728');
+  }
+
+  TimeTrackingViewModel get timeTrackingViewModel => _timeTrackingViewModel;
 
   BackgroundConfig get backgroundConfig => BackgroundConfig(
         gradientColors: [

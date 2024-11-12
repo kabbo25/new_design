@@ -25,7 +25,6 @@ import 'package:new_design/features/start_working/view/widgets/working_location_
 import 'package:new_design/generated/assets.dart';
 import 'package:provider/provider.dart';
 
-// Update your OutsideMeetingPage to provide both view models
 class OutsideMeetingPage extends StatelessWidget {
   const OutsideMeetingPage({super.key});
 
@@ -48,10 +47,10 @@ class OutsideMeetingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<OutsideMeetingViewModel>();
-    // Add LocationVerificationViewModel
     final locationVerificationVM =
         Provider.of<LocationVerificationViewModel>(context, listen: false);
     final finishWorkingViewModel = context.watch<FinishWorkingViewModel>();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -109,11 +108,12 @@ class OutsideMeetingView extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  const TimerSection(),
+                  TimerSection(
+                    controller: viewModel.timeTrackingViewModel.timerController,
+                  ),
                   TextButton(
                     style: AppButtonStyles.textButton,
                     onPressed: () async {
-                      // Call _handleFindLocation directly
                       await locationVerificationVM.handleFindLocation(context,
                           shouldNavigate: false);
                     },
@@ -125,7 +125,6 @@ class OutsideMeetingView extends StatelessWidget {
                           child: SvgPicture.asset(
                             Assets.svgsFindMyLocation,
                             height: 16,
-                            // width: 12.52,
                           ),
                         ),
                         const Gap(8),
@@ -167,7 +166,6 @@ class OutsideMeetingView extends StatelessWidget {
                                       finishWorkingViewModel
                                           .updateFinishWorkingStatusTime(
                                               exactTime);
-
                                       context.pushNamed(
                                         'finish_working',
                                         extra: {
@@ -200,7 +198,6 @@ void _showWorkingTimeDialog(BuildContext context, WorkMode mode) {
   final viewModel =
       Provider.of<OutsideMeetingViewModel>(context, listen: false);
 
-  // Configure dialog based on work mode
   final config = switch (mode) {
     WorkMode.starting => (
         title: 'Edit your entry time',
@@ -215,11 +212,12 @@ void _showWorkingTimeDialog(BuildContext context, WorkMode mode) {
   };
 
   WorkingTimePickerDialog.show(
-    context: context,
-    title: config.title,
-    editTimeLabel: config.label,
-    currentStatus: config.status,
-    onStatusSaved: (updatedStatus) =>
-        viewModel.saveWorkingStatus(updatedStatus),
-  );
+      context: context,
+      title: config.title,
+      editTimeLabel: config.label,
+      currentStatus: config.status,
+      onStatusSaved: (updatedStatus) => {
+            viewModel.saveWorkingStatus(updatedStatus),
+            viewModel.timeTrackingViewModel.updateStartingStatus(updatedStatus)
+          });
 }
