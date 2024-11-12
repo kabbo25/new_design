@@ -8,32 +8,42 @@ import 'package:new_design/features/finish_working/model/note.dart';
 import 'package:new_design/features/finish_working/view/widgets/add_note_modal.dart';
 import 'package:new_design/generated/assets.dart';
 
-class EditNoteModal extends StatefulWidget {
-  final Note? initialNote;
+class EditNotesModal extends StatefulWidget {
+  final List<Note> notes;
   final Function(Note) onEdit;
 
-  const EditNoteModal({
+  const EditNotesModal({
     super.key,
-    this.initialNote,
+    required this.notes,
     required this.onEdit,
   });
 
   @override
-  State<EditNoteModal> createState() => _EditNoteModalState();
+  State<EditNotesModal> createState() => _EditNotesModalState();
 }
 
-class _EditNoteModalState extends State<EditNoteModal> {
+class _EditNotesModalState extends State<EditNotesModal> {
+  ScrollController controller = ScrollController();
+  double topContainer = 0;
+
   @override
   void initState() {
     super.initState();
+    controller.addListener(() {
+      setState(() {
+        topContainer = controller.offset /
+            120; // Adjust this value to control animation speed
+      });
+    });
   }
 
   @override
   void dispose() {
+    controller.dispose();
     super.dispose();
   }
 
-  Widget _buildEditButton() {
+  Widget _buildEditButton(Note note) {
     return TextButton(
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
@@ -44,8 +54,7 @@ class _EditNoteModalState extends State<EditNoteModal> {
         Navigator.pop(context);
         showModalBottomSheet(
           context: context,
-          isScrollControlled:
-              true, // This ensures the modal can expand to full height if needed
+          isScrollControlled: true,
           backgroundColor: Colors.transparent,
           builder: (context) => Padding(
             padding: EdgeInsets.only(
@@ -53,7 +62,7 @@ class _EditNoteModalState extends State<EditNoteModal> {
             ),
             child: AddNoteModal(
               onSaveNote: widget.onEdit,
-              initialNote: widget.initialNote,
+              initialNote: note,
             ),
           ),
         );
@@ -76,9 +85,69 @@ class _EditNoteModalState extends State<EditNoteModal> {
     );
   }
 
+  Widget _buildNoteCard(Note note, int index) {
+    double opacity = 1.0;
+    if (topContainer > 0.1) {
+      // Changed from 0.5 to 0
+      opacity = (index + .7) - topContainer; // Added +1 to include first item
+      opacity = opacity.clamp(0.0, 1.0);
+    }
+
+    return Opacity(
+      opacity: opacity,
+      child: Transform(
+        transform: Matrix4.identity()..scale(opacity, opacity),
+        alignment: Alignment.topCenter,
+        child: Align(
+          heightFactor: .9,
+          child: Container(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 8,
+            ),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppPalette.textPrimary.withOpacity(0.1),
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(8),
+              color: AppPalette.background,
+              boxShadow: [
+                BoxShadow(
+                  color: AppPalette.textPrimary.withOpacity(0.05),
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    note.content,
+                    style: AppTextStyles.customStyle(
+                      AppTextStyles.subtitle1,
+                      color: AppPalette.textPrimary,
+                      weight: FontWeight.w400,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const Gap(12),
+                _buildEditButton(note),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    //final isEditing = widget.initialNote != null;
+    final size = MediaQuery.of(context).size;
 
     return Container(
       padding: const EdgeInsets.only(top: 24),
@@ -97,7 +166,7 @@ class _EditNoteModalState extends State<EditNoteModal> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Note',
+                  'Notes',
                   style: AppTextStyles.heading1,
                   textAlign: TextAlign.center,
                 ),
@@ -106,62 +175,29 @@ class _EditNoteModalState extends State<EditNoteModal> {
           ),
           const Gap(12),
           const Divider(),
-          const Gap(12),
+          const Gap(10),
+          SizedBox(
+            height: size.height * 0.20, // 25% of screen height
+            child: ListView.builder(
+              controller: controller,
+              itemCount: widget.notes.length,
+              itemBuilder: (context, index) =>
+                  _buildNoteCard(widget.notes[index], index),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppPalette.textPrimary.withOpacity(0.1),
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            widget.initialNote?.content ?? 'No Note foung',
-                            style: AppTextStyles.customStyle(
-                              AppTextStyles.subtitle1,
-                              color: AppPalette.textPrimary,
-                              weight: FontWeight.w400,
-                            ),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const Gap(12),
-                        _buildEditButton(),
-                      ],
-                    ),
-                  ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: AppButtonStyles.elevatedButton,
+              child: Text(
+                'Back',
+                style: AppTextStyles.subtitle1.copyWith(
+                  color: AppPalette.background,
                 ),
-                const Gap(24),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: AppButtonStyles.elevatedButton,
-                    child: Text(
-                      'Back',
-                      style: AppTextStyles.subtitle1.copyWith(
-                        color: AppPalette.background,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],

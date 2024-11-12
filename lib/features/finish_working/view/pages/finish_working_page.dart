@@ -249,11 +249,11 @@ Widget buildNoteCounter(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
-              child: EditNoteModal(
+              child: EditNotesModal(
                 onEdit: (note) async {
                   viewModel.saveNote(note);
                 },
-                initialNote: viewModel.noteList[0],
+                notes: viewModel.noteList,
               ),
             ),
           );
