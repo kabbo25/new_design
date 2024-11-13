@@ -34,7 +34,7 @@ class OutsideMeetingViewModel extends ChangeNotifier
     await Future.delayed(const Duration(seconds: 1));
     final status = startingStatus ?? workingStatus;
     developer.log(status.toJson().toString());
-    _timeTrackingViewModel.updateStartingStatus(status);
+    _timeTrackingViewModel.updateWorkingStatus(status);
     _timeTrackingViewModel.startTracking('728');
   }
 

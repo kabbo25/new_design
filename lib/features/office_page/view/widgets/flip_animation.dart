@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class NumberFlip extends StatelessWidget {
@@ -14,8 +15,8 @@ class NumberFlip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 35,  // Match the reference width
-      height: 50,  // Match the reference height
+      width: 35, // Match the reference width
+      height: 50, // Match the reference height
       child: Stack(
         children: [
           // Static parts
@@ -23,7 +24,7 @@ class NumberFlip extends StatelessWidget {
             top: 0,
             left: 0,
             right: 0,
-            height: 50,  // Half of the total height
+            height: 50, // Half of the total height
             child: _TopHalf(
               value: newValue,
             ),
@@ -52,8 +53,8 @@ class _TopHalf extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFF7F7F7),
+      decoration: BoxDecoration(
+        color: Color(0xFFF7F7F7).withOpacity(0.5),
         borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
       ),
       alignment: Alignment.center,
@@ -61,7 +62,7 @@ class _TopHalf extends StatelessWidget {
         value,
         style: const TextStyle(
           fontSize: 36,
-          color: Colors.black,
+          color: Color.fromARGB(255, 53, 84, 138),
         ),
       ),
     );
@@ -82,7 +83,8 @@ class _TopFlip extends StatefulWidget {
   State<_TopFlip> createState() => _TopFlipState();
 }
 
-class _TopFlipState extends State<_TopFlip> with SingleTickerProviderStateMixin {
+class _TopFlipState extends State<_TopFlip>
+    with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> animation;
 
@@ -90,7 +92,7 @@ class _TopFlipState extends State<_TopFlip> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
     controller = AnimationController(
-      duration: const Duration(milliseconds: 500),  // Match reference timing
+      duration: const Duration(milliseconds: 700), // Match reference timing
       vsync: this,
     );
     animation = Tween<double>(begin: 0, end: 1).animate(
@@ -121,7 +123,7 @@ class _TopFlipState extends State<_TopFlip> with SingleTickerProviderStateMixin 
               ..rotateX(-animation.value * pi / 2),
             alignment: Alignment.bottomCenter,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Color(0xFFF7F7F7),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
               ),

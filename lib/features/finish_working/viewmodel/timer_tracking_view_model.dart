@@ -1,34 +1,42 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
+import 'package:new_design/core/storage/storage_factory.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/view/widgets/elapsed_time/elapsed_time_controller.dart';
 
 class TimeTrackingViewModel extends ChangeNotifier {
   final TimeTrackerController timerController;
-  WorkingStatus? _startingStatus;
 
-  TimeTrackingViewModel() : timerController = TimeTrackerController() {
+  TimeTrackingViewModel(
+      {StorageType workingStatusStorageType = StorageType.sqlite})
+      : timerController = TimeTrackerController() {
     _setupTimerController();
+    _initializeController(workingStatusStorageType);
+  }
+
+  void _initializeController(StorageType storageType) {
+    timerController.initializeWorkingStatusProvider(
+        StorageProviderFactory.create<WorkingStatus>(storageType));
   }
 
   void _setupTimerController() {
     timerController.addListener(_handleTimerUpdate);
   }
 
-  void updateStartingStatus(WorkingStatus status) {
-    _startingStatus = status;
-    timerController.updateWorkingStatus(status);
+  Future<void> updateWorkingStatus(WorkingStatus status) async {
+    await timerController.updateWorkingStatus(status);
     notifyListeners();
   }
 
   Future<void> _handleTimerUpdate() async {
     if (!timerController.isRunning) return;
+    notifyListeners();
   }
 
   Future<void> startTracking(String userId) async {
-    if (_startingStatus == null) {
-      throw Exception('Starting status must be set before starting tracking');
-    }
-
+    developer.log(userId);
+    await timerController.initworking();
     timerController.start();
   }
 
@@ -43,6 +51,9 @@ class TimeTrackingViewModel extends ChangeNotifier {
   Future<void> stopTracking() async {
     timerController.reset();
   }
+
+  Duration get elapsed => timerController.elapsed;
+  bool get isRunning => timerController.isRunning;
 
   @override
   void dispose() {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:new_design/features/finish_working/model/working_status.dart';
+import 'package:new_design/features/finish_working/view/pages/finish_working_page.dart';
 import 'package:new_design/features/office_page/view/pages/attendance_error.dart';
 import 'package:new_design/features/office_page/view/pages/attendence_success.dart';
 import 'package:new_design/features/outside_office/view/pages/outside_meeting_page.dart';
@@ -44,20 +46,20 @@ final goRouter = GoRouter(
         return const OutsideMeetingPage();
       },
     ),
-    // GoRoute(
-    //   path: '/finish-working',
-    //   name: 'finish_working',
-    //   builder: (context, state) {
-    //     final extra = state.extra as Map<String, dynamic>?;
-    //     if (extra == null || !extra.containsKey('workMode')) {
-    //       // Default to starting mode if not specified
-    //       return const FinishWorkingPage(workMode: WorkMode.starting);
-    //     }
+    GoRoute(
+      path: '/finish-working',
+      name: 'finish_working',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        if (extra == null || !extra.containsKey('workMode')) {
+          // Default to starting mode if not specified
+          return const FinishWorkingPage(workMode: WorkMode.starting);
+        }
 
-    //     return FinishWorkingPage(
-    //       workMode: extra['workMode'] as WorkMode,
-    //     );
-    //   },
-    // ),
+        return FinishWorkingPage(
+          workMode: extra['workMode'] as WorkMode,
+        );
+      },
+    ),
   ],
 );

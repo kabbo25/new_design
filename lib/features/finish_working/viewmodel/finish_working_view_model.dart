@@ -5,37 +5,46 @@ import 'package:new_design/features/finish_working/model/note.dart';
 import 'package:new_design/features/finish_working/model/outside_meeting.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/finish_working/viewmodel/note_view_model.dart';
+import 'package:new_design/features/finish_working/viewmodel/timer_tracking_view_model.dart';
 import 'package:new_design/features/outside_office/view_model/base_location_view_model.dart';
 import 'package:new_design/features/outside_office/view_model/base_working_status_view_model.dart';
 import 'package:new_design/features/start_page/model/background_config.dart';
 
 class FinishWorkingViewModel extends ChangeNotifier
     with BaseLocationViewModel, BaseWorkingStatusViewModel, NoteViewModelMixin {
+  final TimeTrackingViewModel _timeTrackingViewModel;
+
   FinishWorkingViewModel({
     StorageType locationStorageType = StorageType.sqlite,
     StorageType workingStatusStorageType = StorageType.sqlite,
-  }) {
+    TimeTrackingViewModel? timeTrackingViewModel,
+  }) : _timeTrackingViewModel = timeTrackingViewModel ??
+            TimeTrackingViewModel(
+                workingStatusStorageType: workingStatusStorageType) {
     initializeLocationProvider(
         StorageProviderFactory.create<OutsideMeeting>(locationStorageType));
     initializeWorkingStatusProvider(
         StorageProviderFactory.create<WorkingStatus>(workingStatusStorageType));
     initializeNoteProvider(
         StorageProviderFactory.create<Note>(workingStatusStorageType));
-    initlocation();
-    initworking();
-    initNotes();
+
+    _initialize();
   }
 
-  final WorkingStatus _startingWorkingStatus = WorkingStatus(
-    location: 'outside',
-    workMode: WorkMode.starting,
-    time: TimeOfDay.now(),
-  );
-  WorkingStatus _finishWorkingStatus = WorkingStatus(
-    location: 'outside',
-    workMode: WorkMode.ending,
-    time: TimeOfDay.now(),
-  );
+  Future<void> _initialize() async {
+    await initlocation();
+    await initworking();
+    await initNotes();
+
+    _initializeTimeTracking();
+  }
+
+  @override
+  Future<void> saveWorkingStatus(WorkingStatus status) async {
+    await super.saveWorkingStatus(status);
+    await _timeTrackingViewModel.updateWorkingStatus(status);
+    notifyListeners();
+  }
 
   BackgroundConfig get backgroundConfig => BackgroundConfig(
         gradientColors: [
@@ -48,9 +57,29 @@ class FinishWorkingViewModel extends ChangeNotifier
         glowColor: AppPalette.secondary, // Yellow color
         glowOpacity: 0.8,
       );
-
   WorkingStatus get startingWorkingStatus => _startingWorkingStatus;
   WorkingStatus get finishWorkingStatus => _finishWorkingStatus;
+  TimeTrackingViewModel get timeTrackingViewModel => _timeTrackingViewModel;
+
+  final WorkingStatus _startingWorkingStatus = WorkingStatus(
+    location: 'outside',
+    workMode: WorkMode.starting,
+    time: TimeOfDay.now(),
+  );
+
+  WorkingStatus _finishWorkingStatus = WorkingStatus(
+    location: 'outside',
+    workMode: WorkMode.ending,
+    time: TimeOfDay.now(),
+  );
+
+  void _initializeTimeTracking() async {
+    await Future.delayed(const Duration(seconds: 1));
+    _timeTrackingViewModel.startTracking('728');
+    await Future.delayed(const Duration(seconds: 1));
+    _timeTrackingViewModel.pauseTracking();
+  }
+
   void updateFinishWorkingStatusTime(DateTime exactTime) {
     _finishWorkingStatus = WorkingStatus(
       location: 'outside',
