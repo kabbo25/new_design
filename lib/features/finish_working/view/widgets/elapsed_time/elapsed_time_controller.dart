@@ -9,65 +9,69 @@ class TimeTrackerController extends ChangeNotifier
     with BaseWorkingStatusViewModel {
   Timer? _timer;
   Duration _elapsed = Duration.zero;
-  String _status = 'idle'; // 'idle', 'running', 'paused'
+  String _status = 'idle';
+  DateTime? _lastUpdateTime;
+  int _timerInstanceCount = 0;
 
   Duration get elapsed => _elapsed;
   String get status => _status;
   bool get isRunning => _status == 'running';
 
   void start() {
-    developer.log('status $_status');
-    // if (_status != 'idle' && _status != 'paused') return;
-    // if (startingStatus == null) return;
+    if (_status != 'idle' && _status != 'paused') {
+      developer.log('Timer start rejected - Invalid status: $_status');
+      return;
+    }
+    if (startingStatus == null) {
+      developer.log('Timer start rejected - No starting status');
+      return;
+    }
+
+    developer.log('=== Timer Start ===');
+    developer.log('Previous status: $_status');
+    developer.log('Starting status: ${startingStatus?.toJson()}');
+    developer.log('Finishing status: ${finishingStatus?.toJson()}');
+    developer.log('Current time: ${DateTime.now()}');
 
     _status = 'running';
+    _lastUpdateTime = DateTime.now();
+    _updateElapsed(); // Initial update
     _startTimer();
-    notifyListeners();
-  }
 
-  void pause() {
-    if (_status != 'running') return;
-
-    _status = 'paused';
-    _timer?.cancel();
-    notifyListeners();
-  }
-
-  void resume() {
-    if (_status != 'paused') return;
-
-    _status = 'running';
-    _startTimer();
-    notifyListeners();
-  }
-
-  void reset() {
-    _timer?.cancel();
-    _elapsed = Duration.zero;
-    _status = 'idle';
+    developer.log('Timer initialized with elapsed: $_elapsed');
     notifyListeners();
   }
 
   void _startTimer() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), _updateTimer);
-    _updateElapsed(); // Initial update
+    _stopTimer(); // Ensure any existing timer is properly stopped
+
+    _timerInstanceCount++;
+    final currentInstance = _timerInstanceCount;
+
+    developer.log('Starting new timer instance #$currentInstance');
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_status != 'running' || currentInstance != _timerInstanceCount) {
+        _stopTimer();
+        return;
+      }
+
+      _updateElapsed(shouldLog: false); // Reduce logging noise
+      notifyListeners();
+    });
   }
 
-  void _updateTimer(Timer timer) {
-    _updateElapsed();
-    notifyListeners();
+  void _stopTimer() {
+    if (_timer?.isActive ?? false) {
+      developer.log('Stopping active timer');
+      _timer?.cancel();
+      _timer = null;
+    }
   }
 
-  Future<void> updateWorkingStatus(WorkingStatus status) async {
-    await saveWorkingStatus(status);
-    _updateElapsed();
-    notifyListeners();
-  }
-
-  void _updateElapsed() {
+  DateTime _getStartDateTime() {
     final start = startingStatus;
-    if (start == null) return;
+    if (start == null) return DateTime.now();
 
     final now = DateTime.now();
     var startDateTime = DateTime(
@@ -78,14 +82,42 @@ class TimeTrackerController extends ChangeNotifier
       start.time.minute,
     );
 
-    // If start time is in the future, assume it's from yesterday
     if (startDateTime.isAfter(now)) {
       startDateTime = startDateTime.subtract(const Duration(days: 1));
     }
 
+    return startDateTime;
+  }
+
+  void pause() {
+    if (_status != 'running') {
+      developer.log('Pause rejected - Timer is not running');
+      return;
+    }
+
+    developer.log('=== Timer Pause ===');
+    developer.log('Current elapsed time: $_elapsed');
+    developer.log('Status before pause: $_status');
+
+    _stopTimer();
+    _status = 'paused';
+    _updateElapsed(); // Capture final elapsed time before pausing
+    notifyListeners();
+  }
+
+  void _updateElapsed({bool shouldLog = true}) {
+    final start = startingStatus;
+    if (start == null) {
+      developer.log('ERROR: No starting status available');
+      return;
+    }
+
+    final now = DateTime.now();
+    var startDateTime = _getStartDateTime();
+
     final end = finishingStatus;
-    if (end != null) {
-      // Calculate using end time
+    if (end != null && _status != 'running') {
+      // Only use end time if timer is not running
       var endDateTime = DateTime(
         now.year,
         now.month,
@@ -94,21 +126,53 @@ class TimeTrackerController extends ChangeNotifier
         end.time.minute,
       );
 
-      // If end time appears to be before start time, assume it's for the next day
       if (endDateTime.isBefore(startDateTime)) {
         endDateTime = endDateTime.add(const Duration(days: 1));
       }
 
       _elapsed = endDateTime.difference(startDateTime);
+      if (shouldLog) {
+        developer.log('Using end time: ${_formatDateTime(endDateTime)}');
+      }
     } else {
-      // Calculate using current time if no end time exists
       _elapsed = now.difference(startDateTime);
+      if (shouldLog) {
+        developer.log('Using current time for calculation');
+      }
     }
+
+    if (shouldLog) {
+      developer.log('Calculated elapsed time: $_elapsed');
+    }
+    _lastUpdateTime = now;
+  }
+
+  String _formatDateTime(DateTime dt) {
+    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
+        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> updateWorkingStatus(WorkingStatus status) async {
+    developer.log('=== Updating Working Status ===');
+    developer.log('New status: ${status.toJson()}');
+    developer.log('Current status: $_status');
+
+    await saveWorkingStatus(status);
+
+    // If this is a finishing status and the timer is running, stop it
+    if (status.workMode == WorkMode.ending && _status == 'running') {
+      _status = 'idle';
+      _stopTimer();
+    }
+
+    _updateElapsed();
+    notifyListeners();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    developer.log('Disposing TimeTrackerController');
+    _stopTimer();
     super.dispose();
   }
 }

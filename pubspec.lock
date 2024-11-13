@@ -674,7 +674,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+<<<<<<< Updated upstream
   mime:
+=======
+  path:
+>>>>>>> Stashed changes
     dependency: transitive
     description:
       name: mime
@@ -1135,6 +1139,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.2"
+<<<<<<< Updated upstream
   timing:
     dependency: transitive
     description:
@@ -1143,6 +1148,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+=======
+>>>>>>> Stashed changes
   typed_data:
     dependency: transitive
     description:
@@ -1223,6 +1230,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.2.5"
+<<<<<<< Updated upstream
   watcher:
     dependency: transitive
     description:
@@ -1231,6 +1239,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+=======
+>>>>>>> Stashed changes
   web:
     dependency: transitive
     description:

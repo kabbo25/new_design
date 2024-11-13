@@ -219,6 +219,5 @@ void _showWorkingTimeDialog(BuildContext context, WorkMode mode) {
       currentStatus: config.status,
       onStatusSaved: (updatedStatus) => {
             viewModel.saveWorkingStatus(updatedStatus),
-           // viewModel.timeTrackingViewModel.updateStartingStatus(updatedStatus)
           });
 }

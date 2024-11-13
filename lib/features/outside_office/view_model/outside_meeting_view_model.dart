@@ -38,6 +38,13 @@ class OutsideMeetingViewModel extends ChangeNotifier
     _timeTrackingViewModel.startTracking('728');
   }
 
+  @override
+  Future<void> saveWorkingStatus(WorkingStatus status) async {
+    await super.saveWorkingStatus(status);
+    await _timeTrackingViewModel.updateWorkingStatus(status);
+    notifyListeners();
+  }
+
   TimeTrackingViewModel get timeTrackingViewModel => _timeTrackingViewModel;
 
   BackgroundConfig get backgroundConfig => BackgroundConfig(

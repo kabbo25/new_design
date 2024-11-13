@@ -44,13 +44,13 @@ class TimeTrackingViewModel extends ChangeNotifier {
     timerController.pause();
   }
 
-  Future<void> resumeTracking() async {
-    timerController.resume();
-  }
+  // Future<void> resumeTracking() async {
+  //   timerController.resume();
+  // }
 
-  Future<void> stopTracking() async {
-    timerController.reset();
-  }
+  // Future<void> stopTracking() async {
+  //   timerController.reset();
+  // }
 
   Duration get elapsed => timerController.elapsed;
   bool get isRunning => timerController.isRunning;
