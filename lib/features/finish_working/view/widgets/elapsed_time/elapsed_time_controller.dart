@@ -19,26 +19,26 @@ class TimeTrackerController extends ChangeNotifier
 
   void start() {
     if (_status != 'idle' && _status != 'paused') {
-      developer.log('Timer start rejected - Invalid status: $_status');
+     // developer.log('Timer start rejected - Invalid status: $_status');
       return;
     }
     if (startingStatus == null) {
-      developer.log('Timer start rejected - No starting status');
+     // developer.log('Timer start rejected - No starting status');
       return;
     }
 
-    developer.log('=== Timer Start ===');
-    developer.log('Previous status: $_status');
-    developer.log('Starting status: ${startingStatus?.toJson()}');
-    developer.log('Finishing status: ${finishingStatus?.toJson()}');
-    developer.log('Current time: ${DateTime.now()}');
+    // developer.log('=== Timer Start ===');
+    // developer.log('Previous status: $_status');
+    // developer.log('Starting status: ${startingStatus?.toJson()}');
+    // developer.log('Finishing status: ${finishingStatus?.toJson()}');
+    // developer.log('Current time: ${DateTime.now()}');
 
     _status = 'running';
     _lastUpdateTime = DateTime.now();
     _updateElapsed(); // Initial update
     _startTimer();
 
-    developer.log('Timer initialized with elapsed: $_elapsed');
+    // developer.log('Timer initialized with elapsed: $_elapsed');
     notifyListeners();
   }
 
@@ -48,7 +48,7 @@ class TimeTrackerController extends ChangeNotifier
     _timerInstanceCount++;
     final currentInstance = _timerInstanceCount;
 
-    developer.log('Starting new timer instance #$currentInstance');
+    // developer.log('Starting new timer instance #$currentInstance');
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_status != 'running' || currentInstance != _timerInstanceCount) {
@@ -56,14 +56,14 @@ class TimeTrackerController extends ChangeNotifier
         return;
       }
 
-      _updateElapsed(shouldLog: false); // Reduce logging noise
+      _updateElapsed(); // Reduce logging noise
       notifyListeners();
     });
   }
 
   void _stopTimer() {
     if (_timer?.isActive ?? false) {
-      developer.log('Stopping active timer');
+      // developer.log('Stopping active timer');
       _timer?.cancel();
       _timer = null;
     }
@@ -91,13 +91,13 @@ class TimeTrackerController extends ChangeNotifier
 
   void pause() {
     if (_status != 'running') {
-      developer.log('Pause rejected - Timer is not running');
+      // developer.log('Pause rejected - Timer is not running');
       return;
     }
 
-    developer.log('=== Timer Pause ===');
-    developer.log('Current elapsed time: $_elapsed');
-    developer.log('Status before pause: $_status');
+    // developer.log('=== Timer Pause ===');
+    // developer.log('Current elapsed time: $_elapsed');
+    // developer.log('Status before pause: $_status');
 
     _stopTimer();
     _status = 'paused';
@@ -105,10 +105,10 @@ class TimeTrackerController extends ChangeNotifier
     notifyListeners();
   }
 
-  void _updateElapsed({bool shouldLog = true}) {
+  void _updateElapsed() {
     final start = startingStatus;
     if (start == null) {
-      developer.log('ERROR: No starting status available');
+      //developer.log('ERROR: No starting status available');
       return;
     }
 
@@ -131,19 +131,17 @@ class TimeTrackerController extends ChangeNotifier
       }
 
       _elapsed = endDateTime.difference(startDateTime);
-      if (shouldLog) {
-        developer.log('Using end time: ${_formatDateTime(endDateTime)}');
-      }
+    
+        //developer.log('Using end time: ${_formatDateTime(endDateTime)}');
+      
     } else {
       _elapsed = now.difference(startDateTime);
-      if (shouldLog) {
-        developer.log('Using current time for calculation');
-      }
+     
+       // developer.log('Using current time for calculation');
+      
     }
 
-    if (shouldLog) {
-      developer.log('Calculated elapsed time: $_elapsed');
-    }
+ 
     _lastUpdateTime = now;
   }
 
@@ -153,9 +151,9 @@ class TimeTrackerController extends ChangeNotifier
   }
 
   Future<void> updateWorkingStatus(WorkingStatus status) async {
-    developer.log('=== Updating Working Status ===');
-    developer.log('New status: ${status.toJson()}');
-    developer.log('Current status: $_status');
+   // developer.log('=== Updating Working Status ===');
+   // developer.log('New status: ${status.toJson()}');
+   // developer.log('Current status: $_status');
 
     await saveWorkingStatus(status);
 
@@ -171,7 +169,7 @@ class TimeTrackerController extends ChangeNotifier
 
   @override
   void dispose() {
-    developer.log('Disposing TimeTrackerController');
+   // developer.log('Disposing TimeTrackerController');
     _stopTimer();
     super.dispose();
   }

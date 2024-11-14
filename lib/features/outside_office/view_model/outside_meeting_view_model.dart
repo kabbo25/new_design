@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:new_design/core/storage/storage_factory.dart';
 import 'package:new_design/core/theme/app_palette.dart';
@@ -32,9 +30,8 @@ class OutsideMeetingViewModel extends ChangeNotifier
 
   void _initializeTimeTracking() async {
     await Future.delayed(const Duration(seconds: 1));
-    final status = startingStatus ?? workingStatus;
-    developer.log(status.toJson().toString());
-    _timeTrackingViewModel.updateWorkingStatus(status);
+    if (startingStatus == null) await saveWorkingStatus(workingStatus);
+    await Future.delayed(const Duration(seconds: 1));
     _timeTrackingViewModel.startTracking('728');
   }
 

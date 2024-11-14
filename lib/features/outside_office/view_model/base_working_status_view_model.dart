@@ -38,7 +38,7 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
         ..clear()
         ..addAll(loadedStatuses);
       developer.log('inside and ${loadedStatuses.length}');
-      await _repository.clear();
+     // await _repository.clear();
     } catch (e) {
       debugPrint('Error loading working statuses: $e');
     } finally {
@@ -57,9 +57,15 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
           _workingStatuses.indexWhere((s) => s.workMode == status.workMode);
 
       await _repository.save(status);
-
-      if (existingIndex != -1) {
-        _workingStatuses[existingIndex] = status;
+      developer.log('index is ${existingIndex.toString()}');
+      developer.log(status.toJson().toString());
+      if (_workingStatuses.isNotEmpty) {
+        if (status.workMode == WorkMode.ending) {
+          developer.log('size is ${_workingStatuses.length.toString()}');
+          _workingStatuses[1] = status;
+        } else {
+          _workingStatuses[0] = status;
+        }
       } else {
         _workingStatuses.add(status);
       }
@@ -73,7 +79,7 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
   WorkingStatus? get finishingStatus {
     try {
       return _workingStatuses
-          .firstWhere((status) => status.workMode == WorkMode.ending);
+          .lastWhere((status) => status.workMode == WorkMode.ending);
     } catch (e) {
       return null;
     }
@@ -83,7 +89,7 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
   WorkingStatus? get startingStatus {
     try {
       return _workingStatuses
-          .firstWhere((status) => status.workMode == WorkMode.starting);
+          .lastWhere((status) => status.workMode == WorkMode.starting);
     } catch (e) {
       return null;
     }

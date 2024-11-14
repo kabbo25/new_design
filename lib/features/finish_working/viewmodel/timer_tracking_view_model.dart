@@ -37,6 +37,7 @@ class TimeTrackingViewModel extends ChangeNotifier {
   Future<void> startTracking(String userId) async {
     developer.log(userId);
     await timerController.initworking();
+    
     timerController.start();
   }
 
