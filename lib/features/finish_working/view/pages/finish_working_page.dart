@@ -13,6 +13,7 @@ import 'package:new_design/features/finish_working/view/widgets/network_profile_
 import 'package:new_design/features/finish_working/view/widgets/outside_meeting_list/outside_meeting_list_dropdown.dart';
 import 'package:new_design/features/finish_working/view/widgets/working_status_card.dart';
 import 'package:new_design/features/finish_working/viewmodel/finish_working_view_model.dart';
+import 'package:new_design/features/finish_working/viewmodel/timer_tracking_view_model.dart';
 import 'package:new_design/features/start_page/view/widgets/bottom_navigation_section.dart';
 import 'package:new_design/features/start_working/view/widgets/timer_section.dart';
 import 'package:new_design/generated/assets.dart';
@@ -28,8 +29,13 @@ class FinishWorkingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the shared TimeTrackingViewModel from the parent context
+    final timeTrackingViewModel = context.read<TimeTrackingViewModel>();
+
     return ChangeNotifierProvider(
-      create: (_) => FinishWorkingViewModel(),
+      create: (_) => FinishWorkingViewModel(
+        timeTrackingViewModel: timeTrackingViewModel,
+      ),
       child: const FinishWorkingView(),
     );
   }
@@ -121,7 +127,6 @@ class FinishWorkingView extends StatelessWidget {
                           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             buildNoteCounter(context, viewModel),
-                            const Gap(10),
                             TextButton(
                               onPressed: () =>
                                   _showAddNoteModal(context, viewModel),

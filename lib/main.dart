@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:new_design/core/config/router/app_router.dart';
 import 'package:new_design/core/theme/app_palette.dart';
+import 'package:new_design/features/outside_office/model/elapsed_time_provider.dart';
 
 void main() {
   // Ensure Flutter is initialized
@@ -40,13 +41,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: AppPalette.background,
+    return TimerProvider(
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: AppPalette.background,
+        ),
+        routerConfig: goRouter,
       ),
-      routerConfig: goRouter,
     );
   }
 }

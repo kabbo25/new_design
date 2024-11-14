@@ -7,10 +7,10 @@ class NumberFlip extends StatelessWidget {
   final String previousValue;
 
   const NumberFlip({
-    Key? key,
+    super.key,
     required this.newValue,
     required this.previousValue,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +46,16 @@ class _TopHalf extends StatelessWidget {
   final String value;
 
   const _TopHalf({
-    Key? key,
+    super.key,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFF7F7F7).withOpacity(0.5),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+        color: const Color(0xFFF7F7F7).withOpacity(0.5),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
       ),
       alignment: Alignment.center,
       child: Text(
@@ -74,10 +74,10 @@ class _TopFlip extends StatefulWidget {
   final String endValue;
 
   const _TopFlip({
-    Key? key,
+    super.key,
     required this.startValue,
     required this.endValue,
-  }) : super(key: key);
+  });
 
   @override
   State<_TopFlip> createState() => _TopFlipState();
@@ -123,7 +123,7 @@ class _TopFlipState extends State<_TopFlip>
               ..rotateX(-animation.value * pi / 2),
             alignment: Alignment.bottomCenter,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xFFF7F7F7),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
               ),

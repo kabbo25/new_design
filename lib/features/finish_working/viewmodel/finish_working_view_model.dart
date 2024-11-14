@@ -12,15 +12,13 @@ import 'package:new_design/features/start_page/model/background_config.dart';
 
 class FinishWorkingViewModel extends ChangeNotifier
     with BaseLocationViewModel, BaseWorkingStatusViewModel, NoteViewModelMixin {
-  final TimeTrackingViewModel _timeTrackingViewModel;
+  final TimeTrackingViewModel timeTrackingViewModel;
 
   FinishWorkingViewModel({
     StorageType locationStorageType = StorageType.sqlite,
     StorageType workingStatusStorageType = StorageType.sqlite,
-    TimeTrackingViewModel? timeTrackingViewModel,
-  }) : _timeTrackingViewModel = timeTrackingViewModel ??
-            TimeTrackingViewModel(
-                workingStatusStorageType: workingStatusStorageType) {
+    required this.timeTrackingViewModel,
+  }) {
     initializeLocationProvider(
         StorageProviderFactory.create<OutsideMeeting>(locationStorageType));
     initializeWorkingStatusProvider(
@@ -35,14 +33,12 @@ class FinishWorkingViewModel extends ChangeNotifier
     await initlocation();
     await initworking();
     await initNotes();
-
-    _initializeTimeTracking();
   }
 
   @override
   Future<void> saveWorkingStatus(WorkingStatus status) async {
     await super.saveWorkingStatus(status);
-    await _timeTrackingViewModel.updateWorkingStatus(status);
+    await timeTrackingViewModel.updateWorkingStatus(status);
     notifyListeners();
   }
 
@@ -59,7 +55,6 @@ class FinishWorkingViewModel extends ChangeNotifier
       );
   WorkingStatus get startingWorkingStatus => _startingWorkingStatus;
   WorkingStatus get finishWorkingStatus => _finishWorkingStatus;
-  TimeTrackingViewModel get timeTrackingViewModel => _timeTrackingViewModel;
 
   final WorkingStatus _startingWorkingStatus = WorkingStatus(
     location: 'outside',
@@ -73,13 +68,6 @@ class FinishWorkingViewModel extends ChangeNotifier
     time: TimeOfDay.now(),
   );
 
-  void _initializeTimeTracking() async {
-    await Future.delayed(const Duration(seconds: 1));
-    _timeTrackingViewModel.startTracking('728');
-    await Future.delayed(const Duration(seconds: 1));
-    _timeTrackingViewModel.pauseTracking();
-  }
-
   void updateFinishWorkingStatusTime(DateTime exactTime) {
     _finishWorkingStatus = WorkingStatus(
       location: 'outside',
@@ -87,6 +75,7 @@ class FinishWorkingViewModel extends ChangeNotifier
       time: TimeOfDay(hour: exactTime.hour, minute: exactTime.minute),
     );
     saveWorkingStatus(_finishWorkingStatus);
+    timeTrackingViewModel.pauseTracking();
     notifyListeners();
   }
 }

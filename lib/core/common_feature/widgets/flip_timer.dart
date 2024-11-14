@@ -114,10 +114,10 @@ class FlipCard extends StatelessWidget {
   final int previousValue;
 
   const FlipCard({
-    Key? key,
+    super.key,
     required this.newValue,
     required this.previousValue,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +154,7 @@ class FlipCard extends StatelessWidget {
 class TopHalf extends StatelessWidget {
   final int value;
 
-  const TopHalf({Key? key, required this.value}) : super(key: key);
+  const TopHalf({super.key, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -180,10 +180,10 @@ class TopFlip extends StatefulWidget {
   final int endValue;
 
   const TopFlip({
-    Key? key,
+    super.key,
     required this.startValue,
     required this.endValue,
-  }) : super(key: key);
+  });
 
   @override
   State<TopFlip> createState() => _TopFlipState();
