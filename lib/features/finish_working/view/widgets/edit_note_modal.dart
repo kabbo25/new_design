@@ -176,9 +176,12 @@ class _EditNotesModalState extends State<EditNotesModal> {
           const Gap(12),
           const Divider(),
           const Gap(10),
-          SizedBox(
-            height: size.height * 0.20, // 25% of screen height
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: size.height * 0.20, // Maximum 25% of screen height
+            ),
             child: ListView.builder(
+              shrinkWrap: true,
               controller: controller,
               itemCount: widget.notes.length,
               itemBuilder: (context, index) =>
