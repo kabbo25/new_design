@@ -38,7 +38,7 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
         ..clear()
         ..addAll(loadedStatuses);
       developer.log('inside and ${loadedStatuses.length}');
-      await _repository.clear();
+      //await _repository.clear();
     } catch (e) {
       debugPrint('Error loading working statuses: $e');
     } finally {
@@ -50,19 +50,30 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
 
   Future<void> saveWorkingStatus(WorkingStatus status) async {
     try {
-      developer.log(status.toJson().toString());
+      developer.log('Saving status: ${status.toJson()}');
 
-      // If a status with the same work mode exists, update it instead of adding new
+      // Check if a status with the same work mode exists
       final existingIndex =
           _workingStatuses.indexWhere((s) => s.workMode == status.workMode);
 
       await _repository.save(status);
+      developer.log('Existing index: $existingIndex');
 
-      if (existingIndex != -1) {
-        _workingStatuses[existingIndex] = status;
+      if (_workingStatuses.isNotEmpty) {
+        if (status.workMode == WorkMode.ending) {
+          _workingStatuses.length > 1
+              ? _workingStatuses.add(status)
+              : _workingStatuses[1] = status;
+        } else {
+          _workingStatuses[0] = status;
+        }
       } else {
         _workingStatuses.add(status);
       }
+
+      // Log the entire _workingStatuses list after saving
+      developer.log(
+          '_workingStatuses after save: ${_workingStatuses.map((s) => s.toJson()).toList()}');
       notifyListeners();
     } catch (e) {
       developer.log('Error saving working status: $e');
@@ -73,7 +84,7 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
   WorkingStatus? get finishingStatus {
     try {
       return _workingStatuses
-          .firstWhere((status) => status.workMode == WorkMode.ending);
+          .lastWhere((status) => status.workMode == WorkMode.ending);
     } catch (e) {
       return null;
     }
