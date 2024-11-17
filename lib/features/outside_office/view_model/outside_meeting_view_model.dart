@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:new_design/core/storage/storage_factory.dart';
 import 'package:new_design/core/theme/app_palette.dart';
@@ -8,6 +10,9 @@ import 'package:new_design/features/outside_office/view_model/base_location_view
 import 'package:new_design/features/outside_office/view_model/base_working_status_view_model.dart';
 import 'package:new_design/features/start_page/model/background_config.dart';
 import 'package:new_design/features/start_working/model/start_working_location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const String TIMER_KEY = 'elapsed_timer_seconds';
 
 class OutsideMeetingViewModel extends ChangeNotifier
     with BaseLocationViewModel, BaseWorkingStatusViewModel {
@@ -80,6 +85,26 @@ class OutsideMeetingViewModel extends ChangeNotifier
     );
     saveWorkingStatus(_workingStatus);
     notifyListeners();
+  }
+
+  Future<void> saveElapsedTime(int seconds) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(TIMER_KEY, seconds);
+      developer.log('Successfully saved elapsed time: $seconds seconds');
+    } catch (e) {
+      developer.log('Error saving elapsed time: $e');
+    }
+  }
+
+  Future<int> getElapsedTime() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getInt(TIMER_KEY) ?? 0;
+    } catch (e) {
+      developer.log('Error retrieving elapsed time: $e');
+      return 0;
+    }
   }
 
   List<StartWorkingLocation> get locationOptions => [

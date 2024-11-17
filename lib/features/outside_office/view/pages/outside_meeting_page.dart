@@ -161,17 +161,23 @@ class OutsideMeetingView extends StatelessWidget {
                                   onSlideComplete: () async {
                                     final DateTime exactTime = DateTime.now();
                                     developer.log('slide complete');
+                                    final int elapsedSeconds = viewModel
+                                        .timeTrackingViewModel
+                                        .timerController
+                                        .elapsed
+                                        .inSeconds;
+                                    await viewModel
+                                        .saveElapsedTime(elapsedSeconds);
+                                    developer.log(
+                                        'Elapsed seconds: $elapsedSeconds');
                                     await Future.delayed(
                                         const Duration(seconds: 1));
-                                    // developer.log(viewModel
-                                    //     .timeTrackingViewModel
-                                    //     .timerController
-                                    //     .elapsedSeconds
-                                    //     .toString());
+
                                     if (context.mounted) {
                                       finishWorkingViewModel
                                           .updateFinishWorkingStatusTime(
                                               exactTime);
+
                                       context.pushNamed(
                                         'finish_working',
                                         extra: {

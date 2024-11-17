@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
 import 'package:new_design/features/outside_office/view_model/base_working_status_view_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TimeTrackerController extends ChangeNotifier
     with BaseWorkingStatusViewModel {
@@ -12,12 +13,30 @@ class TimeTrackerController extends ChangeNotifier
   String _status = 'idle';
   DateTime? _lastUpdateTime;
   int _timerInstanceCount = 0;
-
+  static const String SAVED_SECONDS_KEY = 'elapsed_timer_seconds';
   Duration get elapsed => _elapsed;
   String get status => _status;
   bool get isRunning => _status == 'running';
+  Future<int> _getSavedSeconds() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final totalSeconds = prefs.getInt(SAVED_SECONDS_KEY) ?? 0;
+      // Get only the seconds portion using modulo 60
+      final secondsPortion = totalSeconds % 60;
 
-  void start() {
+      if (secondsPortion != totalSeconds) {
+        developer.log('Original saved seconds: $totalSeconds');
+        developer.log('Extracted seconds portion: $secondsPortion');
+      }
+
+      return secondsPortion;
+    } catch (e) {
+      developer.log('Error retrieving saved seconds: $e');
+      return 0;
+    }
+  }
+
+  Future<void> start() async {
     if (_status != 'idle' && _status != 'paused') {
       developer.log('Timer start rejected - Invalid status: $_status');
       return;
@@ -35,7 +54,7 @@ class TimeTrackerController extends ChangeNotifier
 
     _status = 'running';
     _lastUpdateTime = DateTime.now();
-    _updateElapsed(); // Initial update
+    await _updateElapsed(); // Initial update
     _startTimer();
 
     developer.log('Timer initialized with elapsed: $_elapsed');
@@ -50,13 +69,13 @@ class TimeTrackerController extends ChangeNotifier
 
     developer.log('Starting new timer instance #$currentInstance');
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (_status != 'running' || currentInstance != _timerInstanceCount) {
         _stopTimer();
         return;
       }
 
-      _updateElapsed(shouldLog: false); // Reduce logging noise
+      await _updateElapsed(shouldLog: false); // Reduce logging noise
       notifyListeners();
     });
   }
@@ -89,7 +108,7 @@ class TimeTrackerController extends ChangeNotifier
     return startDateTime;
   }
 
-  void pause() {
+  Future<void> pause() async {
     if (_status != 'running') {
       developer.log('Pause rejected - Timer is not running');
       return;
@@ -101,11 +120,11 @@ class TimeTrackerController extends ChangeNotifier
 
     _stopTimer();
     _status = 'paused';
-    _updateElapsed(); // Capture final elapsed time before pausing
+    await _updateElapsed(); // Capture final elapsed time before pausing
     notifyListeners();
   }
 
-  void _updateElapsed({bool shouldLog = true}) {
+  Future<void> _updateElapsed({bool shouldLog = true}) async {
     final start = startingStatus;
     if (start == null) {
       developer.log('ERROR: No starting status available');
@@ -114,6 +133,12 @@ class TimeTrackerController extends ChangeNotifier
 
     final now = DateTime.now();
     var startDateTime = _getStartDateTime();
+
+    // Get saved seconds
+    final savedSeconds = await _getSavedSeconds();
+    if (shouldLog) {
+      developer.log('Retrieved saved seconds: $savedSeconds');
+    }
 
     final end = finishingStatus;
     if (end != null && _status != 'running') {
@@ -130,21 +155,33 @@ class TimeTrackerController extends ChangeNotifier
         endDateTime = endDateTime.add(const Duration(days: 1));
       }
 
-      _elapsed = endDateTime.difference(startDateTime);
+      // Calculate base elapsed time
+      var baseElapsed = endDateTime.difference(startDateTime);
+
+      // Add saved seconds
+      _elapsed = baseElapsed + Duration(seconds: savedSeconds);
+
       if (shouldLog) {
         developer.log('Using end time: ${_formatDateTime(endDateTime)}');
+        developer.log('Base elapsed time: $baseElapsed');
+        developer.log('Final elapsed time with saved seconds: $_elapsed');
       }
     } else {
-      _elapsed = now.difference(startDateTime);
+      // Calculate base elapsed time from current time
+      var baseElapsed = now.difference(startDateTime);
+
+      // Add saved seconds
+      _elapsed = baseElapsed + Duration(seconds: savedSeconds);
+
       if (shouldLog) {
         developer.log('Using current time for calculation');
+        developer.log('Base elapsed time: $baseElapsed');
+        developer.log('Final elapsed time with saved seconds: $_elapsed');
       }
     }
 
-    if (shouldLog) {
-      developer.log('Calculated elapsed time: $_elapsed');
-    }
     _lastUpdateTime = now;
+    notifyListeners();
   }
 
   String _formatDateTime(DateTime dt) {
