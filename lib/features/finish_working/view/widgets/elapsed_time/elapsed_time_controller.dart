@@ -12,22 +12,10 @@ class TimeTrackerController extends ChangeNotifier
   String _status = 'idle';
   DateTime? _lastUpdateTime;
   int _timerInstanceCount = 0;
-  Duration? _pausedDuration; // Store complete duration instead of just seconds
 
   Duration get elapsed => _elapsed;
   String get status => _status;
   bool get isRunning => _status == 'running';
-
-  int get elapsedSeconds => _elapsed.inSeconds;
-
-  String get formattedHours => (_elapsed.inHours).toString().padLeft(2, '0');
-  String get formattedMinutes =>
-      (_elapsed.inMinutes % 60).toString().padLeft(2, '0');
-  String get formattedSeconds =>
-      (elapsedSeconds % 60).toString().padLeft(2, '0');
-
-  String get formattedTime =>
-      '$formattedHours:$formattedMinutes:$formattedSeconds';
 
   void start() {
     if (_status != 'idle' && _status != 'paused') {
@@ -47,17 +35,15 @@ class TimeTrackerController extends ChangeNotifier
 
     _status = 'running';
     _lastUpdateTime = DateTime.now();
-    _pausedDuration = null; // Reset paused duration when starting
-    _updateElapsed();
+    _updateElapsed(); // Initial update
     _startTimer();
 
-    developer
-        .log('Timer initialized with elapsed: $_elapsed (${formattedTime})');
+    developer.log('Timer initialized with elapsed: $_elapsed');
     notifyListeners();
   }
 
   void _startTimer() {
-    _stopTimer();
+    _stopTimer(); // Ensure any existing timer is properly stopped
 
     _timerInstanceCount++;
     final currentInstance = _timerInstanceCount;
@@ -70,7 +56,7 @@ class TimeTrackerController extends ChangeNotifier
         return;
       }
 
-      _updateElapsed(shouldLog: false);
+      _updateElapsed(shouldLog: false); // Reduce logging noise
       notifyListeners();
     });
   }
@@ -111,15 +97,11 @@ class TimeTrackerController extends ChangeNotifier
 
     developer.log('=== Timer Pause ===');
     developer.log('Current elapsed time: $_elapsed');
-    developer.log('Formatted time: $formattedTime');
     developer.log('Status before pause: $_status');
-    developer.log(
-        'Hours: $formattedHours, Minutes: $formattedMinutes, Seconds: $formattedSeconds');
 
-    _pausedDuration = _elapsed; // Store complete duration when pausing
     _stopTimer();
     _status = 'paused';
-    _updateElapsed();
+    _updateElapsed(); // Capture final elapsed time before pausing
     notifyListeners();
   }
 
@@ -135,6 +117,7 @@ class TimeTrackerController extends ChangeNotifier
 
     final end = finishingStatus;
     if (end != null && _status != 'running') {
+      // Only use end time if timer is not running
       var endDateTime = DateTime(
         now.year,
         now.month,
@@ -148,35 +131,18 @@ class TimeTrackerController extends ChangeNotifier
       }
 
       _elapsed = endDateTime.difference(startDateTime);
-
-// Add 3 seconds but limit within 0 to 59 for seconds
-      final additionalSeconds = (_elapsed.inSeconds + elapsedSeconds) % 60;
-      _elapsed = Duration(
-        hours: _elapsed.inHours,
-        minutes: _elapsed.inMinutes % 60,
-        seconds: additionalSeconds,
-      );
-      developer.log('elapsed seconds in time of ending is $additionalSeconds');
       if (shouldLog) {
         developer.log('Using end time: ${_formatDateTime(endDateTime)}');
       }
     } else {
       _elapsed = now.difference(startDateTime);
-      final additionalSeconds = (_elapsed.inSeconds + elapsedSeconds) % 60;
-      _elapsed = Duration(
-        hours: _elapsed.inHours,
-        minutes: _elapsed.inMinutes % 60,
-        seconds: additionalSeconds,
-      );
       if (shouldLog) {
         developer.log('Using current time for calculation');
       }
     }
 
     if (shouldLog) {
-      developer.log('Updated elapsed time: $elapsedSeconds');
-      developer.log(
-          'Hours: $formattedHours, Minutes: $formattedMinutes, Seconds: $formattedSeconds');
+      developer.log('Calculated elapsed time: $_elapsed');
     }
     _lastUpdateTime = now;
   }
@@ -190,12 +156,10 @@ class TimeTrackerController extends ChangeNotifier
     developer.log('=== Updating Working Status ===');
     developer.log('New status: ${status.toJson()}');
     developer.log('Current status: $_status');
-    developer.log('Current elapsed time: $formattedTime');
-    developer.log(
-        'Hours: $formattedHours, Minutes: $formattedMinutes, Seconds: $formattedSeconds');
 
     await saveWorkingStatus(status);
 
+    // If this is a finishing status and the timer is running, stop it
     if (status.workMode == WorkMode.ending && _status == 'running') {
       _status = 'idle';
       _stopTimer();

@@ -5,13 +5,14 @@ import 'package:new_design/features/finish_working/view/pages/finish_working_pag
 import 'package:new_design/features/office_page/view/pages/attendance_error.dart';
 import 'package:new_design/features/office_page/view/pages/attendence_success.dart';
 import 'package:new_design/features/outside_office/view/pages/outside_meeting_page.dart';
+import 'package:new_design/features/start_page/view/pages/attendance_page.dart';
 
 final goRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const OutsideMeetingPage();
+        return const AttendancePage();
       },
     ),
     GoRoute(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:new_design/features/office_page/view/pages/location_modal.dart';
 import 'package:new_design/features/office_page/view/widgets/network_verification_modal.dart';
 import 'package:new_design/features/office_page/viewmodel/location_verification_viewmodel.dart';
 import 'package:new_design/features/office_page/viewmodel/network_verification_viewmodel.dart';
@@ -16,10 +17,11 @@ class LocationOptionsSection extends StatelessWidget {
     required this.locations,
   });
 
-  void _showNetworkVerificationModal(
-    BuildContext context,
-    AttendanceLocation location,
-  ) {
+  void _showModalWithProviders<T extends ChangeNotifier>({
+    required BuildContext context,
+    required T viewModel,
+    required Widget Function(BuildContext, T, Widget?) builder,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -29,28 +31,63 @@ class LocationOptionsSection extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: MultiProvider(
-            providers: [
-              ChangeNotifierProvider(
-                  create: (_) => NetworkVerificationViewModel()),
-              ChangeNotifierProvider(
-                  create: (_) => LocationVerificationViewModel()),
-            ],
-            child: Consumer2<NetworkVerificationViewModel,
-                LocationVerificationViewModel>(
-              builder: (context, networkViewModel, locationViewModel, _) {
-                return NetworkVerificationModal(
-                  isLoading: networkViewModel.state.isLoading,
-                  onVerifyNetwork: () =>
-                      networkViewModel.verifyNetwork(context),
-                  onUseGPS: () => locationViewModel.verifyLocation(context),
-                );
-              },
+          child: ChangeNotifierProvider.value(
+            value: viewModel,
+            child: Consumer<T>(
+              builder: builder,
             ),
           ),
         );
       },
     );
+  }
+
+  void _handleLocationTap(BuildContext context, AttendanceLocation location) {
+    switch (location.title.toLowerCase()) {
+      case 'office':
+        _showModalWithProviders(
+          context: context,
+          viewModel: NetworkVerificationViewModel(),
+          builder: (context, networkViewModel, _) {
+            return NetworkVerificationModal(
+              isLoading: networkViewModel.state.isLoading,
+              onVerifyNetwork: () => networkViewModel.verifyNetwork(context),
+              onUseGPS: () {
+                _showModalWithProviders(
+                  context: context,
+                  viewModel: LocationVerificationViewModel(),
+                  builder: (context, locationViewModel, _) {
+                    return LocationModal(
+                      isLoading: locationViewModel.state.isLoading,
+                      onFindLocation: () =>
+                          locationViewModel.handleFindLocation(context),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+        break;
+      case 'outside':
+        _showModalWithProviders(
+          context: context,
+          viewModel: LocationVerificationViewModel(),
+          builder: (context, locationViewModel, _) {
+            return LocationModal(
+              isLoading: locationViewModel.state.isLoading,
+              onFindLocation: () =>
+                  locationViewModel.handleFindLocation(context),
+            );
+          },
+        );
+        break;
+      case 'home':
+        // Implement navigation or other action for 'home' case
+        break;
+      default:
+        break;
+    }
   }
 
   @override
@@ -61,7 +98,7 @@ class LocationOptionsSection extends StatelessWidget {
           children: [
             LocationOption(
               location: location,
-              onTap: () => _showNetworkVerificationModal(context, location),
+              onTap: () => _handleLocationTap(context, location),
             ),
             const Gap(16),
           ],
