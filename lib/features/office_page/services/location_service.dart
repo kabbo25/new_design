@@ -50,7 +50,9 @@ class OutsideLocationService {
       viewModel.addLocation(newMeeting);
       final DateTime exactTime = DateTime.now();
       if (shouldNavigate) {
+        viewModel.clearWorkingStatuses();
         viewModel.updateStartWorkingStatusTime(exactTime);
+
         context.pushNamed('outside_working');
       }
     } catch (e) {

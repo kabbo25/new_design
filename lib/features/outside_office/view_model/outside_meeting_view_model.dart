@@ -33,6 +33,9 @@ class OutsideMeetingViewModel extends ChangeNotifier
   }
 
   Future<void> _initializeTimeTracking() async {
+    if (startingStatus == null) {
+      saveWorkingStatus(_workingStatus);
+    }
     _timeTrackingViewModel.startTracking('728');
   }
 
@@ -44,6 +47,7 @@ class OutsideMeetingViewModel extends ChangeNotifier
   @override
   Future<void> saveWorkingStatus(WorkingStatus status) async {
     await super.saveWorkingStatus(status);
+    await Future.delayed(Duration(seconds: 1));
     await _timeTrackingViewModel.updateWorkingStatus(status);
     notifyListeners();
   }

@@ -38,7 +38,7 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
         ..clear()
         ..addAll(loadedStatuses);
       developer.log('inside and ${loadedStatuses.length}');
-      //await _repository.clear();
+      // await _repository.clear();
     } catch (e) {
       debugPrint('Error loading working statuses: $e');
     } finally {
@@ -93,6 +93,8 @@ mixin BaseWorkingStatusViewModel on ChangeNotifier {
   // Get starting work status
   WorkingStatus? get startingStatus {
     try {
+      developer.log(
+          'staring fount ${_workingStatuses.firstWhere((status) => status.workMode == WorkMode.starting).toJson().toString()}');
       return _workingStatuses
           .firstWhere((status) => status.workMode == WorkMode.starting);
     } catch (e) {
