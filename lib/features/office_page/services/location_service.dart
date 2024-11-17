@@ -1,4 +1,3 @@
-// location_service.dart
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
@@ -17,6 +16,20 @@ class OutsideLocationService {
     }
   }
 
+  static OutsideMeeting _createOutsideMeeting({
+    required String location,
+    required String meetingPurpose,
+  }) {
+    final now = TimeOfDay.now();
+    return OutsideMeeting(
+      title: meetingPurpose,
+      location: location,
+      time:
+          '${now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.period == DayPeriod.am ? 'am' : 'pm'}',
+      purpose: meetingPurpose,
+    );
+  }
+
   static void handleOutsideMeetingSave(
     BuildContext context,
     String location,
@@ -25,22 +38,20 @@ class OutsideLocationService {
     bool shouldNavigate,
   ) {
     try {
+      final newMeeting = _createOutsideMeeting(
+        location: location,
+        meetingPurpose: meetingPurpose,
+      );
+
+      developer.log(newMeeting.toJson().toString());
+
+      final viewModel =
+          Provider.of<OutsideMeetingViewModel>(context, listen: false);
+      viewModel.addLocation(newMeeting);
+      final DateTime exactTime = DateTime.now();
       if (shouldNavigate) {
+        viewModel.updateStartWorkingStatusTime(exactTime);
         context.pushNamed('outside_working');
-      } else {
-        final now = TimeOfDay.now();
-        final newMeeting = OutsideMeeting(
-          title: meetingPurpose,
-          location: location,
-          time:
-              '${now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.period == DayPeriod.am ? 'am' : 'pm'}',
-          purpose: meetingPurpose,
-        );
-        print(newMeeting);
-        // Get the ViewModel instance from a valid context
-        final viewModel =
-            Provider.of<OutsideMeetingViewModel>(context, listen: false);
-        viewModel.addLocation(newMeeting);
       }
     } catch (e) {
       developer.log('Error saving outside meeting: $e');

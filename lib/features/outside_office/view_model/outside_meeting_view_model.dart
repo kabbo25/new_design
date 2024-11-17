@@ -33,9 +33,6 @@ class OutsideMeetingViewModel extends ChangeNotifier
   }
 
   Future<void> _initializeTimeTracking() async {
-    if (startingStatus == null) {
-      await saveWorkingStatus(workingStatus);
-    }
     _timeTrackingViewModel.startTracking('728');
   }
 
@@ -65,12 +62,21 @@ class OutsideMeetingViewModel extends ChangeNotifier
         glowOpacity: 0.8,
       );
 
-  final WorkingStatus _workingStatus = WorkingStatus(
+  WorkingStatus _workingStatus = WorkingStatus(
     location: 'outside',
     workMode: WorkMode.starting,
     time: TimeOfDay.now(),
   );
   WorkingStatus get workingStatus => _workingStatus;
+  void updateStartWorkingStatusTime(DateTime exactTime) {
+    _workingStatus = WorkingStatus(
+      location: 'outside',
+      workMode: WorkMode.starting,
+      time: TimeOfDay(hour: exactTime.hour, minute: exactTime.minute),
+    );
+    saveWorkingStatus(_workingStatus);
+    notifyListeners();
+  }
 
   List<StartWorkingLocation> get locationOptions => [
         const StartWorkingLocation(

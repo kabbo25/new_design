@@ -4,6 +4,7 @@ import 'package:new_design/features/office_page/view/pages/location_modal.dart';
 import 'package:new_design/features/office_page/view/widgets/network_verification_modal.dart';
 import 'package:new_design/features/office_page/viewmodel/location_verification_viewmodel.dart';
 import 'package:new_design/features/office_page/viewmodel/network_verification_viewmodel.dart';
+import 'package:new_design/features/outside_office/view_model/outside_meeting_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/attendance_location.dart';
@@ -17,11 +18,10 @@ class LocationOptionsSection extends StatelessWidget {
     required this.locations,
   });
 
-  void _showModalWithProviders<T extends ChangeNotifier>({
-    required BuildContext context,
-    required T viewModel,
-    required Widget Function(BuildContext, T, Widget?) builder,
-  }) {
+  void _showNetworkVerificationModal(
+    BuildContext context,
+    AttendanceLocation location,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -31,10 +31,64 @@ class LocationOptionsSection extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: ChangeNotifierProvider.value(
-            value: viewModel,
-            child: Consumer<T>(
-              builder: builder,
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                create: (_) => NetworkVerificationViewModel(),
+              ),
+              ChangeNotifierProvider(
+                create: (_) => LocationVerificationViewModel(),
+              ),
+            ],
+            child: Consumer2<NetworkVerificationViewModel,
+                LocationVerificationViewModel>(
+              builder: (context, networkViewModel, locationViewModel, _) {
+                return NetworkVerificationModal(
+                  isLoading: networkViewModel.state.isLoading,
+                  onVerifyNetwork: () =>
+                      networkViewModel.verifyNetwork(context),
+                  onUseGPS: () => locationViewModel.verifyLocation(context),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showLocationVerificationModal(
+    BuildContext context,
+    AttendanceLocation location,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                create: (_) => OutsideMeetingViewModel(),
+              ),
+              ChangeNotifierProvider(
+                create: (_) => LocationVerificationViewModel(),
+              ),
+            ],
+            child: Consumer2<OutsideMeetingViewModel,
+                LocationVerificationViewModel>(
+              builder:
+                  (context, outsideMeetingViewModel, locationViewModel, _) {
+                return LocationModal(
+                  isLoading: locationViewModel.state.isLoading,
+                  onFindLocation: () =>
+                      locationViewModel.handleFindLocation(context),
+                );
+              },
             ),
           ),
         );
@@ -43,47 +97,16 @@ class LocationOptionsSection extends StatelessWidget {
   }
 
   void _handleLocationTap(BuildContext context, AttendanceLocation location) {
+    // Existing switch-case logic for handling location taps
     switch (location.title.toLowerCase()) {
       case 'office':
-        _showModalWithProviders(
-          context: context,
-          viewModel: NetworkVerificationViewModel(),
-          builder: (context, networkViewModel, _) {
-            return NetworkVerificationModal(
-              isLoading: networkViewModel.state.isLoading,
-              onVerifyNetwork: () => networkViewModel.verifyNetwork(context),
-              onUseGPS: () {
-                _showModalWithProviders(
-                  context: context,
-                  viewModel: LocationVerificationViewModel(),
-                  builder: (context, locationViewModel, _) {
-                    return LocationModal(
-                      isLoading: locationViewModel.state.isLoading,
-                      onFindLocation: () =>
-                          locationViewModel.handleFindLocation(context),
-                    );
-                  },
-                );
-              },
-            );
-          },
-        );
+        _showNetworkVerificationModal(context, location);
         break;
       case 'outside':
-        _showModalWithProviders(
-          context: context,
-          viewModel: LocationVerificationViewModel(),
-          builder: (context, locationViewModel, _) {
-            return LocationModal(
-              isLoading: locationViewModel.state.isLoading,
-              onFindLocation: () =>
-                  locationViewModel.handleFindLocation(context),
-            );
-          },
-        );
+        _showLocationVerificationModal(context, location);
         break;
       case 'home':
-        // Implement navigation or other action for 'home' case
+        // Navigate or other action
         break;
       default:
         break;
