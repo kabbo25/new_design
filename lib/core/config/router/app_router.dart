@@ -5,10 +5,12 @@ import 'package:new_design/features/finish_working/view/pages/finish_working_pag
 import 'package:new_design/features/office_page/view/pages/attendance_error.dart';
 import 'package:new_design/features/office_page/view/pages/attendence_success.dart';
 import 'package:new_design/features/outside_office/view/pages/outside_meeting_page.dart';
+import 'package:new_design/features/start_page/view/pages/attendance_page.dart';
 
 final goRouter = GoRouter(
   routes: [
     GoRoute(
+      name: 'outside', // Add this name
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         return const OutsideMeetingPage();
@@ -44,6 +46,13 @@ final goRouter = GoRouter(
       builder: (context, state) {
         //final extra = state.extra as Map<String, dynamic>?;
         return const OutsideMeetingPage();
+      },
+    ),
+    GoRoute(
+      name: 'home_page', // Add this name
+      path: '/home-page',
+      builder: (BuildContext context, GoRouterState state) {
+        return const AttendancePage();
       },
     ),
     GoRoute(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:new_design/core/common_feature/widgets/edit_working_hour.dart';
 import 'package:new_design/core/theme/app_palette.dart';
 import 'package:new_design/core/theme/app_text_styles.dart';
@@ -147,7 +148,13 @@ class FinishWorkingView extends StatelessWidget {
                             Column(
                               children: [
                                 TextButton(
-                                  onPressed: () => {},
+                                  onPressed: () async {
+                                    await viewModel.clearWorkingStatuses();
+
+                                    if (context.mounted) {
+                                      context.pushReplacementNamed('home_page');
+                                    }
+                                  },
                                   style: TextButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 12),

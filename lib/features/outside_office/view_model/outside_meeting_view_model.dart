@@ -52,8 +52,10 @@ class OutsideMeetingViewModel extends ChangeNotifier
   @override
   Future<void> saveWorkingStatus(WorkingStatus status) async {
     await super.saveWorkingStatus(status);
-    await Future.delayed(Duration(seconds: 1));
+    timeTrackingViewModel.pauseTracking();
     await _timeTrackingViewModel.updateWorkingStatus(status);
+    await Future.delayed(const Duration(seconds: 1));
+    timeTrackingViewModel.startTracking('728');
     notifyListeners();
   }
 
