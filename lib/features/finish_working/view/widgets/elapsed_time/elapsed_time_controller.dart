@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:new_design/features/finish_working/model/working_status.dart';
@@ -25,39 +24,39 @@ class TimeTrackerController extends ChangeNotifier
       final secondsPortion = totalSeconds % 60;
 
       if (secondsPortion != totalSeconds) {
-        developer.log('Original saved seconds: $totalSeconds');
-        developer.log('Extracted seconds portion: $secondsPortion');
+        //developer.log('Original saved seconds: $totalSeconds');
+        //developer.log('Extracted seconds portion: $secondsPortion');
       }
 
       return secondsPortion;
     } catch (e) {
-      developer.log('Error retrieving saved seconds: $e');
+      //developer.log('Error retrieving saved seconds: $e');
       return 0;
     }
   }
 
   Future<void> start() async {
     if (_status != 'idle' && _status != 'paused') {
-      developer.log('Timer start rejected - Invalid status: $_status');
+      //developer.log('Timer start rejected - Invalid status: $_status');
       return;
     }
     if (startingStatus == null) {
-      developer.log('Timer start rejected - No starting status');
+      //developer.log('Timer start rejected - No starting status');
       return;
     }
 
-    developer.log('=== Timer Start ===');
-    developer.log('Previous status: $_status');
-    developer.log('Starting status: ${startingStatus?.toJson()}');
-    developer.log('Finishing status: ${finishingStatus?.toJson()}');
-    developer.log('Current time: ${DateTime.now()}');
+    //developer.log('=== Timer Start ===');
+    //developer.log('Previous status: $_status');
+    //developer.log('Starting status: ${startingStatus?.toJson()}');
+    //developer.log('Finishing status: ${finishingStatus?.toJson()}');
+    //developer.log('Current time: ${DateTime.now()}');
 
     _status = 'running';
     _lastUpdateTime = DateTime.now();
     await _updateElapsed(); // Initial update
     _startTimer();
 
-    developer.log('Timer initialized with elapsed: $_elapsed');
+    //developer.log('Timer initialized with elapsed: $_elapsed');
     notifyListeners();
   }
 
@@ -67,7 +66,7 @@ class TimeTrackerController extends ChangeNotifier
     _timerInstanceCount++;
     final currentInstance = _timerInstanceCount;
 
-    developer.log('Starting new timer instance #$currentInstance');
+    //developer.log('Starting new timer instance #$currentInstance');
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (_status != 'running' || currentInstance != _timerInstanceCount) {
@@ -82,7 +81,7 @@ class TimeTrackerController extends ChangeNotifier
 
   void _stopTimer() {
     if (_timer?.isActive ?? false) {
-      developer.log('Stopping active timer');
+      //developer.log('Stopping active timer');
       _timer?.cancel();
       _timer = null;
     }
@@ -110,13 +109,13 @@ class TimeTrackerController extends ChangeNotifier
 
   Future<void> pause() async {
     if (_status != 'running') {
-      developer.log('Pause rejected - Timer is not running');
+      //developer.log('Pause rejected - Timer is not running');
       return;
     }
 
-    developer.log('=== Timer Pause ===');
-    developer.log('Current elapsed time: $_elapsed');
-    developer.log('Status before pause: $_status');
+    //developer.log('=== Timer Pause ===');
+    //developer.log('Current elapsed time: $_elapsed');
+    //developer.log('Status before pause: $_status');
 
     _stopTimer();
     _status = 'paused';
@@ -127,7 +126,7 @@ class TimeTrackerController extends ChangeNotifier
   Future<void> _updateElapsed({bool shouldLog = true}) async {
     final start = startingStatus;
     if (start == null) {
-      developer.log('ERROR: No starting status available');
+      //developer.log('ERROR: No starting status available');
       return;
     }
 
@@ -137,7 +136,7 @@ class TimeTrackerController extends ChangeNotifier
     // Get saved seconds
     final savedSeconds = await _getSavedSeconds();
     if (shouldLog) {
-      developer.log('Retrieved saved seconds: $savedSeconds');
+      //developer.log('Retrieved saved seconds: $savedSeconds');
     }
 
     final end = finishingStatus;
@@ -162,9 +161,9 @@ class TimeTrackerController extends ChangeNotifier
       _elapsed = baseElapsed + Duration(seconds: savedSeconds);
 
       if (shouldLog) {
-        developer.log('Using end time: ${_formatDateTime(endDateTime)}');
-        developer.log('Base elapsed time: $baseElapsed');
-        developer.log('Final elapsed time with saved seconds: $_elapsed');
+        //developer.log('Using end time: ${_formatDateTime(endDateTime)}');
+        //developer.log('Base elapsed time: $baseElapsed');
+        //developer.log('Final elapsed time with saved seconds: $_elapsed');
       }
     } else {
       // Calculate base elapsed time from current time
@@ -174,9 +173,9 @@ class TimeTrackerController extends ChangeNotifier
       _elapsed = baseElapsed + Duration(seconds: savedSeconds);
 
       if (shouldLog) {
-        developer.log('Using current time for calculation');
-        developer.log('Base elapsed time: $baseElapsed');
-        developer.log('Final elapsed time with saved seconds: $_elapsed');
+        //developer.log('Using current time for calculation');
+        //developer.log('Base elapsed time: $baseElapsed');
+        //developer.log('Final elapsed time with saved seconds: $_elapsed');
       }
     }
 
@@ -190,9 +189,9 @@ class TimeTrackerController extends ChangeNotifier
   }
 
   Future<void> updateWorkingStatus(WorkingStatus status) async {
-    developer.log('=== Updating Working Status ===');
-    developer.log('New status: ${status.toJson()}');
-    developer.log('Current status: $_status');
+    //developer.log('=== Updating Working Status ===');
+    //developer.log('New status: ${status.toJson()}');
+    //developer.log('Current status: $_status');
 
     await saveWorkingStatus(status);
 
@@ -208,7 +207,7 @@ class TimeTrackerController extends ChangeNotifier
 
   @override
   void dispose() {
-    developer.log('Disposing TimeTrackerController');
+    //developer.log('Disposing TimeTrackerController');
     _stopTimer();
     super.dispose();
   }
